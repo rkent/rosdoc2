@@ -125,23 +125,23 @@ if rosdoc2_settings.get('enable_exhale', is_doxygen_invoked):
     from exhale import utils
     exhale_args.update({{
         # These arguments are required.
-        "containmentFolder": "{user_sourcedir}/api",
-        "rootFileName": "library_root.rst",
         "rootFileTitle": "{package_name} C/C++ API",
+        "containmentFolder": "{user_sourcedir}/generated",
+        "rootFileName": "index.rst",
         "doxygenStripFromPath": "..",
         # Suggested optional arguments.
         "createTreeView": True,
+        "fullToctreeMaxDepth": 1,
+        "unabridgedOrphanKinds": [],
+        "fullApiSubSectionTitle": "Reference",
         # TIP: if using the sphinx-bootstrap-theme, you need
         # "treeViewIsBootstrap": True,
         "exhaleExecutesDoxygen": False,
         # Maps markdown files to the "md" lexer, and not the "markdown" lexer
         # Pygments registers "md" as a valid markdown lexer, and not "markdown"
         "lexerMapping": {{r".*\.(md|markdown)$": "md",}},
-        # This mapping will work when `exhale` supports `:doxygenpage:` directives
-        # Check https://github.com/svenevs/exhale/issues/111
-        # TODO(aprotyas): Uncomment the mapping below once the above issue is resolved.
-        # "customSpecificationsMapping": utils.makeCustomSpecificationsMapping(
-        #     lambda kind: [":project:", ":path:", ":content-only:"] if kind == "page" else []),
+        "customSpecificationsMapping": utils.makeCustomSpecificationsMapping(
+            lambda kind: [":content-only:"] if kind == "page" else []),
     }})
 
 if rosdoc2_settings.get('override_theme', True):
@@ -288,17 +288,13 @@ rosdoc2_settings = {{
 """
 
 index_rst_template = """\
-{package.name}
-{package_underline}
-
-{package.description}
-
-Package API
-===========
+{root_title}
+{root_title_underline}
 
 .. toctree::
    :maxdepth: 2
-   {package_toc_entry}
+
+   {package.name} <generated/index>
 
 Indices and Search
 ==================
@@ -355,7 +351,7 @@ class SphinxBuilder(Builder):
                 self.doxygen_xml_directory = value
                 # Must check for the existence of this later, as it may not have been made yet.
             else:
-                raise RuntimeError(f"Error the Doxygen builder does not support key '{key}'")
+                raise RuntimeError(f"Error the Sphinx builder does not support key '{key}'")
 
         # Prepare the template variables for formatting strings.
         self.template_variables = create_format_map_from_package(build_context.package)
@@ -548,6 +544,12 @@ class SphinxBuilder(Builder):
 
         with open(os.path.join(directory, 'conf.py'), 'w+') as f:
             f.write(default_conf_py_template.format_map(template_variables))
+
+        root_title = f'Welcome to {package.name} documentation'
+        template_variables.update({
+            'root_title': root_title,
+            'root_title_underline': '=' * len(root_title)
+        })
 
         with open(os.path.join(directory, 'index.rst'), 'w+') as f:
             f.write(index_rst_template.format_map(template_variables))
