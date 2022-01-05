@@ -20,6 +20,9 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    - name: Install apt dependencies
+      run: sudo apt update && sudo apt install -y doxygen graphviz
+
     - name: Setup python
       uses: actions/setup-python@v2
       with:
