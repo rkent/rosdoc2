@@ -14,11 +14,13 @@
 import os
 import tempfile
 
+from catkin_pkg.package import parse_package
+
 # 'pytest_virtualenv' required, supplies virtualenv
 
 
 def package_smoke_test(package, virtualenv):
-    (url, commit, package_relative_path) = package
+    (url, commit, package_relative_path, test_files) = package
 
     print(f'*** package url: {url} path: {package_relative_path}')
     fp_save = None
@@ -30,6 +32,8 @@ def package_smoke_test(package, virtualenv):
         virtualenv.run(['git', '-C', f'{fp}', 'clone', f'{url}', 'repo'])
         repo_path = os.path.join(fp, 'repo')
         package_path = os.path.join(repo_path, package_relative_path)
+        package = parse_package(package_path)
+        print(f'Found package {package.name}')
         # -q to suppress detached head message
         virtualenv.run(['git', '-C', f'{repo_path}', 'checkout', '-q', f'{commit}'])
         (docs_cr, docs_output, docs_build) = ('docs_cr', 'docs_output', 'docs_build')
@@ -45,14 +49,22 @@ def package_smoke_test(package, virtualenv):
             '-c', f'from rosdoc2 import main; main.main({args_str})'
         ]
         outs = virtualenv.run(runme, capture=True)
+
+        # test existence of specified output files
+        docs_output_path = os.path.join(package_path, docs_output, package.name)
+        for filename in test_files:
+            assert os.path.exists(os.path.join(docs_output_path, filename))
+
         print('--- rosdoc2 output ---')
         print(outs)
 
 
-# projects to test as tuples of (repo_url, git_commit, package_relative_path)
+# projects to test as tuples of (repo_url, git_commit, package_relative_path, testfiles)
 TEST_PACKAGES = [
-    ('https://github.com/ros-planning/moveit2.git', '2.3.2', 'moveit_kinematics'),
-    ('https://github.com/rosdabbler/fqdemo.git', 'HEAD', 'fqdemo_nodes'),
+    ('https://github.com/ros-planning/moveit2.git', '2.3.2', 'moveit_kinematics',
+        ['index.html']),
+    ('https://github.com/rosdabbler/fqdemo.git', 'HEAD', 'fqdemo_nodes',
+        ['index.html']),
 ]
 
 
