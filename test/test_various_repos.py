@@ -24,7 +24,7 @@ def package_smoke_test(package, virtualenv):
 
     print(f'*** package url: {url} path: {package_relative_path}')
     fp_save = None
-    # fp_save = tempfile.mkdtemp()
+    fp_save = tempfile.mkdtemp()
     with tempfile.TemporaryDirectory() as fp_delete:
         fp = fp_save or fp_delete
         print(f'temp directory is {fp}')
@@ -79,6 +79,8 @@ TEST_PACKAGES = \
                 ('index.html', 'https://github.com/ros-planning/moveit2'),
                 # Confirm that rosindex link is found
                 ('index.html', 'https://index.ros.org/p/moveit_kinematics'),
+                # The index should have the description
+                ('index.html', 'Package for all inverse kinematics solvers in MoveIt'),
             ]
         ],
         [
