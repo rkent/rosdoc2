@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import http.client
 import json
 import logging
 import os
@@ -27,6 +28,16 @@ from ..collect_inventory_files import collect_inventory_files
 from ..create_format_map_from_package import create_format_map_from_package
 
 logger = logging.getLogger('rosdoc2')
+
+
+def website_exists(site, path):
+    """Check if an https website exists."""
+    # 'site' does not have protocol, that is use 'index.ros.org'."""
+    connection = http.client.HTTPSConnection(site, timeout=4)
+    connection.request('HEAD', path)
+    response = connection.getresponse()
+    exists = response.status < 400
+    return exists
 
 
 def generate_template_variables(
@@ -52,6 +63,8 @@ def generate_template_variables(
         if url.type == 'bugtracker':
             url_bugtracker = f'* `Bugtracker <{url.url}>`_'
 
+    has_package_index = website_exists('index.ros.org', f'p/{package.name}')
+    package_index_link = f'https://index.ros.org/p/{package.name}' if has_package_index else ''
     template_variables.update({
         'always_run_doxygen': build_context.always_run_doxygen,
         'breathe_projects': ',\n'.join(breathe_projects) + '\n    ',
@@ -63,6 +76,8 @@ def generate_template_variables(
         'package_authors': ', '.join(set(
             [a.name for a in package.authors] + [m.name for m in package.maintainers]
         )),
+        'package_index': f'* `ROS Index <{package_index_link}>`_' if package_index_link else '',
+        'package_index_link': package_index_link,
         'package_licenses': ', '.join(package.licenses),
         'package_src_directory': package_src_directory,
         'package_toc_entry': generate_package_toc_entry(build_context=build_context),

@@ -58,7 +58,10 @@ def package_smoke_test(package, virtualenv):
             assert os.path.exists(file_path)
             content = open(file_path).read()
             if test_string:
-                assert test_string in content
+                if test_string.startswith('!'):
+                    assert not test_string[1:] in content
+                else:
+                    assert test_string in content
 
         print('--- rosdoc2 output ---')
         print(outs)
@@ -66,13 +69,28 @@ def package_smoke_test(package, virtualenv):
 
 # projects to test as tuples of (repo_url, git_commit, package_relative_path, testfiles)
 # testfiles is a list of tuples of (filename, text_to_find)
-TEST_PACKAGES = [
-    # Confirm that we find the repository URL
-    ('https://github.com/ros-planning/moveit2.git', '2.3.2', 'moveit_kinematics',
-        [('index.html', 'https://github.com/ros-planning/moveit2')]),
-    ('https://github.com/rosdabbler/fqdemo.git', 'HEAD', 'fqdemo_nodes',
-        [('index.html', '')]),
-]
+# if text_to_find starts with !, assert that the remainder of the string is NOT present
+TEST_PACKAGES = \
+    [
+        [
+            'https://github.com/ros-planning/moveit2.git', '2.3.2', 'moveit_kinematics',
+            [
+                # Confirm that we find the repository URL
+                ('index.html', 'https://github.com/ros-planning/moveit2'),
+                # Confirm that rosindex link is found
+                ('index.html', 'https://index.ros.org/p/moveit_kinematics'),
+            ]
+        ],
+        [
+            'https://github.com/rosdabbler/fqdemo.git', 'HEAD', 'fqdemo_nodes',
+            [
+                # Basic existence of output
+                ('index.html', ''),
+                # Confirm that rosindex link is NOT found
+                ('index.html', '!https://index.ros.org/p/'),
+            ]
+        ],
+    ]
 
 
 def test_packages(virtualenv):
