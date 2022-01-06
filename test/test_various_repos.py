@@ -33,7 +33,6 @@ def package_smoke_test(package, virtualenv):
         repo_path = os.path.join(fp, 'repo')
         package_path = os.path.join(repo_path, package_relative_path)
         package = parse_package(package_path)
-        print(f'Found package {package.name}')
         # -q to suppress detached head message
         virtualenv.run(['git', '-C', f'{repo_path}', 'checkout', '-q', f'{commit}'])
         (docs_cr, docs_output, docs_build) = ('docs_cr', 'docs_output', 'docs_build')
@@ -50,21 +49,29 @@ def package_smoke_test(package, virtualenv):
         ]
         outs = virtualenv.run(runme, capture=True)
 
-        # test existence of specified output files
+        # test existence of specified output files and some content
         docs_output_path = os.path.join(package_path, docs_output, package.name)
-        for filename in test_files:
-            assert os.path.exists(os.path.join(docs_output_path, filename))
+        for test_file in test_files:
+            (filename, test_string) = test_file
+            print(f'testing path <{package_path}> filename <{filename}> content <{test_string}>')
+            file_path = os.path.join(docs_output_path, filename)
+            assert os.path.exists(file_path)
+            content = open(file_path).read()
+            if test_string:
+                assert test_string in content
 
         print('--- rosdoc2 output ---')
         print(outs)
 
 
 # projects to test as tuples of (repo_url, git_commit, package_relative_path, testfiles)
+# testfiles is a list of tuples of (filename, text_to_find)
 TEST_PACKAGES = [
+    # Confirm that we find the repository URL
     ('https://github.com/ros-planning/moveit2.git', '2.3.2', 'moveit_kinematics',
-        ['index.html']),
+        [('index.html', 'https://github.com/ros-planning/moveit2')]),
     ('https://github.com/rosdabbler/fqdemo.git', 'HEAD', 'fqdemo_nodes',
-        ['index.html']),
+        [('index.html', '')]),
 ]
 
 
