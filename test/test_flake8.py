@@ -25,12 +25,13 @@ LOG.setLevel(logging.ERROR)
 
 
 def test_flake8():
+    # See https://github.com/mila-iqia/cookiecutter-pyml/issues/10 about W503/W504 conflict.
     style_guide = get_style_guide(
-        extend_ignore=['D100', 'D104'],
+        extend_ignore=['D100', 'D104', 'W503'],
         show_source=True,
     )
     style_guide_tests = get_style_guide(
-        extend_ignore=['D100', 'D101', 'D102', 'D103', 'D104', 'D105', 'D107'],
+        extend_ignore=['D100', 'D101', 'D102', 'D103', 'D104', 'D105', 'D107', 'W503'],
         show_source=True,
     )
 

@@ -12,17 +12,17 @@
 # limitations under the License.
 
 import os
-import subprocess
 import tempfile
 
 # 'pytest_virtualenv' required, supplies virtualenv
+
 
 def package_smoke_test(package, virtualenv):
     (url, commit, package_relative_path) = package
 
     print(f'*** package url: {url} path: {package_relative_path}')
     fp_save = None
-    #fp_save = tempfile.mkdtemp()
+    # fp_save = tempfile.mkdtemp()
     with tempfile.TemporaryDirectory() as fp_delete:
         fp = fp_save or fp_delete
         print(f'temp directory is {fp}')
@@ -33,7 +33,7 @@ def package_smoke_test(package, virtualenv):
         # -q to suppress detached head message
         virtualenv.run(['git', '-C', f'{repo_path}', 'checkout', '-q', f'{commit}'])
         (docs_cr, docs_output, docs_build) = ('docs_cr', 'docs_output', 'docs_build')
-        args_str = f"["\
+        args_str = '['\
             + '"build"'\
             + f', "-p", "{package_path}"'\
             + f', "-c", "{os.path.join(package_path, docs_cr)}"'\
@@ -48,7 +48,6 @@ def package_smoke_test(package, virtualenv):
         print('--- rosdoc2 output ---')
         print(outs)
 
-        # Confirm that the output index exists.
 
 # projects to test as tuples of (repo_url, git_commit, package_relative_path)
 TEST_PACKAGES = [
@@ -56,8 +55,9 @@ TEST_PACKAGES = [
     ('https://github.com/rosdabbler/fqdemo.git', 'HEAD', 'fqdemo_nodes'),
 ]
 
+
 def test_packages(virtualenv):
-    """Confirm that rosdoc2 runs to completion in these packages"""
+    """Confirm that rosdoc2 runs to completion in these packages."""
     virtualenv.install_package(f'install {os.getcwd()}', installer='pip')
     for package in TEST_PACKAGES:
         package_smoke_test(package, virtualenv)
