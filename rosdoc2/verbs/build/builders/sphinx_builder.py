@@ -15,10 +15,10 @@
 import json
 import logging
 import os
-import setuptools
 import shutil
 import subprocess
-import sys
+
+import setuptools
 
 from ..builder import Builder
 from ..collect_inventory_files import collect_inventory_files
