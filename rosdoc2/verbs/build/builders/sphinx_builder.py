@@ -15,10 +15,10 @@
 import json
 import logging
 import os
+import setuptools
 import shutil
 import subprocess
-
-import setuptools
+import sys
 
 from ..builder import Builder
 from ..collect_inventory_files import collect_inventory_files
@@ -80,6 +80,25 @@ ensure_global('version', "{package_version_short}")
 if rosdoc2_settings.get('enable_autodoc', True):
     print('[rosdoc2] enabling autodoc', file=sys.stderr)
     extensions.append('sphinx.ext.autodoc')
+    # Provide all runtime dependencies to be mocked up
+    # Note: `autodoc` only mocks up those modules that it actually cannot locate in PATH
+    autodoc_mock_imports = {exec_depends}
+    # Add the package directory to PATH, so that `sphinx-autodoc` can import it
+    sys.path.insert(0, os.path.dirname('{package_src_directory}'))
+
+    pkgs_to_mock = []
+    import importlib
+    for exec_depend in {exec_depends}:
+        try:
+            # Some python dependencies may be dist packages.
+            exec_depend = exec_depend.split("python3-")[-1]
+            importlib.import_module(exec_depend)
+        except ImportError:
+            pkgs_to_mock.append(exec_depend)
+    # todo(YV): If users provide autodoc_mock_imports in their conf.py
+    # it will be overwritten by those in exec_depends.
+    # Consider appending to autodoc_mock_imports instead.
+    autodoc_mock_imports = pkgs_to_mock
 
     pkgs_to_mock = []
     import importlib
@@ -464,6 +483,26 @@ class SphinxBuilder(Builder):
             # Exclude ourselves.
             if package_name != self.build_context.package.name
         ]
+
+        package_xml_directory = os.path.dirname(self.build_context.package.filename)
+        # If 'python_source' is specified, construct 'package_src_directory' from it
+        if self.build_context.python_source is not None:
+            package_src_directory = \
+                os.path.abspath(
+                    os.path.join(
+                        package_xml_directory,
+                        self.build_context.python_source))
+        # If not provided, try to find the package source direcotry
+        else:
+            package_list = setuptools.find_packages(where=package_xml_directory)
+            if self.build_context.package.name in package_list:
+                package_src_directory = \
+                    os.path.abspath(
+                        os.path.join(
+                            package_xml_directory,
+                            self.build_context.package.name))
+            else:
+                package_src_directory = None
 
         # Setup rosdoc2 Sphinx file which will include and extend the one in `sourcedir`.
         self.generate_wrapping_rosdoc2_sphinx_project_into_directory(
