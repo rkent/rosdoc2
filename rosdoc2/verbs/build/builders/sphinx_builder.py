@@ -306,11 +306,11 @@ class SphinxBuilder(Builder):
                     f"'{self.doxygen_xml_directory}' does not exist.")
 
         # Check if the user provided a sourcedir.
-        sourcedir = self.sphinx_sourcedir
-        if sourcedir is not None:
+        user_sourcedir = self.sphinx_sourcedir
+        if user_sourcedir is not None:
             # We do not need to check if this directory exists, as that was done in __init__.
             logger.info(
-                f"Note: the user provided sourcedir for Sphinx '{sourcedir}' will be used.")
+                f"Note: the user provided sourcedir for Sphinx '{user_sourcedir}' will be used.")
         else:
             # If the user does not supply a Sphinx sourcedir, check the standard locations.
             standard_sphinx_sourcedir = self.locate_sphinx_sourcedir_from_standard_locations()
@@ -318,7 +318,7 @@ class SphinxBuilder(Builder):
                 logger.info(
                     'Note: no sourcedir provided, but a Sphinx sourcedir located in the '
                     f"standard location '{standard_sphinx_sourcedir}' and that will be used.")
-                sourcedir = standard_sphinx_sourcedir
+                user_sourcedir = standard_sphinx_sourcedir
             else:
                 # If the user does not supply a Sphinx sourcedir, and there is no Sphinx project
                 # in the conventional location, i.e. '<package dir>/doc', create a temporary
@@ -326,8 +326,13 @@ class SphinxBuilder(Builder):
                 logger.info(
                     'Note: no sourcedir provided by the user and no Sphinx sourcedir was found '
                     'in the standard locations, therefore using a default Sphinx configuration.')
-                sourcedir = os.path.join(doc_build_folder, 'default_sphinx_project')
-                self.generate_default_project_into_directory(sourcedir)
+
+        if user_sourcedir is not None:
+            # Copy all user doc files into the sphinx project directory
+            logger.debug(f'Copying user doc files from {user_sourcedir} to staging directory {doc_build_folder}')
+            shutil.copytree(user_sourcedir, doc_build_folder, dirs_exist_ok=True)
+
+        self.ensure_configurations(doc_build_folder)
 
         # Collect intersphinx mapping extensions from discovered inventory files.
         inventory_files = \
@@ -370,18 +375,13 @@ class SphinxBuilder(Builder):
             intersphinx_mapping_extensions,
             breathe_projects,
             self.build_context,
-            sourcedir,
+            doc_build_folder,
             package_src_directory
         )
 
-        # If the user or this script supplied template files, use them
-        # to update the project configuration files.
-        self.create_or_update_doc_config_from_templates(sourcedir)
-
-        # Setup rosdoc2 Sphinx file which will include and extend the one in `sourcedir`.
+        # Setup rosdoc2 Sphinx file which will include and extend the one in `user_sourcedir`.
         self.generate_wrapping_rosdoc2_sphinx_project_into_directory(
-            doc_build_folder,
-            sourcedir)
+            doc_build_folder)
 
         # If the package has build type `ament_python`, or if the user configured
         # to run `sphinx-apidoc`, then invoke `sphinx-apidoc` before building
@@ -395,7 +395,7 @@ class SphinxBuilder(Builder):
                     "Could not locate source directory to invoke sphinx-apidoc in. "
                     "If this is package does not have a standard Python package layout, "
                     "please specify the Python source in 'rosdoc2.yaml'.")
-            output_directory = os.path.join(sourcedir, 'generated/python')
+            output_directory = os.path.join(doc_build_folder, 'generated/python')
             cmd = [
                 'sphinx-apidoc',
                 '-o', os.path.relpath(output_directory, start=doc_build_folder),
@@ -418,12 +418,13 @@ class SphinxBuilder(Builder):
         cmd = [
             'sphinx-build',
             '-c', os.path.relpath(doc_build_folder, start=working_directory),
-            os.path.relpath(sourcedir, start=working_directory),
+            os.path.relpath(doc_build_folder, start=working_directory),
             sphinx_output_dir,
         ]
         logger.info(
             f"Running Sphinx-build: '{' '.join(cmd)}' in '{working_directory}'"
         )
+
         completed_process = subprocess.run(cmd, cwd=working_directory)
         msg = f"Sphinx-build exited with return code '{completed_process.returncode}'"
         if completed_process.returncode == 0:
@@ -482,28 +483,33 @@ class SphinxBuilder(Builder):
                 return option
         return None
 
-    def generate_default_project_into_directory(self, directory):
-        """Generate or update the default project configuration files."""
+    def ensure_configurations(self, directory):
+        """Generate if needed the default project configuration files."""
         os.makedirs(directory, exist_ok=True)
 
         default_conf_j2 = pkg_resources.resource_string(__name__, 'conf.j2.py').decode('utf-8')
-        default_index_j2 = pkg_resources.resource_string(__name__, 'index.j2').decode('utf-8')
+        default_index_j2 = pkg_resources.resource_string(__name__, 'index.j2.rst').decode('utf-8')
 
-        with open(os.path.join(directory, 'conf.j2.py'), 'w+') as f:
-            f.write(default_conf_j2)
+        conf_j2 = os.path.join(directory, 'conf.j2.py')
+        conf_py = os.path.join(directory, 'conf.py')
+        if not os.path.exists(conf_j2) and not os.path.exists(conf_py):
+            with open(conf_j2, 'w+') as f:
+                f.write(default_conf_j2)
 
-        with open(os.path.join(directory, 'index.j2'), 'w+') as f:
-            f.write(default_index_j2)
+        index_j2 = os.path.join(directory, 'index.j2.rst')
+        index_rst = os.path.join(directory, 'index.rst')
+        if not os.path.exists(index_j2) and not os.path.exists(index_rst):
+            with open(index_j2, 'w+') as f:
+                f.write(default_index_j2)
 
     def generate_wrapping_rosdoc2_sphinx_project_into_directory(
         self,
         directory,
-        user_sourcedir,
     ):
         """Generate the rosdoc2 sphinx project configuration files."""
         os.makedirs(directory, exist_ok=True)
 
-        conf_j2_path = os.path.join(user_sourcedir, 'conf.j2.py')
+        conf_j2_path = os.path.join(directory, 'conf.j2.py')
         if os.path.exists(conf_j2_path):
             logger.info(f'Using {conf_j2_path} to create conf.py.')
             conf_j2_template = Template(open(conf_j2_path).read())
@@ -512,7 +518,7 @@ class SphinxBuilder(Builder):
             with open(os.path.join(directory, 'conf_prewrapped.py'), 'w+') as f:
                 f.write(prewrapped)
         else:
-            user_conf_py_path = os.path.abspath(os.path.join(user_sourcedir, 'conf.py'))
+            user_conf_py_path = os.path.abspath(os.path.join(directory, 'conf.py'))
             logger.info(f'Using conf.py at path {user_conf_py_path}')
             user_conf_py = open(user_conf_py_path).read()
 
@@ -522,7 +528,7 @@ class SphinxBuilder(Builder):
         exec(user_conf_py, conf_globals, conf_locals)
 
         # Convert any paths to absolute paths.
-        conf_relpath = os.path.relpath(user_sourcedir)
+        conf_relpath = os.path.relpath(directory)
         for key, value in conf_locals.items():
             if not key.endswith('_path'):
                 continue
@@ -545,14 +551,15 @@ class SphinxBuilder(Builder):
         with open(os.path.join(directory, 'conf.py'), 'w+') as f:
             f.write(wrapped_conf_py)
 
-    def create_or_update_doc_config_from_templates(self, sourcedir):
-        """If index.j2 found, update index.rst"""
-        index_j2_path = os.path.join(sourcedir, 'index.j2')
+        # index.rst
+        index_j2_path = os.path.join(directory, 'index.j2.rst')
 
         if os.path.exists(index_j2_path):
             logger.info(f'Using {index_j2_path} to create index.rst.')
             index_j2_template = Template(open(index_j2_path).read())
             index_rst = index_j2_template.render(self.template_variables)
-            index_rst_path = os.path.join(sourcedir, "index.rst")
+            index_rst_path = os.path.join(directory, "index.rst")
             with open(os.path.join(index_rst_path), 'w+') as f:
                 f.write(index_rst)
+            os.remove(index_j2_path)
+            

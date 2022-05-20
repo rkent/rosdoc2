@@ -178,6 +178,7 @@ def main_impl(options):
         # Move documentation artifacts from the builder into the output staging.
         # This is additionally in a subdirectory dictated by the output directory part of the
         # builder configuration.
+
         builder.move_files(
             source=doc_output_directory,
             destination=builder_destination)
@@ -189,6 +190,7 @@ def main_impl(options):
     # Move staged files to user provided output directory.
     package_output_directory = os.path.join(options.output_directory, package.name)
     logger.info(f"Moving files to final destination in '{package_output_directory}'.")
+
     for root, dirs, files in os.walk(output_staging_directory):
         for item in dirs + files:
             source = os.path.abspath(os.path.join(root, item))
