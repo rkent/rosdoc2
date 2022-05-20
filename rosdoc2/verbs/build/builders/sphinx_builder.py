@@ -504,10 +504,11 @@ class SphinxBuilder(Builder):
         os.makedirs(directory, exist_ok=True)
 
         user_conf_py_path = os.path.abspath(os.path.join(user_sourcedir, 'conf.py'))
+        logger.debug(f'Using conf.py at path {user_conf_py_path}')
         user_conf_py = open(user_conf_py_path).read()
 
         # Execute conf.py and get values of variables
-        conf_globals = {}
+        conf_globals = {'logger':logger}
         conf_locals = {}
         exec(user_conf_py, conf_globals, conf_locals)
 
