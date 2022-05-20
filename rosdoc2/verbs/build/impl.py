@@ -104,6 +104,8 @@ def prepare_arguments(parser):
 
 def main(options):
     """Execute the program, catching errors."""
+    if options.debug:
+        logger.setLevel(logging.DEBUG)
     try:
         return main_impl(options)
     except Exception as e:  # noqa: B902

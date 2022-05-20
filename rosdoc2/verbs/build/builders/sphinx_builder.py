@@ -272,7 +272,7 @@ class SphinxBuilder(Builder):
             # Use package.xml instead.
             configuration_file_path = self.build_context.package.filename
         configuration_file_dir = os.path.abspath(os.path.dirname(configuration_file_path))
-
+        logger.debug(f'configuration_file_path is {configuration_file_path}')
         # Process keys.
         for key, value in builder_entry_dictionary.items():
             if key in ['name', 'output_dir']:
