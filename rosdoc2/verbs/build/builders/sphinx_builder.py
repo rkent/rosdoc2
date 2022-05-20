@@ -478,7 +478,7 @@ class SphinxBuilder(Builder):
         ]
         for option in options:
             if os.path.isfile(os.path.join(option, 'conf.py')) or \
-               os.path.isfile(os.path.join(option, 'conf.j2')):
+               os.path.isfile(os.path.join(option, 'conf.j2.py')):
                 return option
         return None
 
@@ -486,10 +486,10 @@ class SphinxBuilder(Builder):
         """Generate or update the default project configuration files."""
         os.makedirs(directory, exist_ok=True)
 
-        default_conf_j2 = pkg_resources.resource_string(__name__, 'conf.j2').decode('utf-8')
+        default_conf_j2 = pkg_resources.resource_string(__name__, 'conf.j2.py').decode('utf-8')
         default_index_j2 = pkg_resources.resource_string(__name__, 'index.j2').decode('utf-8')
 
-        with open(os.path.join(directory, 'conf.j2'), 'w+') as f:
+        with open(os.path.join(directory, 'conf.j2.py'), 'w+') as f:
             f.write(default_conf_j2)
 
         with open(os.path.join(directory, 'index.j2'), 'w+') as f:
@@ -503,9 +503,18 @@ class SphinxBuilder(Builder):
         """Generate the rosdoc2 sphinx project configuration files."""
         os.makedirs(directory, exist_ok=True)
 
-        user_conf_py_path = os.path.abspath(os.path.join(user_sourcedir, 'conf.py'))
-        logger.debug(f'Using conf.py at path {user_conf_py_path}')
-        user_conf_py = open(user_conf_py_path).read()
+        conf_j2_path = os.path.join(user_sourcedir, 'conf.j2.py')
+        if os.path.exists(conf_j2_path):
+            logger.info(f'Using {conf_j2_path} to create conf.py.')
+            conf_j2_template = Template(open(conf_j2_path).read())
+            user_conf_py = conf_j2_template.render(self.template_variables)
+            prewrapped = '# GENERATED file from conf.j2.py\n' + user_conf_py
+            with open(os.path.join(directory, 'conf_prewrapped.py'), 'w+') as f:
+                f.write(prewrapped)
+        else:
+            user_conf_py_path = os.path.abspath(os.path.join(user_sourcedir, 'conf.py'))
+            logger.info(f'Using conf.py at path {user_conf_py_path}')
+            user_conf_py = open(user_conf_py_path).read()
 
         # Execute conf.py and get values of variables
         conf_globals = {'logger':logger}
@@ -537,21 +546,13 @@ class SphinxBuilder(Builder):
             f.write(wrapped_conf_py)
 
     def create_or_update_doc_config_from_templates(self, sourcedir):
-        """If conf.j2 or index.j2 found, update conf.py or index.rst"""
-        conf_j2_path = os.path.join(sourcedir, 'conf.j2')
+        """If index.j2 found, update index.rst"""
         index_j2_path = os.path.join(sourcedir, 'index.j2')
 
-        if os.path.exists(conf_j2_path):
-            conf_j2_template = Template(open(conf_j2_path).read())
-            conf_py = conf_j2_template.render(self.template_variables)
-            conf_py_path = os.path.join(sourcedir, "conf.py")
-            with open(os.path.join(conf_py_path), 'w+') as f:
-                f.write(conf_py)
-
         if os.path.exists(index_j2_path):
+            logger.info(f'Using {index_j2_path} to create index.rst.')
             index_j2_template = Template(open(index_j2_path).read())
             index_rst = index_j2_template.render(self.template_variables)
             index_rst_path = os.path.join(sourcedir, "index.rst")
             with open(os.path.join(index_rst_path), 'w+') as f:
                 f.write(index_rst)
-
