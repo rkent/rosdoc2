@@ -17,9 +17,10 @@ import os
 
 def create_format_map_from_package(package):
     """Create a dictionary used in format strings using a package object."""
+    stripped_description = ' '.join(package.description.split())
     return {
         'package_name': package.name,
         'package_version': package.version,
-        'package_description': package.description,
+        'package_description': stripped_description,
         'package_directory': os.path.abspath(os.path.dirname(package.filename)),
     }
