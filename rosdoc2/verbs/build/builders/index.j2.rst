@@ -1,6 +1,8 @@
 {{ root_title }}
 {{ root_title_underline }}
 
+{{ package.description }}
+
 .. only:: url_any
 
    Links
@@ -8,6 +10,9 @@
    {{ url_repository }}
    {{ url_website }}
    {{ url_bugtracker }}
+
+Package API
+-----------
 
 .. toctree::
    :maxdepth: 2

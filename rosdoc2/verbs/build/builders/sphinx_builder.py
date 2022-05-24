@@ -39,7 +39,7 @@ def generate_template_variables(
 
     package = build_context.package
     template_variables = create_format_map_from_package(package)
-    root_title = f'Welcome to the documentation for {package.name}'
+    root_title = f'Package {package.name}'
 
     # standard urls in a package definition
     url_repository = ''
