@@ -159,6 +159,10 @@ def main_impl(options):
     for builder in builders:
         # This is the working directory for the builder.
         doc_build_folder = os.path.join(package_doc_build_directory, slugify(builder.name))
+        if os.path.exists(doc_build_folder):
+            # Delete this directory because it is temporary and may cause problems with staging.
+            shutil.rmtree(doc_build_folder)
+        os.makedirs(doc_build_folder)
         # This is the directory into which the results of the builder will be moved into.
         builder_destination = os.path.join(output_staging_directory, builder.output_dir)
         # Run the builder, get the directory where the artifacts were placed.
