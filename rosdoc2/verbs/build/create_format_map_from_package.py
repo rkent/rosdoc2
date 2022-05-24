@@ -18,9 +18,17 @@ import os
 def create_format_map_from_package(package):
     """Create a dictionary used in format strings using a package object."""
     stripped_description = ' '.join(package.description.split())
+    package_directory = os.path.abspath(os.path.dirname(package.filename))
+    # Locate possible python src directory
+    python_src = None
+    if os.path.isdir(os.path.join(package_directory, package.name)):
+        python_src = package.name
+    elif os.path.isdir(os.path.join(package_directory, f'src/{package.name}')):
+        python_src = f'src/{package.name}'
     return {
         'package_name': package.name,
         'package_version': package.version,
         'package_description': stripped_description,
-        'package_directory': os.path.abspath(os.path.dirname(package.filename)),
+        'package_directory': package_directory,
+        'python_src': python_src
     }

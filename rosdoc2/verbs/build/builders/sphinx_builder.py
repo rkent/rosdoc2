@@ -90,6 +90,7 @@ def generate_package_toc_entry(*, build_context) -> str:
     build_type = build_context.build_type
     always_run_doxygen = build_context.always_run_doxygen
     always_run_sphinx_apidoc = build_context.always_run_sphinx_apidoc
+    ament_cmake_python = build_context.ament_cmake_python
     # The TOC entries have to be indented by three (or any N) spaces
     # inside the string to fall under the `:toctree:` directive
     toc_entry_py = f"""
@@ -98,7 +99,7 @@ def generate_package_toc_entry(*, build_context) -> str:
    C/C++ API <generated/index>"""
     toc_entry = ''
 
-    if build_type == 'ament_python' or always_run_sphinx_apidoc:
+    if build_type == 'ament_python' or always_run_sphinx_apidoc or ament_cmake_python:
         toc_entry += toc_entry_py
     if build_type in ['ament_cmake', 'cmake'] or always_run_doxygen:
         toc_entry += toc_entry_cpp
@@ -303,17 +304,10 @@ class SphinxBuilder(Builder):
                     f"Error the 'doxygen_xml_directory' specified "
                     f"'{self.doxygen_xml_directory}' does not exist.")
 
-        # Is this python under ament?
-        mixed_build = False
-        for depends in self.build_context.package['buildtool_depends']:
-            if str(depends) == 'ament_cmake_python':
-                mixed_build = True
         should_run_sphinx_apidoc = \
             self.build_context.build_type == 'ament_python' or \
+            self.build_context.ament_cmake_python or \
             self.build_context.always_run_sphinx_apidoc
-        if not should_run_sphinx_apidoc and mixed_build:
-            logger.info('Forcing sphinx_apidoc run since buildtools depends on ament_cmake_python')
-            should_run_sphinx_apidoc = True
 
         # Check if the user provided a sourcedir.
         user_sourcedir = self.sphinx_sourcedir

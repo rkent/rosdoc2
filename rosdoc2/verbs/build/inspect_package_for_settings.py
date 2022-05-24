@@ -49,7 +49,7 @@ settings:
     ## be assumed for 'sphinx-apidoc' invocation. The user can provide the path
     ## (relative to the 'package.xml' file) where the Python modules defined by this
     ## package are located.
-    python_source: '{package_name}'
+    python_source: '{python_src}'
 
     ## This setting, if true, attempts to run `doxygen` and the `breathe`/`exhale`
     ## extensions to `sphinx` regardless of build type. This is most useful if the
@@ -124,10 +124,16 @@ def inspect_package_for_settings(package, tool_options):
         rosdoc_config_file_name = '<default config>'
 
 
-    # Parse config file
     build_context = BuildContext(
         configuration_file_path=rosdoc_config_file_name,
         package_object=package,
         tool_options=tool_options,
     )
+
+    # Is this python under ament?
+    for depends in package['buildtool_depends']:
+        if str(depends) == 'ament_cmake_python':
+            build_context.ament_cmake_python = True
+
+    # Parse config file
     return parse_rosdoc2_yaml(rosdoc_config_file, build_context)
