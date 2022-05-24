@@ -93,7 +93,7 @@ def generate_package_toc_entry(*, build_context) -> str:
     # The TOC entries have to be indented by three (or any N) spaces
     # inside the string to fall under the `:toctree:` directive
     toc_entry_py = f"""
-   {build_context.package.name} Python API <generated/python/modules>"""
+   Python API <generated/python/modules>"""
     toc_entry_cpp = """
    C/C++ API <generated/index>"""
     toc_entry = ''
@@ -290,10 +290,10 @@ class SphinxBuilder(Builder):
 
     def build(self, *, doc_build_folder, output_staging_directory):
         """Actually do the build."""
-        # Check that doxygen_xml_directory exists relative to output staging, if specified.
         should_run_doxygen = \
             self.build_context.build_type in ('ament_cmake', 'cmake') or \
             self.build_context.always_run_doxygen
+        # Check that doxygen_xml_directory exists relative to output staging, if specified.
         if self.doxygen_xml_directory is not None and should_run_doxygen:
             self.doxygen_xml_directory = \
                 os.path.join(output_staging_directory, self.doxygen_xml_directory)
@@ -302,6 +302,18 @@ class SphinxBuilder(Builder):
                 raise RuntimeError(
                     f"Error the 'doxygen_xml_directory' specified "
                     f"'{self.doxygen_xml_directory}' does not exist.")
+
+        # Is this python under ament?
+        mixed_build = False
+        for depends in self.build_context.package['buildtool_depends']:
+            if str(depends) == 'ament_cmake_python':
+                mixed_build = True
+        should_run_sphinx_apidoc = \
+            self.build_context.build_type == 'ament_python' or \
+            self.build_context.always_run_sphinx_apidoc
+        if not should_run_sphinx_apidoc and mixed_build:
+            logger.info('Forcing sphinx_apidoc run since buildtools depends on ament_cmake_python')
+            should_run_sphinx_apidoc = True
 
         # Check if the user provided a sourcedir.
         user_sourcedir = self.sphinx_sourcedir
@@ -381,34 +393,29 @@ class SphinxBuilder(Builder):
         self.generate_wrapping_rosdoc2_sphinx_project_into_directory(
             doc_build_folder)
 
-        # If the package has build type `ament_python`, or if the user configured
-        # to run `sphinx-apidoc`, then invoke `sphinx-apidoc` before building
-        if (
-            self.build_context.build_type == 'ament_python' or
-            self.build_context.always_run_sphinx_apidoc
-        ):
-
+        if should_run_sphinx_apidoc:
             if not package_src_directory or not os.path.isdir(package_src_directory):
-                raise RuntimeError(
+                logger.warning(
                     "Could not locate source directory to invoke sphinx-apidoc in. "
                     "If this is package does not have a standard Python package layout, "
                     "please specify the Python source in 'rosdoc2.yaml'.")
-            output_directory = os.path.join(doc_build_folder, 'generated/python')
-            cmd = [
-                'sphinx-apidoc',
-                '-o', os.path.relpath(output_directory, start=doc_build_folder),
-                '-e',  # Document each module in its own page.
-                os.path.abspath(package_src_directory),
-            ]
-            logger.info(
-                f"Running sphinx-apidoc: '{' '.join(cmd)}' in '{doc_build_folder}'"
-            )
-            completed_process = subprocess.run(cmd, cwd=doc_build_folder)
-            msg = f"sphinx-apidoc exited with return code '{completed_process.returncode}'"
-            if completed_process.returncode == 0:
-                logger.info(msg)
             else:
-                raise RuntimeError(msg)
+                output_directory = os.path.join(doc_build_folder, 'generated/python')
+                cmd = [
+                    'sphinx-apidoc',
+                    '-o', os.path.relpath(output_directory, start=doc_build_folder),
+                    '-e',  # Document each module in its own page.
+                    os.path.abspath(package_src_directory),
+                ]
+                logger.info(
+                    f"Running sphinx-apidoc: '{' '.join(cmd)}' in '{doc_build_folder}'"
+                )
+                completed_process = subprocess.run(cmd, cwd=doc_build_folder)
+                msg = f"sphinx-apidoc exited with return code '{completed_process.returncode}'"
+                if completed_process.returncode == 0:
+                    logger.info(msg)
+                else:
+                    raise RuntimeError(msg)
 
         # Invoke Sphinx-build.
         working_directory = doc_build_folder
