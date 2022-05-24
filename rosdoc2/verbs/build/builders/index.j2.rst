@@ -1,7 +1,7 @@
 {{ root_title }}
 {{ root_title_underline }}
 
-{{ package.description }}
+{{ package_description }}
 
 .. only:: url_any
 
