@@ -475,7 +475,7 @@ class SphinxBuilder(Builder):
         # Return the directory into which Sphinx generated.
         return sphinx_output_dir
 
-    def locate_sphinx_sourcedir_from_standard_locations(self):
+    def locate_standard_documents(self):
         """
         Return the location of a Sphinx project for the package.
 
