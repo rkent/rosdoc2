@@ -238,6 +238,16 @@ for tag in {tags}:
     tags.add(tag)
 """  # noqa: W605
 
+standard_documents_rst = """\
+Standard Documents
+==================
+
+.. toctree::
+   :maxdepth: 1
+   :glob:
+
+   ../standard/*
+"""
 
 class SphinxBuilder(Builder):
     """
@@ -375,6 +385,7 @@ class SphinxBuilder(Builder):
                 f'"{self.doxygen_xml_directory}"')
 
         # Prepare the template variables for formatting strings.
+        # TODO: we are passing in doc_build_folder but it is interpreted as user source
         self.template_variables = generate_template_variables(
             intersphinx_mapping_extensions,
             breathe_projects,
@@ -386,6 +397,10 @@ class SphinxBuilder(Builder):
         # Setup rosdoc2 Sphinx file which will include and extend the one in `user_sourcedir`.
         self.generate_wrapping_rosdoc2_sphinx_project_into_directory(
             doc_build_folder)
+
+        # Generate rst documents for standard documents
+        standard_docs = self.locate_standard_documents()
+        self.generate_standard_document_files(standard_docs, doc_build_folder)
 
         if should_run_sphinx_apidoc:
             if not package_src_directory or not os.path.isdir(package_src_directory):
@@ -501,6 +516,27 @@ class SphinxBuilder(Builder):
             with open(index_j2, 'w+') as f:
                 f.write(default_index_j2)
 
+
+    def locate_sphinx_sourcedir_from_standard_locations(self):
+        """
+        Return the location of a Sphinx project for the package.
+        If the sphinx configuration exists in a standard location, return it,
+        otherwise return None.  The standard locations are
+        '<package.xml directory>/doc/source/conf.py' and
+        '<package.xml directory>/doc/conf.py', for projects that selected
+        "separate source and build directories" when running Sphinx-quickstart and
+        those that did not, respectively.
+        """
+        package_xml_directory = os.path.dirname(self.build_context.package.filename)
+        options = [
+            os.path.join(package_xml_directory, 'doc'),
+            os.path.join(package_xml_directory, 'doc', 'source'),
+        ]
+        for option in options:
+            if os.path.isfile(os.path.join(option, 'conf.py')):
+                return option
+        return None
+
     def generate_wrapping_rosdoc2_sphinx_project_into_directory(
         self,
         directory,
@@ -561,4 +597,64 @@ class SphinxBuilder(Builder):
             with open(os.path.join(index_rst_path), 'w+') as f:
                 f.write(index_rst)
             os.remove(index_j2_path)
-            
+
+    def locate_standard_documents(self):
+        """Locate standard documents"""
+        names = ["readme", "license", "contributing", "changelog"]
+        found_paths = {}
+        package_xml_directory = os.path.dirname(self.build_context.package.filename)
+        package_directory_items = os.listdir(package_xml_directory)
+        for item in package_directory_items:
+            itempath = os.path.join(package_xml_directory, item)
+            if not os.path.isfile(itempath):
+                continue
+            (basename, ext) = os.path.splitext(item)
+            for name in names:
+                if name in found_paths:
+                    continue
+                if basename.lower() == name:
+                    filetype = None
+                    if ext.lower() == '.md':
+                        filetype = 'md'
+                    elif ext.lower() == '.rst':
+                        filetype = 'rst'
+                    else:
+                        filetype = 'other'
+                    found_paths[name] = {
+                        'path': os.path.abspath(package_xml_directory),
+                        'filename': item,
+                        'type': filetype 
+                    }
+        return found_paths
+
+    def generate_standard_document_files(self, standard_docs, doc_build_folder):
+        """Generate rst documents to link to standard documents"""
+        doc_build_folder = os.path.abspath(doc_build_folder)
+        print(f'doc_build_folder: {doc_build_folder}')
+        if len(standard_docs):
+            # Create the standards.rst document that will link to the actual documents
+            package_xml_directory = os.path.dirname(self.build_context.package.filename)
+            standard_path = os.path.join(doc_build_folder, 'standard')
+            os.makedirs(standard_path, exist_ok=True)
+            standard_documents_rst_path = os.path.join(doc_build_folder, 'standards.rst')
+            with open(standard_documents_rst_path, 'w+') as f:
+                f.write(standard_documents_rst)
+
+        for key, standard_doc in standard_docs.items():
+            relative_dir = os.path.relpath(standard_doc['path'], standard_path)
+            relative_path = os.path.join(relative_dir, standard_doc['filename'])
+            # generate the file according to type
+            file_contents = f'{key.upper()}\n'
+            # using ')' as a header marker to assure the name is the title
+            file_contents += ')' * len(key) + '\n\n'
+            type = standard_doc['type']
+            if type == 'rst':
+                file_contents += f'.. include:: {relative_path}\n'
+            elif type == 'md':
+                file_contents += f'.. include:: {relative_path}\n'
+                file_contents += '   :parser: myst_parser.sphinx_\n'
+            else:
+                file_contents += f'.. literalinclude:: {relative_path}\n'
+
+            with open(os.path.join(standard_path, f'{key.upper()}.rst'), 'w+') as f:
+                f.write(file_contents)

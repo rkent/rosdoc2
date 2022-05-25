@@ -11,6 +11,15 @@
    {{ url_website }}
    {{ url_bugtracker }}
 
+Project Documentation
+---------------------
+
+.. toctree::
+   :maxdepth: 1
+   :glob:
+
+   *
+
 Package API
 -----------
 
