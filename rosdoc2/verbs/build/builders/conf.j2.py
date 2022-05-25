@@ -40,9 +40,9 @@ version = '{{ package_version_short }}'
 ## do not add them here, as well as others, perhaps.
 ## If you add them manually rosdoc2 may still try to configure them.
 ## See the rosdoc2_settings below for some options on avoiding that.
-#extensions = [
-#    'sphinx_rtd_theme',
-#]
+extensions = [
+    'sphinx.ext.viewcode',
+]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
