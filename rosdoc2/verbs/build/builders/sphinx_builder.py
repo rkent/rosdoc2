@@ -133,8 +133,17 @@ if rosdoc2_settings.get('enable_autodoc', True):
     print('[rosdoc2] enabling autodoc', file=sys.stderr)
     extensions.append('sphinx.ext.autodoc')
     # Provide all runtime dependencies to be mocked up
-    # Note: `autodoc` only mocks up those modules that it actually cannot locate in PATH
     autodoc_mock_imports = {exec_depends}
+    # Note: `autodoc` only mocks up those modules that it actually cannot locate in PATH
+    # RKJ Note: AFAICT, above is NOT true, autodoc actually mocks items in this list when an import is
+    # attempted. If the user has these loaded locally, preimport to stop this.
+    import importlib
+    for item in autodoc_mock_imports:
+        try:
+            importlib.import_module(item)
+        except:
+            pass
+
     # Add the package directory to PATH, so that `sphinx-autodoc` can import it
     sys.path.insert(0, os.path.dirname('{package_src_directory}'))
 
