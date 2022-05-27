@@ -423,6 +423,7 @@ class SphinxBuilder(Builder):
                     'sphinx-apidoc',
                     '-o', os.path.relpath(output_directory, start=doc_build_folder),
                     '-e',  # Document each module in its own page.
+                    '-M',  # Put module documentation before submodules
                     os.path.abspath(package_src_directory),
                 ]
                 logger.info(
