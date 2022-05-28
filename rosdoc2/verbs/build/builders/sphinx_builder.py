@@ -25,6 +25,7 @@ from jinja2 import Template
 from ..builder import Builder
 from ..collect_inventory_files import collect_inventory_files
 from ..create_format_map_from_package import create_format_map_from_package
+from ..generate_interface_docs import generate_interface_docs
 
 logger = logging.getLogger('rosdoc2')
 
@@ -410,6 +411,14 @@ class SphinxBuilder(Builder):
         # Generate rst documents for standard documents
         standard_docs = self.locate_standard_documents()
         self.generate_standard_document_files(standard_docs, doc_build_folder)
+
+        # Generate rst documents for interfaces
+        interface_counts = generate_interface_docs(
+            package_xml_directory,
+            self.build_context.package.name,
+            doc_build_folder
+        )
+        logger.info(f'interface_counts: {interface_counts}')
 
         if should_run_sphinx_apidoc:
             if not package_src_directory or not os.path.isdir(package_src_directory):
