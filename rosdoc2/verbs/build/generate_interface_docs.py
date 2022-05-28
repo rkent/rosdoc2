@@ -33,6 +33,17 @@ This is a ROS {{ type_name }} definition.
 
 """
 
+toc_j2_rst = """{{ title }}
+{{ title_underline }}
+
+.. toctree::
+   :maxdepth: 1
+   :glob:
+
+   {{ type_ext }}/*
+
+"""
+
 def _find_files_with_extension(path, ext):
     # Partly adapted from https://github.com/ros-infrastructure/rosdoc_lite
     matches = []
@@ -53,11 +64,13 @@ def generate_interface_docs(path: str, package: str, output_dir: str):
     """
 
     counts = {}
+    interfaces_out_dir = os.path.join(output_dir, 'interfaces')
     for type_info in (('msg', 'message'), ('srv', 'service')):
         count = 0
         (type_ext, type_name) = type_info
         interfaces = _find_files_with_extension(path, type_ext)
-        output_dir_ex = os.path.join(output_dir, type_ext)
+        output_dir_ex = os.path.join(interfaces_out_dir, type_ext)
+        title = type_name.capitalize() + " Definitions"
         for interface in interfaces:
             (iface_name, iface_path) = interface
             relative_path = os.path.relpath(iface_path, start=output_dir_ex)
@@ -67,7 +80,9 @@ def generate_interface_docs(path: str, package: str, output_dir: str):
                 'type_name': type_name,
                 'package': package,
                 'type_ext': type_ext,
-                'relative_path': relative_path
+                'relative_path': relative_path,
+                'title': title,
+                'title_underline': '=' * len(title)
             }
             iface_template = Template(iface_j2_rst)
             iface_rst = iface_template.render(template_vars)
@@ -78,5 +93,13 @@ def generate_interface_docs(path: str, package: str, output_dir: str):
             with open(output_path, 'w') as f:
                 f.write(iface_rst)
             count += 1
+        if count > 0:
+            # generate a toc entry rst file for this type
+            toc_template = Template(toc_j2_rst)
+            toc_rst = toc_template.render(template_vars)
+            toc_name = type_name + '_definitions.rst'
+            toc_path = os.path.join(interfaces_out_dir, toc_name)
+            with open(toc_path, 'w') as f:
+                f.write(toc_rst)
         counts[type_ext] = count
     return counts
