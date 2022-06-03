@@ -21,7 +21,7 @@ Project Documentation
 
    *
 
-{%- endif -%}
+{% endif -%}
 Package API
 -----------
 

@@ -39,92 +39,79 @@ class htmlParser(HTMLParser):
             print(self.tags[-1])
             self.content.add(data_black.lower())
 
+def do_test_package(name, tmp_path, includes=[], excludes=[]):
+    # test that package documentation exists and includes/excludes cerstain text
+    build_dir = tmp_path / 'build'
+    output_dir = tmp_path / 'output'
+    cr_dir = tmp_path / "cross_references"
+    package_path = DATAPATH / name
+
+    # Create a top level parser
+    parser = prepare_arguments(argparse.ArgumentParser())
+    options = parser.parse_args([
+        '-p', str(package_path.resolve()),
+        '-c', str(cr_dir),
+        '-o', str(output_dir),
+        '-d', str(build_dir),
+    ])
+
+    # run rosdoc2 on the package
+    main_impl(options)
+
+    # tests on the main index.html
+    index_path = output_dir / name / 'index.html'
+
+    # smoke test
+    assert index_path.is_file(),\
+        'html index file exists'
+
+    # read and parse the index file
+    index_content = index_path.read_text()
+    assert len(index_content) > 0, \
+        "index.html is not empty"
+
+    parser = htmlParser()
+    parser.feed(index_content)
+
+    # test inclusions
+    for item in includes:
+        assert item in parser.content, \
+            f'html has content {item}'
+
+    # test exclusions
+    for item in excludes:
+        assert item not in parser.content, \
+            f'html does not have content {item}'
 
 def test_minimal_package(tmp_path):
     # Testing of an empty as possible package
     PKG_NAME = 'minimum_package'
-    build_dir = tmp_path / 'build'
-    output_dir = tmp_path / 'output'
-    cr_dir = tmp_path / "cross_references"
-    package_path = DATAPATH / PKG_NAME
 
-    # Create a top level parser
-    parser = prepare_arguments(argparse.ArgumentParser())
-    options = parser.parse_args([
-        '-p', str(package_path.resolve()),
-        '-c', str(cr_dir),
-        '-o', str(output_dir),
-        '-d', str(build_dir),
-    ])
+    includes = [
+        PKG_NAME,
+        'indices and search',
+    ]
 
-    main_impl(options)
+    excludes = [
+        'project documentation',
+        'repository',
+        'website',
+        'bugtracker'
+    ]
 
-    index_path = output_dir / PKG_NAME / 'index.html'
-    # smoke test
-    assert index_path.is_file(),\
-        'html index file exists'
-
-    # read and parse the index file
-    index_content = index_path.read_text()
-    assert len(index_content) > 0, \
-        "index.html is not empty"
-
-    parser = htmlParser()
-    parser.feed(index_content)
-
-    # package name exists (as a link)
-    assert PKG_NAME in parser.content, \
-        'package name exists in html'
-
-    assert 'project documentation' not in parser.content, \
-        'A package with no documents should not have a project documentation line'
-
-    assert 'repository' not in parser.content, \
-        'Has no repository text'
-    
-    assert 'website' not in parser.content, \
-        'Has no website text'
-
-    assert 'bugtracker' not in parser.content, \
-        'Has no bugtracker text'
+    do_test_package(PKG_NAME, tmp_path, includes, excludes)
 
 def test_full_package(tmp_path):
     # Test of a full-featured cmake package
     PKG_NAME = 'full_package'
-    build_dir = tmp_path / 'build'
-    output_dir = tmp_path / 'output'
-    cr_dir = tmp_path / "cross_references"
-    package_path = DATAPATH / PKG_NAME
 
-    # Create a top level parser
-    parser = prepare_arguments(argparse.ArgumentParser())
-    options = parser.parse_args([
-        '-p', str(package_path.resolve()),
-        '-c', str(cr_dir),
-        '-o', str(output_dir),
-        '-d', str(build_dir),
-    ])
-
-    main_impl(options)
-
-    index_path = output_dir / PKG_NAME / 'index.html'
-    # smoke test
-    assert index_path.is_file(),\
-        'html index file exists'
-
-    # read and parse the index file
-    index_content = index_path.read_text()
-    assert len(index_content) > 0, \
-        "index.html is not empty"
-
-    parser = htmlParser()
-    parser.feed(index_content)
-
-    assert 'repository' in parser.content, \
-        'Has repository text'
-    
-    assert 'website' in parser.content, \
-        'Has website text'
-
-    assert 'bugtracker' in parser.content, \
-        'Has bugtracker text'
+    includes = [
+        PKG_NAME,
+        'indices and search',
+        'repository',
+        'website',
+        'bugtracker',
+        'project documentation',
+        'instructions'
+    ]
+    do_test_package(PKG_NAME, tmp_path, includes)

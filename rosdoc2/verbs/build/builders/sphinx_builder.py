@@ -353,6 +353,7 @@ class SphinxBuilder(Builder):
                     'Note: no sourcedir provided by the user and no Sphinx sourcedir was found '
                     'in the standard locations, therefore using a default Sphinx configuration.')
 
+        print(f'\n\nuser_doc_dir: {user_doc_dir}')
         if user_doc_dir is not None:
             # Copy all user doc files into the sphinx project directory
             logger.debug(f'Copying user doc files from {user_doc_dir} to staging directory {doc_build_folder}')
@@ -548,14 +549,22 @@ class SphinxBuilder(Builder):
         '<package.xml directory>/doc/conf.py', for projects that selected
         "separate source and build directories" when running Sphinx-quickstart and
         those that did not, respectively.
+        If these directories exist but without conf.py, they will be used with a default conf.py
         """
         package_xml_directory = os.path.dirname(self.build_context.package.filename)
         options = [
-            os.path.join(package_xml_directory, 'doc'),
             os.path.join(package_xml_directory, 'doc', 'source'),
+            os.path.join(package_xml_directory, 'doc'),
         ]
         for option in options:
             if os.path.isfile(os.path.join(option, 'conf.py')):
+                return option
+            if os.path.isfile(os.path.join(option, 'conf.j2.py')):
+                return option
+    
+        # Otherwise, return the directory if it exists
+        for option in options:
+            if os.path.isdir(option):
                 return option
         return None
 
