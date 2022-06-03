@@ -40,7 +40,8 @@ class htmlParser(HTMLParser):
             self.content.add(data_black.lower())
 
 
-def test_basic_package(tmp_path):
+def test_minimal_package(tmp_path):
+    # Testing of an empty as possible package
     PKG_NAME = 'minimum_package'
     build_dir = tmp_path / 'build'
     output_dir = tmp_path / 'output'
@@ -77,3 +78,53 @@ def test_basic_package(tmp_path):
 
     assert 'project documentation' not in parser.content, \
         'A package with no documents should not have a project documentation line'
+
+    assert 'repository' not in parser.content, \
+        'Has no repository text'
+    
+    assert 'website' not in parser.content, \
+        'Has no website text'
+
+    assert 'bugtracker' not in parser.content, \
+        'Has no bugtracker text'
+
+def test_full_package(tmp_path):
+    # Test of a full-featured cmake package
+    PKG_NAME = 'full_package'
+    build_dir = tmp_path / 'build'
+    output_dir = tmp_path / 'output'
+    cr_dir = tmp_path / "cross_references"
+    package_path = DATAPATH / PKG_NAME
+
+    # Create a top level parser
+    parser = prepare_arguments(argparse.ArgumentParser())
+    options = parser.parse_args([
+        '-p', str(package_path.resolve()),
+        '-c', str(cr_dir),
+        '-o', str(output_dir),
+        '-d', str(build_dir),
+    ])
+
+    main_impl(options)
+
+    index_path = output_dir / PKG_NAME / 'index.html'
+    # smoke test
+    assert index_path.is_file(),\
+        'html index file exists'
+
+    # read and parse the index file
+    index_content = index_path.read_text()
+    assert len(index_content) > 0, \
+        "index.html is not empty"
+
+    parser = htmlParser()
+    parser.feed(index_content)
+
+    assert 'repository' in parser.content, \
+        'Has repository text'
+    
+    assert 'website' in parser.content, \
+        'Has website text'
+
+    assert 'bugtracker' in parser.content, \
+        'Has bugtracker text'

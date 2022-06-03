@@ -44,9 +44,9 @@ def generate_template_variables(
     root_title = f'Package {package.name}'
 
     # standard urls in a package definition
-    url_repository = ''
-    url_website = ''
-    url_bugtracker = ''
+    url_repository = None
+    url_website = None
+    url_bugtracker = None
     for url in package.urls:
         if url.type == 'repository':
             url_repository = f'* `Repository <{url.url}>`_'

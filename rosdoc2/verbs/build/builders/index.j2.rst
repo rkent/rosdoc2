@@ -7,9 +7,9 @@
 
    Links
    -----
-   {{ url_repository }}
-   {{ url_website }}
-   {{ url_bugtracker }}
+   {% if url_repository %}{{ url_repository }}{% endif %}
+   {% if url_website %}{{ url_website }}{% endif %}
+   {% if url_bugtracker %}{{ url_bugtracker }}{% endif %}
 
 {% if has_user_docs -%}
 Project Documentation
