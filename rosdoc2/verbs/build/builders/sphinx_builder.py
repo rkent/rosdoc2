@@ -33,8 +33,9 @@ def generate_template_variables(
       intersphinx_mapping_extensions,
       breathe_projects,
       build_context,
-      user_sourcedir,
-      package_src_directory
+      doc_build_folder,
+      package_src_directory,
+      user_doc_dir
     ):
     """Generate the variables used by templates for conf.py and index.rst"""
 
@@ -75,7 +76,8 @@ def generate_template_variables(
         'url_repository': url_repository,
         'url_website': url_website,
         'url_any': url_bugtracker or url_repository or url_website,
-        'user_sourcedir': os.path.abspath(user_sourcedir),
+        'doc_build_folder': os.path.abspath(doc_build_folder),
+        'has_user_docs': bool(user_doc_dir)
     })
 
     # Each True template key will be converted into a sphinx tag in conf.py
@@ -203,7 +205,7 @@ if rosdoc2_settings.get('enable_exhale', is_doxygen_invoked):
     from exhale import utils
     exhale_args.update({{
         # These arguments are required.
-        "containmentFolder": "{user_sourcedir}/generated",
+        "containmentFolder": "{doc_build_folder}/generated",
         "rootFileName": "index.rst",
         "rootFileTitle": "{package_name} C/C++ API",
         "doxygenStripFromPath": "..",
@@ -330,11 +332,11 @@ class SphinxBuilder(Builder):
             self.build_context.always_run_sphinx_apidoc
 
         # Check if the user provided a sourcedir.
-        user_sourcedir = self.sphinx_sourcedir
-        if user_sourcedir is not None:
+        user_doc_dir = self.sphinx_sourcedir
+        if user_doc_dir is not None:
             # We do not need to check if this directory exists, as that was done in __init__.
             logger.info(
-                f"Note: the user provided sourcedir for Sphinx '{user_sourcedir}' will be used.")
+                f"Note: the user provided sourcedir for Sphinx '{user_doc_dir}' will be used.")
         else:
             # If the user does not supply a Sphinx sourcedir, check the standard locations.
             standard_sphinx_sourcedir = self.locate_sphinx_sourcedir_from_standard_locations()
@@ -342,7 +344,7 @@ class SphinxBuilder(Builder):
                 logger.info(
                     'Note: no sourcedir provided, but a Sphinx sourcedir located in the '
                     f"standard location '{standard_sphinx_sourcedir}' and that will be used.")
-                user_sourcedir = standard_sphinx_sourcedir
+                user_doc_dir = standard_sphinx_sourcedir
             else:
                 # If the user does not supply a Sphinx sourcedir, and there is no Sphinx project
                 # in the conventional location, i.e. '<package dir>/doc', create a temporary
@@ -351,10 +353,10 @@ class SphinxBuilder(Builder):
                     'Note: no sourcedir provided by the user and no Sphinx sourcedir was found '
                     'in the standard locations, therefore using a default Sphinx configuration.')
 
-        if user_sourcedir is not None:
+        if user_doc_dir is not None:
             # Copy all user doc files into the sphinx project directory
-            logger.debug(f'Copying user doc files from {user_sourcedir} to staging directory {doc_build_folder}')
-            shutil.copytree(user_sourcedir, doc_build_folder, dirs_exist_ok=True)
+            logger.debug(f'Copying user doc files from {user_doc_dir} to staging directory {doc_build_folder}')
+            shutil.copytree(user_doc_dir, doc_build_folder, dirs_exist_ok=True)
 
         self.ensure_configurations(doc_build_folder)
 
@@ -401,10 +403,11 @@ class SphinxBuilder(Builder):
             breathe_projects,
             self.build_context,
             doc_build_folder,
-            package_src_directory
+            package_src_directory,
+            user_doc_dir
         )
 
-        # Setup rosdoc2 Sphinx file which will include and extend the one in `user_sourcedir`.
+        # Setup rosdoc2 Sphinx file which will include and extend the one in `user_doc_dir`.
         self.generate_wrapping_rosdoc2_sphinx_project_into_directory(
             doc_build_folder)
 

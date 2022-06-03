@@ -11,6 +11,7 @@
    {{ url_website }}
    {{ url_bugtracker }}
 
+{% if has_user_docs -%}
 Project Documentation
 ---------------------
 
@@ -20,6 +21,7 @@ Project Documentation
 
    *
 
+{%- endif -%}
 Package API
 -----------
 
