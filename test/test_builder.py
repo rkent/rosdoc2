@@ -16,11 +16,19 @@
 
 import argparse
 from html.parser import HTMLParser
+import logging
 import pathlib
 
 from rosdoc2.verbs.build.impl import prepare_arguments, main_impl
 
 DATAPATH = pathlib.Path('test/data')
+
+logger = logging.getLogger('rosdoc2')
+formatter = logging.Formatter('%(levelname)s - %(name)s - %(message)s')
+handler = logging.StreamHandler()
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+logger.setLevel(logging.DEBUG)
 
 
 class htmlParser(HTMLParser):
