@@ -22,6 +22,7 @@ from rosdoc2.verbs.build.impl import prepare_arguments, main_impl
 
 DATAPATH = pathlib.Path('test/data')
 
+
 class htmlParser(HTMLParser):
     """Minimal html parsing collecting tags"""
     def __init__(self):
@@ -38,6 +39,7 @@ class htmlParser(HTMLParser):
             self.tags[-1]['data'] = data_black.lower()
             print(self.tags[-1])
             self.content.add(data_black.lower())
+
 
 def do_test_package(name, tmp_path, includes=[], excludes=[]):
     # test that package documentation exists and includes/excludes cerstain text
@@ -83,6 +85,7 @@ def do_test_package(name, tmp_path, includes=[], excludes=[]):
         assert item not in parser.content, \
             f'html does not have content {item}'
 
+
 def test_minimal_package(tmp_path):
     # Testing of an empty as possible package
     PKG_NAME = 'minimum_package'
@@ -101,6 +104,7 @@ def test_minimal_package(tmp_path):
 
     do_test_package(PKG_NAME, tmp_path, includes, excludes)
 
+
 def test_full_package(tmp_path):
     # Test of a full-featured cmake package
     PKG_NAME = 'full_package'
@@ -112,6 +116,7 @@ def test_full_package(tmp_path):
         'website',
         'bugtracker',
         'project documentation',
-        'instructions'
+        'instructions',
+        'full_package package',
     ]
     do_test_package(PKG_NAME, tmp_path, includes)

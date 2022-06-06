@@ -167,7 +167,10 @@ TODO
 
 ## Testing
 
-TODO
+rosdoc2 is tested using pytest. The install process described above will also install requirements for the tests. To run tests:
+```
+python3 -m pytest test
+```
 
 ## Contributing
 

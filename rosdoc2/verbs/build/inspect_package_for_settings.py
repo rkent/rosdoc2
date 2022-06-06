@@ -123,7 +123,6 @@ def inspect_package_for_settings(package, tool_options):
         rosdoc_config_file = DEFAULT_ROSDOC_CONFIG_FILE.format_map(package_map)
         rosdoc_config_file_name = '<default config>'
 
-
     build_context = BuildContext(
         configuration_file_path=rosdoc_config_file_name,
         package_object=package,

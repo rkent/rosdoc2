@@ -44,6 +44,7 @@ toc_j2_rst = """{{ title }}
 
 """
 
+
 def _find_files_with_extension(path, ext):
     # Partly adapted from https://github.com/ros-infrastructure/rosdoc_lite
     matches = []
@@ -52,10 +53,11 @@ def _find_files_with_extension(path, ext):
             matches.append((os.path.splitext(filename)[0], os.path.join(root, filename)))
     return matches
 
+
 def generate_interface_docs(path: str, package: str, output_dir: str):
     """
     Generate rst files from messages and services
-    
+
     :param str path: Directory path to start search for files
     :param str package: Name of containing package
     :param str output_dir: Directory path to write output

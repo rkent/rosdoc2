@@ -124,4 +124,3 @@ rosdoc2_settings = {
     ## Support markdown
     # 'support_markdown': True,
 }
-
