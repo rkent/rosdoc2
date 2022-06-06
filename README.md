@@ -172,6 +172,11 @@ rosdoc2 is tested using pytest. The install process described above will also in
 python3 -m pytest test
 ```
 
+Variations:
+* to see all of the output, use ```python3 -m pytest -s test```
+* to select a specific test whose name contains i.e 'full', use ```python3 -m pytest -s -k 'full' test```
+
+
 ## Contributing
 
 TODO

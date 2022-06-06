@@ -22,10 +22,10 @@ class Example():
         """Example Constructor"""
         pass
 
-    def do_something(p: str) -> str:
+    def do_something(p) -> str:
         """This demo function would do something
 
-        :param str p: This is a parameter description
+        :param list[str] p: This is a parameter description
         :return: just the input parm itself
         """
 

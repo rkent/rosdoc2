@@ -45,12 +45,23 @@ class htmlParser(HTMLParser):
         data_black = data.strip(' \n')
         if self.tags and data_black:
             self.tags[-1]['data'] = data_black.lower()
-            # print(self.tags[-1])test_
+            # print(self.tags[-1])
             self.content.add(data_black.lower())
 
 
-def do_test_package(name, tmp_path, includes=[], excludes=[]):
-    # test that package documentation exists and includes/excludes cerstain text
+def do_test_package(
+        name, tmp_path, includes=[], excludes=[], file_includes=[], file_excludes=[]) -> None:
+    """test that package documentation exists and includes/excludes certain text
+
+    :param str tmp_path: path where generated files will be placed
+    :param list[str] includes: lower case text found in index.html data
+    :param list[str] excludes: lower case text not found in index.html data
+    :param list[str] file_includes: path to files
+        (relative to root index.html directory) of files that should exist
+    :param list[str] file_excludes: path to files
+        (relative to root index.html directory) of files that should not exist
+    """
+
     build_dir = tmp_path / 'build'
     output_dir = tmp_path / 'output'
     cr_dir = tmp_path / "cross_references"
@@ -94,6 +105,18 @@ def do_test_package(name, tmp_path, includes=[], excludes=[]):
         assert item not in parser.content, \
             f'html does not have content {item}'
 
+    # file inclusions
+    for item in file_includes:
+        path = output_dir / name / item
+        assert path.is_file(), \
+            f'file {item} should exist'
+
+    # file exclusions
+    for item in file_excludes:
+        path = output_dir / name / item
+        assert not path.is_file(), \
+            f'file {item} should not exist'
+
 
 def test_minimal_package(tmp_path):
     # Testing of an empty as possible package
@@ -108,7 +131,11 @@ def test_minimal_package(tmp_path):
         'project documentation',
         'repository',
         'website',
-        'bugtracker'
+        'bugtracker',
+        'project documentation',
+        'instructions',
+        'full_package package',
+        'c/c++ api',
     ]
 
     do_test_package(PKG_NAME, tmp_path, includes, excludes)
@@ -127,5 +154,15 @@ def test_full_package(tmp_path):
         'project documentation',
         'instructions',
         'full_package package',
+        'c/c++ api',
     ]
-    do_test_package(PKG_NAME, tmp_path, includes)
+
+    excludes = []
+    file_includes = [
+        'generated/index.html',
+        'generated/file_include_full_package_iamcpp.hpp.html',
+    ]
+    file_excludes = [
+        'idonotexist.html',  # just a smoke test of the excludes function
+    ]
+    do_test_package(PKG_NAME, tmp_path, includes, excludes, file_includes, file_excludes)
