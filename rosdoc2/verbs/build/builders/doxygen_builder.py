@@ -117,6 +117,7 @@ class DoxygenBuilder(Builder):
         if self.doxyfile is None:
             package_directory = os.path.dirname(build_context.package.filename)
             package_doxyfile = os.path.join(package_directory, 'Doxyfile')
+            package_doxyfile_j2 = os.path.join(package_directory, 'Doxyfile.j2')
             package_include_directory = os.path.join(package_directory, 'include')
             if os.path.exists(package_doxyfile):
                 # In this case, use the package's Doxyfile, despite it not being
@@ -125,6 +126,11 @@ class DoxygenBuilder(Builder):
                 logger.info(
                     'No Doxyfile specified by user, but a Doxyfile was found in '
                     f"the package at '{package_doxyfile}' and will be used.")
+            elif os.path.exists(package_doxyfile_j2):
+                # User-provided template for Doxyfile exists.
+                doxyfile_j2_template = Template(open(package_doxyfile_j2).read())
+                self.doxyfile_content = doxyfile_j2_template.render(self.template_variables)
+                logger.info("A user-provided template for Doxyfile willl be used")
             elif os.path.isdir(package_include_directory):
                 # If neither the doxyfile setting is set,
                 # nor is there a Doxyfile in the package root,

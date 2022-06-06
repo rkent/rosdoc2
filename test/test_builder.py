@@ -169,7 +169,7 @@ def test_full_package(tmp_path):
 
 
 def test_user_conf_files(tmp_path):
-    # User provides a Doxyfile
+    # User provides configuration files
     PKG_NAME = 'user_conf_files'
 
     includes = [
@@ -181,6 +181,24 @@ def test_user_conf_files(tmp_path):
     file_includes = [
         'generated/index.html',
         'generated/file_nonstandard_include_user_conf_files_iamcpp.hpp.html',
+    ]
+    file_excludes = []
+    do_test_package(PKG_NAME, tmp_path, includes, excludes, file_includes, file_excludes)
+
+
+def test_user_conf_templates(tmp_path):
+    # User provides configuration templates
+    PKG_NAME = 'user_conf_templates'
+
+    includes = [
+        PKG_NAME,
+        'c/c++ api',
+    ]
+
+    excludes = []
+    file_includes = [
+        'generated/index.html',
+        'generated/file_nonstandard_include_user_conf_templates_iamcpp.hpp.html',
     ]
     file_excludes = []
     do_test_package(PKG_NAME, tmp_path, includes, excludes, file_includes, file_excludes)
