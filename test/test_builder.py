@@ -166,3 +166,21 @@ def test_full_package(tmp_path):
         'idonotexist.html',  # just a smoke test of the excludes function
     ]
     do_test_package(PKG_NAME, tmp_path, includes, excludes, file_includes, file_excludes)
+
+
+def test_user_conf_files(tmp_path):
+    # User provides a Doxyfile
+    PKG_NAME = 'user_conf_files'
+
+    includes = [
+        PKG_NAME,
+        'c/c++ api',
+    ]
+
+    excludes = []
+    file_includes = [
+        'generated/index.html',
+        'generated/file_nonstandard_include_user_conf_files_iamcpp.hpp.html',
+    ]
+    file_excludes = []
+    do_test_package(PKG_NAME, tmp_path, includes, excludes, file_includes, file_excludes)

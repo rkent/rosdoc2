@@ -1,0 +1,12 @@
+PROJECT_NAME           = 'user_conf_files'
+PROJECT_NUMBER         = 0.2
+PROJECT_BRIEF          = "ROS2 with user configuration files"
+
+INPUT                  = ./nonstandard/include
+RECURSIVE              = YES
+
+GENERATE_LATEX         = NO
+
+MACRO_EXPANSION        = YES
+EXPAND_ONLY_PREDEF     = YES
+WARN_IF_UNDOCUMENTED   = NO
