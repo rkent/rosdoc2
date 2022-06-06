@@ -504,8 +504,10 @@ class SphinxBuilder(Builder):
         """Generate if needed the default project configuration files."""
         os.makedirs(directory, exist_ok=True)
 
-        default_conf_j2 = pkg_resources.resource_string(__name__, 'conf.j2.py').decode('utf-8')
-        default_index_j2 = pkg_resources.resource_string(__name__, 'index.j2.rst').decode('utf-8')
+        default_conf_j2 = \
+            pkg_resources.resource_string(__name__, 'templates/conf.j2.py').decode('utf-8')
+        default_index_j2 = \
+            pkg_resources.resource_string(__name__, 'templates/index.j2.rst').decode('utf-8')
 
         conf_j2 = os.path.join(directory, 'conf.j2.py')
         conf_py = os.path.join(directory, 'conf.py')

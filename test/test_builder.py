@@ -64,7 +64,7 @@ def do_test_package(
 
     build_dir = tmp_path / 'build'
     output_dir = tmp_path / 'output'
-    cr_dir = tmp_path / "cross_references"
+    cr_dir = tmp_path / 'cross_references'
     package_path = DATAPATH / name
 
     # Create a top level parser
