@@ -143,7 +143,7 @@ class DoxygenBuilder(Builder):
             elif os.path.isdir(package_include_directory):
                 # If neither the doxyfile setting is set,
                 # nor is there a Doxyfile in the package root,
-                # but there is a standard 'include' directory, then generatate a default.
+                # but there is a standard 'include' directory, then generate a default.
                 self.doxyfile_content = DEFAULT_DOXYFILE.format_map(self.template_variables)
                 logger.info(
                     'No Doxyfile specified by user, and no Doxyfile found in '
@@ -214,12 +214,14 @@ class DoxygenBuilder(Builder):
             default_doxyfile_path = os.path.join(doc_build_folder, 'Doxyfile.rosdoc2_default')
             with open(default_doxyfile_path, 'w+') as f:
                 f.write(self.doxyfile_content)
-            self.doxyfile = default_doxyfile_path
+            doxyfile_path = default_doxyfile_path
+        else:
+            doxyfile_path = self.doxyfile
 
         # If the doxyfile is provided by the user, run doxygen in the same directory,
         # so that relative paths, e.g. used for INPUT, still work.
-        # Otherwise, use the doc_build_folder.
-        working_directory = doc_build_folder
+        # Otherwise, use the package directory.
+        working_directory = os.path.dirname(self.build_context.package.filename)
         if self.doxyfile is not None:
             working_directory = os.path.abspath(os.path.dirname(self.doxyfile))
 
@@ -228,7 +230,7 @@ class DoxygenBuilder(Builder):
         with open(extended_doxyfile_path, 'w+') as f:
             f.write(EXTENDED_DOXYFILE.format_map({
                 'doxyfile_file_name': os.path.relpath(
-                    self.doxyfile,
+                    doxyfile_path,
                     start=working_directory),
                 'extra_doxyfile_statements': '\n'.join(self.extra_doxyfile_statements),
                 'rosdoc2_doxyfile_statements': '\n'.join(self.rosdoc2_doxyfile_statements)

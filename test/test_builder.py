@@ -45,7 +45,7 @@ class htmlParser(HTMLParser):
         data_black = data.strip(' \n')
         if self.tags and data_black:
             self.tags[-1]['data'] = data_black.lower()
-            print(self.tags[-1])
+            # print(self.tags[-1])test_
             self.content.add(data_black.lower())
 
 
@@ -59,11 +59,12 @@ def do_test_package(name, tmp_path, includes=[], excludes=[]):
     # Create a top level parser
     parser = prepare_arguments(argparse.ArgumentParser())
     options = parser.parse_args([
-        '-p', str(package_path.resolve()),
+        '-p', str(package_path),
         '-c', str(cr_dir),
         '-o', str(output_dir),
         '-d', str(build_dir),
     ])
+    logger.info(f'*** Testing package {name} with options {options}')
 
     # run rosdoc2 on the package
     main_impl(options)
