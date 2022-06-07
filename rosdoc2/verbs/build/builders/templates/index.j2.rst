@@ -15,13 +15,21 @@ Links
 Project Documentation
 ---------------------
 
+{% if has_user_docs %}
 .. toctree::
    :maxdepth: 1
    :glob:
 
-   {% if has_user_docs %}*{% endif %}
-   {% if has_standard_docs %}generated/standards{% endif %}
+   *
 
+{% endif %}
+{% if has_standard_docs %}
+.. toctree::
+   :maxdepth: 2
+
+   generated/standards
+
+{% endif -%}
 {% endif -%}
 {% if did_run_doxygen or has_python or has_msg_defs or has_srv_defs %}
 Package API

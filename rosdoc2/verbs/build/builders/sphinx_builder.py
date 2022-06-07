@@ -91,7 +91,8 @@ def generate_template_variables(
         'has_msg_defs': interface_counts['msg'] > 0,
         'has_srv_defs': interface_counts['srv'] > 0,
         'has_cpp': has_cpp,
-        'has_python': has_python
+        'has_python': has_python,
+        'has_readme': 'readme' in standard_docs,
     })
 
     # Each True template key will be converted into a sphinx tag in conf.py
