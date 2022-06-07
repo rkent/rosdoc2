@@ -24,17 +24,22 @@ Project Documentation
    :glob:
 
    *
+   {% if has_standard_docs %}generated/standards{% endif %}
 
 {% endif -%}
+{% if has_cpp or has_python or has_msg_defs or has_srv_defs %}
 Packageses API
 --------------
 
 .. toctree::
-   :maxdepth: 2
-   {{ package_toc_entry }}
-   {% if has_message_definitions %}generated/message_definitions{% endif %}
-   {% if has_service_definitions %}generated/service_definitions{% endif %}
+   :maxdepth: 4
 
+   {% if has_python %}Python API<generated/python/modules>{% endif %}
+   {% if has_cpp %}C/C++ API<generated/cpp/index>{% endif %}
+   {% if has_msg_defs %}generated/message_definitions{% endif %}
+   {% if has_srv_defs %}generated/service_definitions{% endif %}
+
+{% endif %}
 .. toctree::
    :hidden:
 

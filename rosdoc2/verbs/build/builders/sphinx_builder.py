@@ -45,6 +45,14 @@ def generate_template_variables(
     template_variables = create_format_map_from_package(package)
     root_title = f'Package {package.name}'
 
+    build_type = build_context.build_type
+    always_run_doxygen = build_context.always_run_doxygen
+    always_run_sphinx_apidoc = build_context.always_run_sphinx_apidoc
+    ament_cmake_python = build_context.ament_cmake_python
+
+    has_python = build_type == 'ament_python' or always_run_sphinx_apidoc or ament_cmake_python
+    has_cpp = build_type in ['ament_cmake', 'cmake'] or always_run_doxygen
+
     # standard urls in a package definition
     url_repository = None
     url_website = None
@@ -70,7 +78,6 @@ def generate_template_variables(
         )),
         'package_licenses': ', '.join(package.licenses),
         'package_src_directory': package_src_directory,
-        'package_toc_entry': generate_package_toc_entry(build_context=build_context),
         'package_underline': '=' * len(package.name),
         'package_version_short': '.'.join(package.version.split('.')[0:2]),
         'root_title': root_title,
@@ -81,8 +88,10 @@ def generate_template_variables(
         'doc_build_folder': os.path.abspath(doc_build_folder),
         'has_user_docs': bool(user_doc_dir),
         'has_standard_docs': len(standard_docs) > 0,
-        'has_message_definitions': interface_counts['msg'] > 0,
-        'has_service_definitions': interface_counts['srv'] > 0,
+        'has_msg_defs': interface_counts['msg'] > 0,
+        'has_srv_defs': interface_counts['srv'] > 0,
+        'has_cpp': has_cpp,
+        'has_python': has_python
     })
 
     # Each True template key will be converted into a sphinx tag in conf.py
@@ -93,27 +102,6 @@ def generate_template_variables(
     template_variables.update({'tags': tags})
 
     return template_variables
-
-
-def generate_package_toc_entry(*, build_context) -> str:
-    build_type = build_context.build_type
-    always_run_doxygen = build_context.always_run_doxygen
-    always_run_sphinx_apidoc = build_context.always_run_sphinx_apidoc
-    ament_cmake_python = build_context.ament_cmake_python
-    # The TOC entries have to be indented by three (or any N) spaces
-    # inside the string to fall under the `:toctree:` directive
-    toc_entry_py = f"""
-   Python API <generated/python/modules>"""
-    toc_entry_cpp = """
-   C/C++ API <generated/cpp/index>"""
-    toc_entry = ''
-
-    if build_type == 'ament_python' or always_run_sphinx_apidoc or ament_cmake_python:
-        toc_entry += toc_entry_py
-    if build_type in ['ament_cmake', 'cmake'] or always_run_doxygen:
-        toc_entry += toc_entry_cpp
-
-    return toc_entry
 
 
 rosdoc2_wrapping_conf_py_preamble = """\

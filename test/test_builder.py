@@ -138,6 +138,7 @@ def test_minimal_package(tmp_path):
         'c/c++ api',
         'Service Definitions',
         'Message Definitions',
+        'Package API',
     ]
 
     do_test_package(PKG_NAME, tmp_path, includes, excludes)
@@ -235,7 +236,13 @@ def test_only_messages(tmp_path):
     # A package that only has message definitions
     PKG_NAME = 'only_messages'
 
-    includes = []
+    includes = [
+        'Project Documentation',
+        'Standard Documents',
+        'Package API',
+        'Message Definitions',
+        'NumPwrResult',
+    ]
     excludes = []
 
     do_test_package(PKG_NAME, tmp_path, includes, excludes)
