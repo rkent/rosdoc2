@@ -159,12 +159,18 @@ def test_full_package(tmp_path):
         '© copyright 2022, some one  (apache license 2.0).',
         # From default index.j2.rst
         'Package API',
+        'Standard Documents',
     ]
 
     excludes = []
     file_includes = [
         'generated/cpp/index.html',
         'generated/cpp/file_include_full_package_iamcpp.hpp.html',
+        'generated/standard/CHANGELOG.html',
+        'generated/standard/CONTRIBUTING.html',
+        'generated/standard/LICENSE.html',
+        'generated/standard/README.html',
+
     ]
     file_excludes = [
         'idonotexist.html',  # just a smoke test of the excludes function

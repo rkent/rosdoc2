@@ -20,6 +20,7 @@ Project Documentation
    :glob:
 
    *
+   generated/standards
 
 {% endif -%}
 Package API

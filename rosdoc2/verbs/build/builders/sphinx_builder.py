@@ -35,7 +35,8 @@ def generate_template_variables(
     build_context,
     doc_build_folder,
     package_src_directory,
-    user_doc_dir
+    user_doc_dir,
+    standard_docs
 ):
     """Generate the variables used by templates for conf.py and index.rst"""
 
@@ -77,7 +78,8 @@ def generate_template_variables(
         'url_website': url_website,
         'url_any': url_bugtracker or url_repository or url_website,
         'doc_build_folder': os.path.abspath(doc_build_folder),
-        'has_user_docs': bool(user_doc_dir)
+        'has_user_docs': bool(user_doc_dir),
+        'has_standard_docs': len(standard_docs) > 0
     })
 
     # Each True template key will be converted into a sphinx tag in conf.py
@@ -257,7 +259,7 @@ Standard Documents
    :maxdepth: 1
    :glob:
 
-   ../standard/*
+   ../generated/standard/*
 """
 
 
@@ -399,6 +401,10 @@ class SphinxBuilder(Builder):
                 f'        "{self.build_context.package.name} Doxygen Project": '
                 f'"{self.doxygen_xml_directory}"')
 
+        # Generate rst documents for standard documents
+        standard_docs = self.locate_standard_documents()
+        self.generate_standard_document_files(standard_docs, doc_build_folder)
+
         # Prepare the template variables for formatting strings.
         # TODO: we are passing in doc_build_folder but it is interpreted as user source
         self.template_variables = generate_template_variables(
@@ -407,16 +413,13 @@ class SphinxBuilder(Builder):
             self.build_context,
             doc_build_folder,
             package_src_directory,
-            user_doc_dir
+            user_doc_dir,
+            standard_docs
         )
 
         # Setup rosdoc2 Sphinx file which will include and extend the one in `user_doc_dir`.
         self.generate_wrapping_rosdoc2_sphinx_project_into_directory(
             doc_build_folder)
-
-        # Generate rst documents for standard documents
-        standard_docs = self.locate_standard_documents()
-        self.generate_standard_document_files(standard_docs, doc_build_folder)
 
         # Generate rst documents for interfaces
         interface_counts = generate_interface_docs(
@@ -647,12 +650,12 @@ class SphinxBuilder(Builder):
     def generate_standard_document_files(self, standard_docs, doc_build_folder):
         """Generate rst documents to link to standard documents"""
         doc_build_folder = os.path.abspath(doc_build_folder)
-        print(f'doc_build_folder: {doc_build_folder}')
         if len(standard_docs):
             # Create the standards.rst document that will link to the actual documents
-            standard_path = os.path.join(doc_build_folder, 'standard')
+            standard_path = os.path.join(doc_build_folder, 'generated', 'standard')
             os.makedirs(standard_path, exist_ok=True)
-            standard_documents_rst_path = os.path.join(doc_build_folder, 'standards.rst')
+            standard_documents_rst_path = os.path.join(
+                doc_build_folder, 'generated', 'standards.rst')
             with open(standard_documents_rst_path, 'w+') as f:
                 f.write(standard_documents_rst)
 
