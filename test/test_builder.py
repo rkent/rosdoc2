@@ -45,7 +45,7 @@ class htmlParser(HTMLParser):
         data_black = data.strip(' \n')
         if self.tags and data_black:
             self.tags[-1]['data'] = data_black.lower()
-            # print(self.tags[-1])
+            logger.debug(f'tag: {self.tags[-1]}')
             self.content.add(data_black.lower())
 
 
@@ -97,12 +97,12 @@ def do_test_package(
 
     # test inclusions
     for item in includes:
-        assert item in parser.content, \
+        assert item.lower() in parser.content, \
             f'html has content {item}'
 
     # test exclusions
     for item in excludes:
-        assert item not in parser.content, \
+        assert item.lower() not in parser.content, \
             f'html does not have content {item}'
 
     # file inclusions
@@ -155,6 +155,10 @@ def test_full_package(tmp_path):
         'instructions',
         'full_package package',
         'c/c++ api',
+        # Author from package.xml via default conf.j2.py
+        '© copyright 2022, some one  (apache license 2.0).',
+        # From default index.j2.rst
+        'Package API',
     ]
 
     excludes = []
@@ -175,9 +179,15 @@ def test_user_conf_files(tmp_path):
     includes = [
         PKG_NAME,
         'c/c++ api',
+        '© copyright 2021, conf.py author  (apache license 2.0).',  # from conf.py
+        # from index.rst
+        'testing of index.rst',
+        # From index.rst
+        'Packages API',
     ]
 
-    excludes = []
+    excludes = [
+    ]
     file_includes = [
         'generated/index.html',
         'generated/file_nonstandard_include_user_conf_files_iamcpp.hpp.html',
@@ -193,6 +203,10 @@ def test_user_conf_templates(tmp_path):
     includes = [
         PKG_NAME,
         'c/c++ api',
+        '© copyright 2021, conf.j2.py author  (apache license 2.0).',  # from conf.j2.py
+        'testing of index.j2.rst',  # from index.j2.rst
+        # From index.j2.rst
+        'Packageses API',
     ]
 
     excludes = []

@@ -511,7 +511,12 @@ class SphinxBuilder(Builder):
 
         conf_j2 = os.path.join(directory, 'conf.j2.py')
         conf_py = os.path.join(directory, 'conf.py')
-        if not os.path.exists(conf_j2) and not os.path.exists(conf_py):
+        if os.path.exists(conf_py):
+            logger.info('A user-provided conf.py will be used')
+        elif os.path.exists(conf_j2):
+            logger.info('A user-provided conf.j2.py template will be used to generate conf.py')
+        else:
+            logger.info('A default conf.j2.py template will be used to generate conf.py')
             with open(conf_j2, 'w+') as f:
                 f.write(default_conf_j2)
 
