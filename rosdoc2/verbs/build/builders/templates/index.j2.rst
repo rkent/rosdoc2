@@ -23,7 +23,7 @@ Project Documentation
    {% if has_standard_docs %}generated/standards{% endif %}
 
 {% endif -%}
-{% if has_cpp or has_python or has_msg_defs or has_srv_defs %}
+{% if did_run_doxygen or has_python or has_msg_defs or has_srv_defs %}
 Package API
 -----------
 
