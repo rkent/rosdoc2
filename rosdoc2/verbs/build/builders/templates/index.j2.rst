@@ -19,7 +19,7 @@ Project Documentation
    :maxdepth: 1
    :glob:
 
-   *
+   {% if has_user_docs %}*{% endif %}
    {% if has_standard_docs %}generated/standards{% endif %}
 
 {% endif -%}
