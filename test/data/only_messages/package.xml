@@ -4,7 +4,7 @@
   <name>only_messages</name>
   <version>0.1.3</version>
   <description>ROS2 package with only message definitions</description>
-  <maintainer email="someone@example.com">Some One</maintainer>
+  <maintainer email="someone@example.com">Some ol' Guy</maintainer>
   <license>Apache License 2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>

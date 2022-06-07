@@ -21,9 +21,10 @@ sys.path.insert(0, os.path.abspath('../{{ package.name }}'))
 
 # -- Project information -----------------------------------------------------
 
-project = '{{ package.name }}'
-copyright = time.strftime('%Y') + ', {{ package_authors }}  ({{ package_licenses }})'
-author = '{{ package_authors }}'
+# Using triple quotes in case names contain apostrophes
+project = """{{ package.name }}"""
+copyright = time.strftime('%Y') + """, {{ package_authors }}  ({{ package_licenses }})"""
+author = """{{ package_authors }}"""
 
 # The full version, including alpha/beta/rc tags
 release = '{{ package.version }}'
