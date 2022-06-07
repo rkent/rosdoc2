@@ -30,7 +30,7 @@ Packages API
 .. toctree::
    :maxdepth: 2
    
-   C/C++ API <generated/index>
+   C/C++ API <generated/cpp/index>
 
 Indices and Search
 ==================

@@ -100,7 +100,7 @@ def generate_package_toc_entry(*, build_context) -> str:
     toc_entry_py = f"""
    Python API <generated/python/modules>"""
     toc_entry_cpp = """
-   C/C++ API <generated/index>"""
+   C/C++ API <generated/cpp/index>"""
     toc_entry = ''
 
     if build_type == 'ament_python' or always_run_sphinx_apidoc or ament_cmake_python:
@@ -204,7 +204,7 @@ if rosdoc2_settings.get('enable_exhale', is_doxygen_invoked):
     from exhale import utils
     exhale_args.update({{
         # These arguments are required.
-        "containmentFolder": "{doc_build_folder}/generated",
+        "containmentFolder": "{doc_build_folder}/generated/cpp",
         "rootFileName": "index.rst",
         "rootFileTitle": "{package_name} C/C++ API",
         "doxygenStripFromPath": "..",

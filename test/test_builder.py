@@ -28,7 +28,7 @@ formatter = logging.Formatter('%(levelname)s - %(name)s - %(message)s')
 handler = logging.StreamHandler()
 handler.setFormatter(formatter)
 logger.addHandler(handler)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 
 class htmlParser(HTMLParser):
@@ -163,8 +163,8 @@ def test_full_package(tmp_path):
 
     excludes = []
     file_includes = [
-        'generated/index.html',
-        'generated/file_include_full_package_iamcpp.hpp.html',
+        'generated/cpp/index.html',
+        'generated/cpp/file_include_full_package_iamcpp.hpp.html',
     ]
     file_excludes = [
         'idonotexist.html',  # just a smoke test of the excludes function
@@ -189,8 +189,8 @@ def test_user_conf_files(tmp_path):
     excludes = [
     ]
     file_includes = [
-        'generated/index.html',
-        'generated/file_nonstandard_include_user_conf_files_iamcpp.hpp.html',
+        'generated/cpp/index.html',
+        'generated/cpp/file_nonstandard_include_user_conf_files_iamcpp.hpp.html',
     ]
     file_excludes = []
     do_test_package(PKG_NAME, tmp_path, includes, excludes, file_includes, file_excludes)
@@ -211,8 +211,8 @@ def test_user_conf_templates(tmp_path):
 
     excludes = []
     file_includes = [
-        'generated/index.html',
-        'generated/file_nonstandard_include_user_conf_templates_iamcpp.hpp.html',
+        'generated/cpp/index.html',
+        'generated/cpp/file_nonstandard_include_user_conf_templates_iamcpp.hpp.html',
     ]
     file_excludes = []
     do_test_package(PKG_NAME, tmp_path, includes, excludes, file_includes, file_excludes)
