@@ -1,15 +1,7 @@
-Package user_conf_templates
+Package user_conf_files
 ===========================
 
 ROS2 test package with user-provided non-default configuration files
-
-.. only:: url_any
-
-   Links
-   -----
-   
-   
-   
 
 Testing
 -------
@@ -32,8 +24,11 @@ Packages API
    
    C/C++ API <generated/cpp/index>
 
+
 Indices and Search
 ==================
+
+This way of doing the index and search will eliminate it from the sidebar
 
 * :ref:`genindex`
 * :ref:`search`

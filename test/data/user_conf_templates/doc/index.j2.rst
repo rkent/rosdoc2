@@ -3,14 +3,14 @@
 
 {{ package_description }}
 
-.. only:: url_any
+{% if url_repository or url_website or url_bugtracker %}
+Links
+-----
+{% if url_repository %}{{ url_repository }}{% endif %}
+{% if url_website %}{{ url_website }}{% endif %}
+{% if url_bugtracker %}{{ url_bugtracker }}{% endif %}
 
-   Links
-   -----
-   {% if url_repository %}{{ url_repository }}{% endif %}
-   {% if url_website %}{{ url_website }}{% endif %}
-   {% if url_bugtracker %}{{ url_bugtracker }}{% endif %}
-
+{% endif %} 
 Testing
 -------
 Testing of index.j2.rst

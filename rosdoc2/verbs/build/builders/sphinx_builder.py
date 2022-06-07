@@ -60,6 +60,7 @@ def generate_template_variables(
     template_variables.update({
         'always_run_doxygen': build_context.always_run_doxygen,
         'breathe_projects': ',\n'.join(breathe_projects) + '\n    ',
+        'did_run_doxygen': len(breathe_projects) > 0,
         'build_type': build_context.build_type,
         'exec_depends': [exec_depend.name for exec_depend in package.exec_depends],
         'intersphinx_mapping_extensions': ',\n        '.join(intersphinx_mapping_extensions),
@@ -77,7 +78,6 @@ def generate_template_variables(
         'url_bugtracker': url_bugtracker,
         'url_repository': url_repository,
         'url_website': url_website,
-        'url_any': url_bugtracker or url_repository or url_website,
         'doc_build_folder': os.path.abspath(doc_build_folder),
         'has_user_docs': bool(user_doc_dir),
         'has_standard_docs': len(standard_docs) > 0,
@@ -160,25 +160,30 @@ if rosdoc2_settings.get('enable_intersphinx', True):
 
 build_type = '{build_type}'
 always_run_doxygen = {always_run_doxygen}
-# By default, the `exhale`/`breathe` extensions should be added if `doxygen` was invoked
-is_doxygen_invoked = build_type in ('ament_cmake', 'cmake') or always_run_doxygen
+is_doxygen_invoked = {did_run_doxygen}
 
+# TODO: We need better description of how 'enable_breathe' and 'enable_exhale' are managed.
+#       Default could be None, and if set then generate error if no doxygen.
+
+# By default, the `exhale`/`breathe` extensions should be added if `doxygen` was invoked
 if rosdoc2_settings.get('enable_breathe', is_doxygen_invoked):
     # Configure Breathe.
     # Breathe ingests the XML output from Doxygen and makes it accessible from Sphinx.
-    print('[rosdoc2] enabling breathe', file=sys.stderr)
     # First check that doxygen would have been run
-    if not is_doxygen_invoked:
-        raise RuntimeError(
+    if is_doxygen_invoked:
+        print('[rosdoc2] enabling breathe', file=sys.stderr)
+        ensure_global('breathe_projects', {{}})
+        breathe_projects.update({{{breathe_projects}}})
+        if breathe_projects:
+            # Enable Breathe and arbitrarily select the first project.
+            extensions.append('breathe')
+            breathe_default_project = next(iter(breathe_projects.keys()))
+
+    else:
+        log.info(
             "Cannot enable the 'breathe' extension if 'doxygen' is not invoked."
             "Please enable 'always_run_doxygen' if the package is not an"
             "'ament_cmake' or 'cmake' package.")
-    ensure_global('breathe_projects', {{}})
-    breathe_projects.update({{{breathe_projects}}})
-    if breathe_projects:
-        # Enable Breathe and arbitrarily select the first project.
-        extensions.append('breathe')
-        breathe_default_project = next(iter(breathe_projects.keys()))
 
 if rosdoc2_settings.get('enable_exhale', is_doxygen_invoked):
     # Configure Exhale.
@@ -188,45 +193,46 @@ if rosdoc2_settings.get('enable_exhale', is_doxygen_invoked):
     # Doxygen out of the box.
     print('[rosdoc2] enabling exhale', file=sys.stderr)
     # First check that doxygen would have been run
-    if not is_doxygen_invoked:
-        raise RuntimeError(
+    if is_doxygen_invoked:
+        extensions.append('exhale')
+        ensure_global('exhale_args', {{}})
+
+        default_exhale_specs_mapping = {{
+            'page': [':content-only:'],
+            **dict.fromkeys(
+                ['class', 'struct'],
+                [':members:', ':protected-members:', ':undoc-members:']),
+        }}
+
+        exhale_specs_mapping = rosdoc2_settings.get(
+            'exhale_specs_mapping', default_exhale_specs_mapping)
+
+        from exhale import utils
+        exhale_args.update({{
+            # These arguments are required.
+            "containmentFolder": "{doc_build_folder}/generated/cpp",
+            "rootFileName": "index.rst",
+            "rootFileTitle": "{package_name} C/C++ API",
+            "doxygenStripFromPath": "..",
+            # Suggested optional arguments.
+            "createTreeView": True,
+            "fullToctreeMaxDepth": 1,
+            "unabridgedOrphanKinds": [],
+            "fullApiSubSectionTitle": "Reference",
+            # TIP: if using the sphinx-bootstrap-theme, you need
+            # "treeViewIsBootstrap": True,
+            "exhaleExecutesDoxygen": False,
+            # Maps markdown files to the "md" lexer, and not the "markdown" lexer
+            # Pygments registers "md" as a valid markdown lexer, and not "markdown"
+            "lexerMapping": {{r".*\.(md|markdown)$": "md",}},
+            "customSpecificationsMapping": utils.makeCustomSpecificationsMapping(
+                lambda kind: exhale_specs_mapping.get(kind, [])),
+        }})
+    else:
+        log.info(
             "Cannot enable the 'breathe' extension if 'doxygen' is not invoked."
             "Please enable 'always_run_doxygen' if the package is not an"
             "'ament_cmake' or 'cmake' package.")
-    extensions.append('exhale')
-    ensure_global('exhale_args', {{}})
-
-    default_exhale_specs_mapping = {{
-        'page': [':content-only:'],
-        **dict.fromkeys(
-            ['class', 'struct'],
-            [':members:', ':protected-members:', ':undoc-members:']),
-    }}
-
-    exhale_specs_mapping = rosdoc2_settings.get(
-        'exhale_specs_mapping', default_exhale_specs_mapping)
-
-    from exhale import utils
-    exhale_args.update({{
-        # These arguments are required.
-        "containmentFolder": "{doc_build_folder}/generated/cpp",
-        "rootFileName": "index.rst",
-        "rootFileTitle": "{package_name} C/C++ API",
-        "doxygenStripFromPath": "..",
-        # Suggested optional arguments.
-        "createTreeView": True,
-        "fullToctreeMaxDepth": 1,
-        "unabridgedOrphanKinds": [],
-        "fullApiSubSectionTitle": "Reference",
-        # TIP: if using the sphinx-bootstrap-theme, you need
-        # "treeViewIsBootstrap": True,
-        "exhaleExecutesDoxygen": False,
-        # Maps markdown files to the "md" lexer, and not the "markdown" lexer
-        # Pygments registers "md" as a valid markdown lexer, and not "markdown"
-        "lexerMapping": {{r".*\.(md|markdown)$": "md",}},
-        "customSpecificationsMapping": utils.makeCustomSpecificationsMapping(
-            lambda kind: exhale_specs_mapping.get(kind, [])),
-    }})
 
 if rosdoc2_settings.get('override_theme', True):
     extensions.append('sphinx_rtd_theme')
@@ -262,7 +268,7 @@ Standard Documents
    :maxdepth: 1
    :glob:
 
-   ../generated/standard/*
+   standard/*
 """
 
 indices_search_rst = """\
@@ -328,18 +334,21 @@ class SphinxBuilder(Builder):
     def build(self, *, doc_build_folder, output_staging_directory):
         """Actually do the build."""
         logger.info(f'running sphinx builder with doc_build_folder {doc_build_folder}')
-        should_run_doxygen = \
-            self.build_context.build_type in ('ament_cmake', 'cmake') or \
-            self.build_context.always_run_doxygen
+
         # Check that doxygen_xml_directory exists relative to output staging, if specified.
-        if self.doxygen_xml_directory is not None and should_run_doxygen:
+        if self.doxygen_xml_directory is not None:
+            # doxygen_xml_directory is defined in defaults, but won't exist if doxygen did not run
             self.doxygen_xml_directory = \
                 os.path.join(output_staging_directory, self.doxygen_xml_directory)
             self.doxygen_xml_directory = os.path.abspath(self.doxygen_xml_directory)
+
             if not os.path.isdir(self.doxygen_xml_directory):
-                raise RuntimeError(
-                    f"Error the 'doxygen_xml_directory' specified "
-                    f"'{self.doxygen_xml_directory}' does not exist.")
+                self.doxygen_xml_directory = None
+                logger.info('No doxygen_xml_directory found, apparently doxygen did not run')
+                if self.build_context.always_run_doxygen:
+                    raise RuntimeError(
+                        f"Error the 'doxygen_xml_directory' specified "
+                        f"'{self.doxygen_xml_directory}' does not exist.")
 
         should_run_sphinx_apidoc = \
             self.build_context.build_type == 'ament_python' or \

@@ -229,3 +229,13 @@ def test_user_conf_templates(tmp_path):
     ]
     file_excludes = []
     do_test_package(PKG_NAME, tmp_path, includes, excludes, file_includes, file_excludes)
+
+
+def test_only_messages(tmp_path):
+    # A package that only has message definitions
+    PKG_NAME = 'only_messages'
+
+    includes = []
+    excludes = []
+
+    do_test_package(PKG_NAME, tmp_path, includes, excludes)
