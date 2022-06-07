@@ -265,6 +265,15 @@ Standard Documents
    ../generated/standard/*
 """
 
+indices_search_rst = """\
+Indices and Search
+===================
+
+:ref:`genindex`
+
+:ref:`search`
+"""
+
 
 class SphinxBuilder(Builder):
     """
@@ -318,6 +327,7 @@ class SphinxBuilder(Builder):
 
     def build(self, *, doc_build_folder, output_staging_directory):
         """Actually do the build."""
+        logger.info(f'running sphinx builder with doc_build_folder {doc_build_folder}')
         should_run_doxygen = \
             self.build_context.build_type in ('ament_cmake', 'cmake') or \
             self.build_context.always_run_doxygen
@@ -403,6 +413,8 @@ class SphinxBuilder(Builder):
                 f'        "{self.build_context.package.name} Doxygen Project": '
                 f'"{self.doxygen_xml_directory}"')
 
+        os.makedirs(os.path.join(doc_build_folder, 'generated'), exist_ok=True)
+
         # Generate rst documents for standard documents
         standard_docs = self.locate_standard_documents()
         self.generate_standard_document_files(standard_docs, doc_build_folder)
@@ -433,6 +445,12 @@ class SphinxBuilder(Builder):
 
         self.generate_wrapping_rosdoc2_sphinx_project_into_directory(
             doc_build_folder)
+
+        # Generate a file as target for index and search in toc
+        index_and_search_rst_path = os.path.join(
+            doc_build_folder, 'generated', 'indices_and_search.rst')
+        with open(index_and_search_rst_path, 'w+') as f:
+            f.write(indices_search_rst)
 
         if should_run_sphinx_apidoc:
             if not package_src_directory or not os.path.isdir(package_src_directory):
@@ -566,6 +584,7 @@ class SphinxBuilder(Builder):
         self,
         directory,
     ):
+        logger.info(f'Generating sphinx project into directory {directory}')
         """Generate the rosdoc2 sphinx project configuration files."""
         os.makedirs(directory, exist_ok=True)
 

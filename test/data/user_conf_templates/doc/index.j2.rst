@@ -32,9 +32,11 @@ Packageses API
 .. toctree::
    :maxdepth: 2
    {{ package_toc_entry }}
+   {% if has_message_definitions %}generated/message_definitions{% endif %}
+   {% if has_service_definitions %}generated/service_definitions{% endif %}
 
-Indices and Search
-==================
+.. toctree::
+   :hidden:
 
-* :ref:`genindex`
-* :ref:`search`
+   generated/indices_and_search
+
