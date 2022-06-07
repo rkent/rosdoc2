@@ -66,12 +66,11 @@ def generate_interface_docs(path: str, package: str, output_dir: str):
     """
 
     counts = {}
-    interfaces_out_dir = os.path.join(output_dir, 'interfaces')
     for type_info in (('msg', 'message'), ('srv', 'service')):
         count = 0
         (type_ext, type_name) = type_info
         interfaces = _find_files_with_extension(path, type_ext)
-        output_dir_ex = os.path.join(interfaces_out_dir, type_ext)
+        output_dir_ex = os.path.join(output_dir, type_ext)
         title = type_name.capitalize() + " Definitions"
         for interface in interfaces:
             (iface_name, iface_path) = interface
@@ -100,7 +99,7 @@ def generate_interface_docs(path: str, package: str, output_dir: str):
             toc_template = Template(toc_j2_rst)
             toc_rst = toc_template.render(template_vars)
             toc_name = type_name + '_definitions.rst'
-            toc_path = os.path.join(interfaces_out_dir, toc_name)
+            toc_path = os.path.join(output_dir, toc_name)
             with open(toc_path, 'w') as f:
                 f.write(toc_rst)
         counts[type_ext] = count

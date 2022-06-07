@@ -36,7 +36,8 @@ def generate_template_variables(
     doc_build_folder,
     package_src_directory,
     user_doc_dir,
-    standard_docs
+    standard_docs,
+    interface_counts,
 ):
     """Generate the variables used by templates for conf.py and index.rst"""
 
@@ -79,7 +80,9 @@ def generate_template_variables(
         'url_any': url_bugtracker or url_repository or url_website,
         'doc_build_folder': os.path.abspath(doc_build_folder),
         'has_user_docs': bool(user_doc_dir),
-        'has_standard_docs': len(standard_docs) > 0
+        'has_standard_docs': len(standard_docs) > 0,
+        'has_message_definitions': interface_counts['msg'] > 0,
+        'has_service_definitions': interface_counts['srv'] > 0,
     })
 
     # Each True template key will be converted into a sphinx tag in conf.py
@@ -355,7 +358,6 @@ class SphinxBuilder(Builder):
                     'Note: no sourcedir provided by the user and no Sphinx sourcedir was found '
                     'in the standard locations, therefore using a default Sphinx configuration.')
 
-        print(f'\n\nuser_doc_dir: {user_doc_dir}')
         if user_doc_dir is not None:
             # Copy all user doc files into the sphinx project directory
             logger.debug(
@@ -405,6 +407,14 @@ class SphinxBuilder(Builder):
         standard_docs = self.locate_standard_documents()
         self.generate_standard_document_files(standard_docs, doc_build_folder)
 
+        # Generate rst documents for interfaces
+        interface_counts = generate_interface_docs(
+            package_xml_directory,
+            self.build_context.package.name,
+            os.path.join(doc_build_folder, 'generated')
+        )
+        logger.info(f'interface_counts: {interface_counts}')
+
         # Prepare the template variables for formatting strings.
         # TODO: we are passing in doc_build_folder but it is interpreted as user source
         self.template_variables = generate_template_variables(
@@ -414,20 +424,15 @@ class SphinxBuilder(Builder):
             doc_build_folder,
             package_src_directory,
             user_doc_dir,
-            standard_docs
+            standard_docs,
+            interface_counts,
         )
 
+        logger.debug(f'template_variables: {self.template_variables}')
         # Setup rosdoc2 Sphinx file which will include and extend the one in `user_doc_dir`.
+
         self.generate_wrapping_rosdoc2_sphinx_project_into_directory(
             doc_build_folder)
-
-        # Generate rst documents for interfaces
-        interface_counts = generate_interface_docs(
-            package_xml_directory,
-            self.build_context.package.name,
-            doc_build_folder
-        )
-        logger.info(f'interface_counts: {interface_counts}')
 
         if should_run_sphinx_apidoc:
             if not package_src_directory or not os.path.isdir(package_src_directory):

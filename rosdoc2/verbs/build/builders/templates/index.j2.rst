@@ -29,6 +29,8 @@ Package API
 .. toctree::
    :maxdepth: 2
    {{ package_toc_entry }}
+   {% if has_message_definitions %}generated/message_definitions{% endif %}
+   {% if has_service_definitions %}generated/service_definitions{% endif %}
 
 Indices and Search
 ==================

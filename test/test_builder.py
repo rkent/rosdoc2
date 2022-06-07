@@ -136,6 +136,8 @@ def test_minimal_package(tmp_path):
         'instructions',
         'full_package package',
         'c/c++ api',
+        'Service Definitions',
+        'Message Definitions',
     ]
 
     do_test_package(PKG_NAME, tmp_path, includes, excludes)
@@ -160,6 +162,8 @@ def test_full_package(tmp_path):
         # From default index.j2.rst
         'Package API',
         'Standard Documents',
+        'Service Definitions',
+        'Message Definitions',
     ]
 
     excludes = []
@@ -170,7 +174,10 @@ def test_full_package(tmp_path):
         'generated/standard/CONTRIBUTING.html',
         'generated/standard/LICENSE.html',
         'generated/standard/README.html',
-
+        'generated/message_definitions.html',
+        'generated/service_definitions.html',
+        'generated/msg/NumPwrResult.html',
+        'generated/srv/NodeCommand.html',
     ]
     file_excludes = [
         'idonotexist.html',  # just a smoke test of the excludes function
