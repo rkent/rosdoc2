@@ -38,6 +38,7 @@ def generate_template_variables(
     user_doc_dir,
     standard_docs,
     interface_counts,
+    meta_dependencies,
 ):
     """Generate the variables used by templates for conf.py and index.rst"""
 
@@ -93,6 +94,7 @@ def generate_template_variables(
         'has_cpp': has_cpp,
         'has_python': has_python,
         'has_readme': 'readme' in standard_docs,
+        'meta_dependencies': meta_dependencies,
     })
 
     # Each True template key will be converted into a sphinx tag in conf.py
@@ -425,6 +427,18 @@ class SphinxBuilder(Builder):
         )
         logger.info(f'interface_counts: {interface_counts}')
 
+        # Prepare a list of viable metapackage packages
+        meta_dependencies = []
+        # A meta package has no build dependencies, only exec dependencies
+        if len(self.build_context.package.build_depends) == 0:
+            for dependency in self.build_context.package.exec_depends:
+                if dependency.name in inventory_files:
+                    meta_dependencies.append(dependency.name)
+                else:
+                    logger.warning(
+                        f'Meta package dependency {dependency.name} not found in cross_references')
+            logger.info(f'Meta dependencies: {meta_dependencies}')
+
         # Prepare the template variables for formatting strings.
         # TODO: we are passing in doc_build_folder but it is interpreted as user source
         self.template_variables = generate_template_variables(
@@ -436,6 +450,7 @@ class SphinxBuilder(Builder):
             user_doc_dir,
             standard_docs,
             interface_counts,
+            meta_dependencies
         )
 
         logger.debug(f'template_variables: {self.template_variables}')

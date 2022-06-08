@@ -6,4 +6,7 @@
   <description>Minimal ROS2 test package</description>
   <maintainer email="someone@example.com">Some One</maintainer>
   <license>Apache License 2.0</license>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <build_depend>rosidl_default_generators</build_depend>
+  <exec_depend>rosidl_default_runtime</exec_depend>
 </package>

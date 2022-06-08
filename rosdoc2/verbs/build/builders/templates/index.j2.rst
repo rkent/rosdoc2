@@ -11,6 +11,13 @@ Links
 {% if url_bugtracker %}{{ url_bugtracker }}{% endif %}
 
 {% endif %} 
+{% if meta_dependencies %}
+Dependencies of this Meta Package
+---------------------------------------
+{% for subproject in meta_dependencies %}
+* :doc:`{{subproject}}:index`
+{% endfor %}
+{% endif %}
 {% if has_user_docs or has_standard_docs %}
 Project Documentation
 ---------------------

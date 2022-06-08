@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>meta_package</name>
+  <version>0.1.0</version>
+  <description>Meta package of the test packages</description>
+  <maintainer email="kent@caspia.com">R. Kent James</maintainer>
+  <license>Apache License 2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <exec_depend>full_package</exec_depend>
+  <exec_depend>only_messages</exec_depend>
+</package>

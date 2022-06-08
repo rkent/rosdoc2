@@ -145,13 +145,17 @@ def do_test_package(
             f'file {item} should not exist'
 
 
-def test_single_package(tmp_path):
-    """Documents and tests a single package"""
-    PKG_NAME = 'minimum_package'
-    do_build_package(DATAPATH / PKG_NAME, tmp_path)
-    test_minimal_package(tmp_path)
+def test_meta_dependencies(tmp_path):
+    """Builds dependencies to the meta package"""
+    do_build_package(DATAPATH / 'full_package', tmp_path)
+    do_build_package(DATAPATH / 'only_messages', tmp_path)
+    do_build_package(DATAPATH / 'meta_package', tmp_path)
+
+    includes = ['Dependencies of this Meta Package']
+    do_test_package('meta_package', tmp_path, includes)
 
 
+# At this point, the full set of packages are built
 def test_minimal_package(many_path):
     work_path = many_path
     # Testing of an empty as possible package
