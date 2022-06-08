@@ -18,10 +18,25 @@ import argparse
 from html.parser import HTMLParser
 import logging
 import pathlib
+import pytest
 
 from rosdoc2.verbs.build.impl import prepare_arguments, main_impl
 
 DATAPATH = pathlib.Path('test/data')
+
+
+@pytest.fixture(scope='module')
+def tmp_path(tmpdir_factory):
+    """Create a temporary path for use over the entire test"""
+    return pathlib.Path(tmpdir_factory.mktemp('test_builder'))
+
+
+@pytest.fixture(scope='module')
+def many_path(tmp_path):
+    """Generates once documentation over all packages under DATAPATH """
+    do_build_package(DATAPATH, tmp_path)
+    return tmp_path
+
 
 logger = logging.getLogger('rosdoc2')
 formatter = logging.Formatter('%(levelname)s - %(name)s - %(message)s')
@@ -49,23 +64,10 @@ class htmlParser(HTMLParser):
             self.content.add(data_black.lower())
 
 
-def do_test_package(
-        name, tmp_path, includes=[], excludes=[], file_includes=[], file_excludes=[]) -> None:
-    """test that package documentation exists and includes/excludes certain text
-
-    :param str tmp_path: path where generated files will be placed
-    :param list[str] includes: lower case text found in index.html data
-    :param list[str] excludes: lower case text not found in index.html data
-    :param list[str] file_includes: path to files
-        (relative to root index.html directory) of files that should exist
-    :param list[str] file_excludes: path to files
-        (relative to root index.html directory) of files that should not exist
-    """
-
+def do_build_package(package_path, tmp_path) -> None:
     build_dir = tmp_path / 'build'
     output_dir = tmp_path / 'output'
     cr_dir = tmp_path / 'cross_references'
-    package_path = DATAPATH / name
 
     # Create a top level parser
     parser = prepare_arguments(argparse.ArgumentParser())
@@ -75,10 +77,35 @@ def do_test_package(
         '-o', str(output_dir),
         '-d', str(build_dir),
     ])
-    logger.info(f'*** Testing package {name} with options {options}')
+    logger.info(f'*** Building package(s) at {package_path} with options {options}')
 
     # run rosdoc2 on the package
     main_impl(options)
+
+
+def do_test_package(
+    name,
+    work_path,
+    includes=[],
+    excludes=[],
+    file_includes=[],
+    file_excludes=[]
+) -> None:
+
+    """test that package documentation exists and includes/excludes certain text
+
+    :param str work_path: path where generated files will be placed
+    :param list[str] includes: lower case text found in index.html data
+    :param list[str] excludes: lower case text not found in index.html data
+    :param list[str] file_includes: path to files
+        (relative to root index.html directory) of files that should exist
+    :param list[str] file_excludes: path to files
+        (relative to root index.html directory) of files that should not exist
+    """
+
+    output_dir = work_path / 'output'
+
+    logger.info(f'*** Testing package {name}')
 
     # tests on the main index.html
     index_path = output_dir / name / 'index.html'
@@ -118,7 +145,15 @@ def do_test_package(
             f'file {item} should not exist'
 
 
-def test_minimal_package(tmp_path):
+def test_single_package(tmp_path):
+    """Documents and tests a single package"""
+    PKG_NAME = 'minimum_package'
+    do_build_package(DATAPATH / PKG_NAME, tmp_path)
+    test_minimal_package(tmp_path)
+
+
+def test_minimal_package(many_path):
+    work_path = many_path
     # Testing of an empty as possible package
     PKG_NAME = 'minimum_package'
 
@@ -141,10 +176,10 @@ def test_minimal_package(tmp_path):
         'Package API',
     ]
 
-    do_test_package(PKG_NAME, tmp_path, includes, excludes)
+    do_test_package(PKG_NAME, work_path, includes, excludes)
 
 
-def test_full_package(tmp_path):
+def test_full_package(many_path):
     # Test of a full-featured cmake package
     PKG_NAME = 'full_package'
 
@@ -183,10 +218,10 @@ def test_full_package(tmp_path):
     file_excludes = [
         'idonotexist.html',  # just a smoke test of the excludes function
     ]
-    do_test_package(PKG_NAME, tmp_path, includes, excludes, file_includes, file_excludes)
+    do_test_package(PKG_NAME, many_path, includes, excludes, file_includes, file_excludes)
 
 
-def test_user_conf_files(tmp_path):
+def test_user_conf_files(many_path):
     # User provides configuration files
     PKG_NAME = 'user_conf_files'
 
@@ -207,10 +242,10 @@ def test_user_conf_files(tmp_path):
         'generated/cpp/file_nonstandard_include_user_conf_files_iamcpp.hpp.html',
     ]
     file_excludes = []
-    do_test_package(PKG_NAME, tmp_path, includes, excludes, file_includes, file_excludes)
+    do_test_package(PKG_NAME, many_path, includes, excludes, file_includes, file_excludes)
 
 
-def test_user_conf_templates(tmp_path):
+def test_user_conf_templates(many_path):
     # User provides configuration templates
     PKG_NAME = 'user_conf_templates'
 
@@ -229,10 +264,10 @@ def test_user_conf_templates(tmp_path):
         'generated/cpp/file_nonstandard_include_user_conf_templates_iamcpp.hpp.html',
     ]
     file_excludes = []
-    do_test_package(PKG_NAME, tmp_path, includes, excludes, file_includes, file_excludes)
+    do_test_package(PKG_NAME, many_path, includes, excludes, file_includes, file_excludes)
 
 
-def test_only_messages(tmp_path):
+def test_only_messages(many_path):
     # A package that only has message definitions
     PKG_NAME = 'only_messages'
 
@@ -245,4 +280,4 @@ def test_only_messages(tmp_path):
     ]
     excludes = []
 
-    do_test_package(PKG_NAME, tmp_path, includes, excludes)
+    do_test_package(PKG_NAME, many_path, includes, excludes)
