@@ -4,7 +4,7 @@
   <name>meta_package</name>
   <version>0.1.0</version>
   <description>Meta package of the test packages</description>
-  <maintainer email="kent@caspia.com">R. Kent James</maintainer>
+  <maintainer email="someone@example.com">Some One</maintainer>
   <license>Apache License 2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>

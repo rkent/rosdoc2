@@ -19,6 +19,7 @@ from html.parser import HTMLParser
 import logging
 import pathlib
 import pytest
+from urllib.parse import urlparse
 
 from rosdoc2.verbs.build.impl import prepare_arguments, main_impl
 
@@ -51,10 +52,17 @@ class htmlParser(HTMLParser):
     def __init__(self):
         super().__init__()
         self.tags = []
+        # data we have seen
         self.content = set()
+        # href in <a> tags we have seen
+        self.links = set()
 
     def handle_starttag(self, tag, attrs):
         self.tags.append({'tag': tag, 'attrs': attrs})
+        if tag == 'a':
+            for (name, link) in attrs:
+                if name == 'href':
+                    self.links.add(link)
 
     def handle_data(self, data):
         data_black = data.strip(' \n')
@@ -89,7 +97,8 @@ def do_test_package(
     includes=[],
     excludes=[],
     file_includes=[],
-    file_excludes=[]
+    file_excludes=[],
+    links_exist=[],
 ) -> None:
 
     """test that package documentation exists and includes/excludes certain text
@@ -101,6 +110,8 @@ def do_test_package(
         (relative to root index.html directory) of files that should exist
     :param list[str] file_excludes: path to files
         (relative to root index.html directory) of files that should not exist
+    :param list[str] links_exist: Confirm that 1) a link exists containing this text, and
+        2) the link is a valid file
     """
 
     output_dir = work_path / 'output'
@@ -144,6 +155,23 @@ def do_test_package(
         assert not path.is_file(), \
             f'file {item} should not exist'
 
+    # look for links
+    print(f'links: {parser.links}')
+    for item in links_exist:
+        found_item = None
+        for link in parser.links:
+            if item in link:
+                found_item = link
+        print(f'found_item: {found_item}')
+        assert found_item, \
+            f'a link should exist containing the string {item}'
+        link_object = urlparse(found_item)
+        assert link_object.scheme == 'file', \
+            f'link {found_item} should be of type file'
+        link_path = pathlib.Path(link_object.path)
+        assert link_path.is_file(), \
+            f'file represented by {found_item} should exist'
+
 
 def test_meta_dependencies(tmp_path):
     """Builds dependencies to the meta package"""
@@ -152,7 +180,8 @@ def test_meta_dependencies(tmp_path):
     do_build_package(DATAPATH / 'meta_package', tmp_path)
 
     includes = ['Dependencies of this Meta Package']
-    do_test_package('meta_package', tmp_path, includes)
+    links_exist = ['full_package/index.html']
+    do_test_package('meta_package', tmp_path, includes, links_exist=links_exist)
 
 
 # At this point, the full set of packages are built
@@ -163,7 +192,7 @@ def test_minimal_package(many_path):
 
     includes = [
         PKG_NAME,
-        'indices and search',
+        'Index and Search',
     ]
 
     excludes = [
@@ -189,7 +218,7 @@ def test_full_package(many_path):
 
     includes = [
         PKG_NAME,
-        'indices and search',
+        'Index and Search',
         'repository',
         'website',
         'bugtracker',

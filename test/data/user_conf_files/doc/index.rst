@@ -25,8 +25,8 @@ Packages API
    C/C++ API <generated/cpp/index>
 
 
-Indices and Search
-==================
+Index and Search
+================
 
 This way of doing the index and search will eliminate it from the sidebar
 

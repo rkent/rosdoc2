@@ -14,6 +14,7 @@
 
 import logging
 import os
+import pathlib
 import shutil
 import sys
 
@@ -57,7 +58,6 @@ def prepare_arguments(parser):
     parser.add_argument(
         '--package-path',
         '-p',
-        required=True,
         help='path to the ROS package',
     )
     parser.add_argument(
@@ -79,7 +79,6 @@ def prepare_arguments(parser):
     parser.add_argument(
         '--base-url',
         '-u',
-        default='http://docs.ros.org/en/latest/p',
         help='The base url where the package docs will be hosted, used to configure tag files.',
     )
     parser.add_argument(
@@ -118,6 +117,9 @@ def main(options):
 
 def main_impl(options):
     """Execute the program."""
+
+    if not options.package_path:
+        options.package_path = os.getcwd()
 
     package_paths = []
     if package_exists_at(options.package_path):
@@ -166,6 +168,10 @@ def main_impl(options):
             # false positives if the tool fails to run to completion.
             shutil.rmtree(output_staging_directory)
         os.makedirs(output_staging_directory)
+
+        # Use a file uri reference to the output directory as default base_url
+        if not options.base_url:
+            options.base_url = pathlib.Path(options.output_directory).resolve().as_uri()
 
         # Generate the package header content.
         pass

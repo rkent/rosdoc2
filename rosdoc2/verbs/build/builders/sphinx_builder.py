@@ -262,9 +262,9 @@ Standard Documents
    standard/*
 """
 
-indices_search_rst = """\
-Indices and Search
-===================
+index_search_rst = """\
+Index and Search
+================
 
 :ref:`genindex`
 
@@ -463,7 +463,7 @@ class SphinxBuilder(Builder):
         index_and_search_rst_path = os.path.join(
             doc_build_folder, 'generated', 'indices_and_search.rst')
         with open(index_and_search_rst_path, 'w+') as f:
-            f.write(indices_search_rst)
+            f.write(index_search_rst)
 
         if should_run_sphinx_apidoc:
             if not package_src_directory or not os.path.isdir(package_src_directory):
