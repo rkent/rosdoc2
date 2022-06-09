@@ -25,6 +25,7 @@ from ..builder import Builder
 from ..collect_inventory_files import collect_inventory_files
 from ..create_format_map_from_package import create_format_map_from_package
 from ..generate_interface_docs import generate_interface_docs
+from ....slugify import slugify
 
 logger = logging.getLogger('rosdoc2')
 
@@ -271,6 +272,17 @@ Index and Search
 :ref:`search`
 """
 
+subdirectory_rst_template = """\
+{name}
+{name_underline}
+
+.. toctree::
+   :maxdepth: 1
+   :glob:
+
+   {name}/*
+"""
+
 
 class SphinxBuilder(Builder):
     """
@@ -374,6 +386,27 @@ class SphinxBuilder(Builder):
                 f'Copying user doc files from {user_doc_dir}'
                 f' to staging directory {doc_build_folder}')
             shutil.copytree(user_doc_dir, doc_build_folder, dirs_exist_ok=True)
+
+            # generate subdirectory tree links
+            for root, _, files in os.walk(user_doc_dir):
+                # ensure a valid documentation file exists
+                if root == user_doc_dir:
+                    continue
+                directory_has_docs = False
+                for file in files:
+                    ext = os.path.splitext(file)[1]
+                    if ext in ['.rst', '.md', '.markdown']:
+                        directory_has_docs = True
+                        break
+                if directory_has_docs:
+                    name = os.path.relpath(root, user_doc_dir)
+                    name_underline = "=" * len(name)
+                    filename = '_' + slugify(name) + '.rst'
+                    content = subdirectory_rst_template.format_map(
+                        {'name': name, 'name_underline': name_underline})
+                    sub_path = os.path.join(doc_build_folder, filename)
+                    with open(sub_path, 'w+') as f:
+                        f.write(content)
 
         self.ensure_configurations(doc_build_folder)
 

@@ -156,13 +156,11 @@ def do_test_package(
             f'file {item} should not exist'
 
     # look for links
-    print(f'links: {parser.links}')
     for item in links_exist:
         found_item = None
         for link in parser.links:
             if item in link:
                 found_item = link
-        print(f'found_item: {found_item}')
         assert found_item, \
             f'a link should exist containing the string {item}'
         link_object = urlparse(found_item)
@@ -233,6 +231,9 @@ def test_full_package(many_path):
         'Standard Documents',
         'Service Definitions',
         'Message Definitions',
+        # Additional documentation in subdirectories
+        'morestuff',
+        'morestuff/more_of_more'
     ]
 
     excludes = []

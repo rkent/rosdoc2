@@ -24,7 +24,7 @@ Project Documentation
 
 {% if has_user_docs %}
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :glob:
 
    *
