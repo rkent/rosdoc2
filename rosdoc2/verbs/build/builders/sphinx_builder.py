@@ -216,7 +216,7 @@ if rosdoc2_settings.get('enable_exhale', is_doxygen_invoked):
             "exhaleExecutesDoxygen": False,
             # Maps markdown files to the "md" lexer, and not the "markdown" lexer
             # Pygments registers "md" as a valid markdown lexer, and not "markdown"
-            "lexerMapping": {{r".*\.(md|markdown)$": "md",}},
+            "lexerMapping": {{r".*\\.(md|markdown)$": "md",}},
             "customSpecificationsMapping": utils.makeCustomSpecificationsMapping(
                 lambda kind: exhale_specs_mapping.get(kind, [])),
         }})
