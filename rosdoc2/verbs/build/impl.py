@@ -73,7 +73,7 @@ def prepare_arguments(parser):
     parser.add_argument(
         '--cross-reference-directory',
         '-c',
-        default=DEFAULT_CROSS_REFERENCE_DIR,
+        default=os.path.join('generated', DEFAULT_CROSS_REFERENCE_DIR),
         help='directory containing cross reference files, like tag files and inventory files',
     )
     parser.add_argument(
@@ -84,13 +84,13 @@ def prepare_arguments(parser):
     parser.add_argument(
         '--output-directory',
         '-o',
-        default=DEFAULT_OUTPUT_DIR,
+        default=os.path.join('generated', DEFAULT_OUTPUT_DIR),
         help='directory to output the documenation artifacts into',
     )
     parser.add_argument(
         '--doc-build-directory',
         '-d',
-        default=DEFAULT_BUILD_DIR,
+        default=os.path.join('generated', DEFAULT_BUILD_DIR),
         help='directory to setup build prefix'
     )
     parser.add_argument(

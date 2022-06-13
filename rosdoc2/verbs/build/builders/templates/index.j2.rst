@@ -1,3 +1,5 @@
+.. GENERATED_CONTENT by rosdoc2.verbs.build.builders.SphinxBuilder.
+
 {{ root_title }}
 {{ root_title_underline }}
 
@@ -18,25 +20,28 @@ Dependencies of this Meta Package
 * :doc:`{{subproject}}:index`
 {% endfor %}
 {% endif %}
-{% if has_user_docs or has_standard_docs %}
+{% if has_user_docs %}
 Project Documentation
 ---------------------
 
-{% if has_user_docs %}
 .. toctree::
    :maxdepth: 2
    :glob:
 
-   *
-
+   doc/*
+{%- for (relpath, docname) in extra_doc_files %}
+   {{ relpath }} <{{ docname }}>
+{%- endfor %}
 {% endif %}
 {% if has_standard_docs %}
+Standard Documents
+------------------
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
+   :glob:
 
-   generated/standards
+   generated/standard/*
 
-{% endif -%}
 {% endif -%}
 {% if did_run_doxygen or has_python or has_msg_defs or has_srv_defs %}
 Package API
@@ -54,4 +59,4 @@ Package API
 .. toctree::
    :hidden:
 
-   generated/indices_and_search
+   generated/index_and_search
