@@ -29,6 +29,7 @@ from ....slugify import slugify
 
 logger = logging.getLogger('rosdoc2')
 
+
 def generate_template_variables(
     intersphinx_mapping_extensions,
     breathe_projects,
@@ -396,23 +397,21 @@ class SphinxBuilder(Builder):
             for root, directories, files in os.walk(user_doc_dir):
                 relpath = os.path.relpath(root, user_doc_dir) or '.'
                 # ensure a valid documentation file exists
-                directory_has_docs = False
                 if 'generated' in relpath:
                     continue
                 for file in files:
                     (filename, ext) = os.path.splitext(file)
                     if ext in ['.rst', '.md', '.markdown']:
-                        if not relpath in doclist:
+                        if relpath not in doclist:
                             doclist[relpath] = []
                         doclist[relpath].append(filename)
-                        directory_has_docs = True
 
             # generate a glob rst document for each directory with documents
             for relpath in doclist:
                 # ignore directories that will be explicitly listed in index.rst
                 if relpath in ['.', 'doc']:
                     continue
-                docname = '_' + slugify(relpath) # This is the name that sphinx uses for the file
+                docname = '_' + slugify(relpath)  # This is the name that sphinx uses for the file
                 filename = docname + '.rst'
                 # 'relpath' becomes the title in output. For documents in the standard 'doc'
                 # directory, do not include the 'doc/' prefix
@@ -460,7 +459,6 @@ class SphinxBuilder(Builder):
             breathe_projects.append(
                 f'        "{self.build_context.package.name} Doxygen Project": '
                 f'"{self.doxygen_xml_directory}"')
-
 
         # Generate rst documents for standard documents
         standard_docs = self.locate_standard_documents()
@@ -600,7 +598,7 @@ class SphinxBuilder(Builder):
             # Check if it is generated.
             with open(conf_py, 'r') as f:
                 firstline = f.readline()
-            if not 'GENERATED_CONTENT' in firstline:
+            if 'GENERATED_CONTENT' not in firstline:
                 logger.info('Using conf.py provided by the package')
                 use_package_conf_py = True
 
@@ -631,7 +629,7 @@ class SphinxBuilder(Builder):
             # Check if it is generated.
             with open(index_rst, 'r') as f:
                 firstline = f.readline()
-            if not 'GENERATED_CONTENT' in firstline:
+            if 'GENERATED_CONTENT' not in firstline:
                 logger.info('Using index.rst provided by the package')
                 use_package_index_rst = True
 
@@ -648,14 +646,13 @@ class SphinxBuilder(Builder):
             # Otherwise, use the default index.j2.rst
             else:
                 logger.info('Using a default index.j2.rst')
-                index_j2_template = \
-                    pkg_resources.resource_string(__name__, 'templates/index.j2.rst').decode('utf-8')
+                index_j2_template = pkg_resources.resource_string(
+                    __name__, 'templates/index.j2.rst').decode('utf-8')
 
             index_rst = Template(index_j2_template).render(self.template_variables)
             index_rst_path = os.path.join(directory, "index.rst")
             with open(os.path.join(index_rst_path), 'w+') as f:
                 f.write(index_rst)
-
 
     def locate_sphinx_sourcedir_from_standard_locations(self):
         """
@@ -726,7 +723,6 @@ class SphinxBuilder(Builder):
         with open(os.path.join(directory, 'conf.py'), 'w+') as f:
             f.write(wrapped_conf_py)
 
-
     def locate_standard_documents(self):
         """Locate standard documents"""
         names = ["readme", "license", "contributing", "changelog"]
@@ -765,8 +761,8 @@ class SphinxBuilder(Builder):
             os.makedirs(standard_path, exist_ok=True)
             standard_documents_rst_path = os.path.join(
                 sphinx_sourcedir, 'generated', 'standards.rst')
-            #with open(standard_documents_rst_path, 'w+') as f:
-            #    f.write(standard_documents_rst)
+            with open(standard_documents_rst_path, 'w+') as f:
+                f.write(standard_documents_rst)
 
         for key, standard_doc in standard_docs.items():
             relative_dir = os.path.relpath(standard_doc['path'], standard_path)

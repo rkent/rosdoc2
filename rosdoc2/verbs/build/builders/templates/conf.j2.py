@@ -1,4 +1,5 @@
 # GENERATED_CONTENT by rosdoc2.verbs.build.builders.SphinxBuilder.
+# flake8: noqa
 
 import os
 import sys
