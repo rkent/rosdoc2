@@ -29,6 +29,8 @@ from ....slugify import slugify
 
 logger = logging.getLogger('rosdoc2')
 
+def esc_backslash(path):
+    return path.replace('\\', '\\\\') if path else ''
 
 def generate_template_variables(
     intersphinx_mapping_extensions,
@@ -68,9 +70,14 @@ def generate_template_variables(
         if url.type == 'bugtracker':
             url_bugtracker = f'* `Bugtracker <{url.url}>`_'
 
+    # Fix containment folder string for possible Windows paths
+    containmentFolder = esc_backslash(
+        os.path.normpath(os.path.join(sphinx_sourcedir, 'generated', 'cpp')))
+
     template_variables.update({
         'always_run_doxygen': build_context.always_run_doxygen,
         'breathe_projects': ',\n'.join(breathe_projects) + '\n    ',
+        'containmentFolder': containmentFolder,
         'did_run_doxygen': len(breathe_projects) > 0,
         'build_type': build_context.build_type,
         'exec_depends': [exec_depend.name for exec_depend in package.exec_depends],
@@ -80,7 +87,7 @@ def generate_template_variables(
             [a.name for a in package.authors] + [m.name for m in package.maintainers]
         )),
         'package_licenses': ', '.join(package.licenses),
-        'package_src_directory': package_src_directory,
+        'package_src_directory': esc_backslash(package_src_directory),
         'package_underline': '=' * len(package.name),
         'package_version_short': '.'.join(package.version.split('.')[0:2]),
         'root_title': root_title,
@@ -204,7 +211,7 @@ if rosdoc2_settings.get('enable_exhale', is_doxygen_invoked):
         from exhale import utils
         exhale_args.update({{
             # These arguments are required.
-            "containmentFolder": "{sphinx_sourcedir}/generated/cpp",
+            "containmentFolder": "{containmentFolder}",
             "rootFileName": "index.rst",
             "rootFileTitle": "{package_name} C/C++ API",
             "doxygenStripFromPath": "..",
@@ -431,7 +438,7 @@ class SphinxBuilder(Builder):
         intersphinx_mapping_extensions = [
             f"'{package_name}': "
             f"('{base_url}/{package_name}/{inventory_dict['location_data']['relative_root']}', "
-            f"'{os.path.abspath(inventory_dict['inventory_file'])}')"
+            f"'{esc_backslash(os.path.abspath(inventory_dict['inventory_file']))}')"
             for package_name, inventory_dict in inventory_files.items()
             # Exclude ourselves.
             if package_name != self.build_context.package.name
@@ -458,7 +465,7 @@ class SphinxBuilder(Builder):
         if self.doxygen_xml_directory is not None:
             breathe_projects.append(
                 f'        "{self.build_context.package.name} Doxygen Project": '
-                f'"{self.doxygen_xml_directory}"')
+                f'"{esc_backslash(self.doxygen_xml_directory)}"')
 
         # Generate rst documents for standard documents
         standard_docs = self.locate_standard_documents()
