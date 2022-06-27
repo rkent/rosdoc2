@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.abspath('../{{ package.name }}'))
 # -- Project information -----------------------------------------------------
 
 project = '{{ package.name }}'
-copyright = '2021' + ', conf.j2.py Author  ({{ package_licenses }})'
+copyright = '2021' + ', conf.j2.py Author  ({{ package_licenses }})'  # noqa: A001
 
 # The full version, including alpha/beta/rc tags
 release = '{{ package.version }}'

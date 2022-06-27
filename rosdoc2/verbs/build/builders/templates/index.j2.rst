@@ -13,14 +13,14 @@ Links
 {% if url_bugtracker %}{{ url_bugtracker }}{% endif %}
 
 {% endif %} 
-{% if meta_dependencies %}
+{% if meta_dependencies -%}
 Dependencies of this Meta Package
 ---------------------------------------
-{% for subproject in meta_dependencies %}
+{% for subproject in meta_dependencies -%}
 * :doc:`{{subproject}}:index`
-{% endfor %}
-{% endif %}
-{% if has_user_docs %}
+{% endfor -%}
+{% endif -%}
+{% if has_user_docs or extra_doc_files %}
 Project Documentation
 ---------------------
 
@@ -28,19 +28,23 @@ Project Documentation
    :maxdepth: 2
    :glob:
 
-   doc/*
-{%- for (relpath, docname) in extra_doc_files %}
+   {% if '.' in doclist %}*{% endif %}
+   {% if 'doc' in doclist %}doc/*{% endif %}
+{% if extra_doc_files -%}
+{% for (relpath, docname) in extra_doc_files %}
    {{ relpath }} <{{ docname }}>
-{%- endfor %}
-{% endif %}
+{% endfor -%}
+{% endif -%}
+{% endif -%}
 {% if has_standard_docs %}
+
 Standard Documents
 ------------------
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :glob:
 
-   generated/standard/*
+   generated/standards
 
 {% endif -%}
 {% if did_run_doxygen or has_python or has_msg_defs or has_srv_defs %}

@@ -15,14 +15,15 @@
 import json
 import logging
 import os
-import pkg_resources
 import shutil
 import subprocess
+
+from jinja2 import Template
+import pkg_resources
 
 from ..builder import Builder
 from ..collect_tag_files import collect_tag_files
 from ..create_format_map_from_package import create_format_map_from_package
-from jinja2 import Template
 
 logger = logging.getLogger('rosdoc2')
 
@@ -130,7 +131,7 @@ class DoxygenBuilder(Builder):
                 # User-provided template for Doxyfile exists.
                 doxyfile_j2_template = Template(open(package_doxyfile_j2).read())
                 self.doxyfile_content = doxyfile_j2_template.render(self.template_variables)
-                logger.info("A user-provided template for Doxyfile willl be used")
+                logger.info('A user-provided template for Doxyfile will be used')
             elif os.path.isdir(package_include_directory):
                 # If neither the doxyfile setting is set,
                 # nor is there a Doxyfile in the package root,

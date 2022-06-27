@@ -12,21 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""This file is used to test documentation generation"""
+"""This file is used to test documentation generation."""
 
 
 class Example():
-    """This is the overview of the Example class"""
+    """This is the overview of the Example class."""
 
     def __init__(self):
-        """Example Constructor"""
+        """Construct example."""
         pass
 
     def do_something(p) -> str:
-        """This demo function would do something
+        """Do something.
 
         :param list[str] p: This is a parameter description
-        :return: just the input parm itself
+        :return: just the input arm itself
         """
-
         return p

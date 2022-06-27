@@ -1,123 +1,157 @@
-# GENERATED file from conf.j2.py
+## This conf.py imports the variables from the user defined (or default if none
+## was provided) conf.py, extends the settings to support Breathe and Exhale and
+## to set up intersphinx mappings correctly, among other things.
+
+# flake8: noqa
+
 import os
 import sys
 
-# Configuration file for the Sphinx documentation builder.
-#
-# This file only contains a selection of the most common options. For a full
-# list see the documentation:
-# https://www.sphinx-doc.org/en/master/usage/configuration.html
-
-# -- Path setup --------------------------------------------------------------
-
-# If extensions (or modules to document with autodoc) are in another directory,
-# add these directories to sys.path here. If the directory is relative to the
-# documentation root, use os.path.abspath to make it absolute, like shown here.
-#
-sys.path.insert(0, os.path.abspath('../user_conf_templates'))
-
-# -- Project information -----------------------------------------------------
-
-project = 'user_conf_files'
-copyright = '2021' + ', conf.py Author  (Apache License 2.0)'
-author = 'conf.py Author'
-
-# The full version, including alpha/beta/rc tags
-release = '0.1.3'
-
-version = '0.1'
-
-
-# -- General configuration ---------------------------------------------------
-
-# Add any Sphinx extension module names here, as strings. They can be
-# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
-# ones.
-## rosdoc2 will extend the extensions to enable Breathe and Exhale if you
-## do not add them here, as well as others, perhaps.
-## If you add them manually rosdoc2 may still try to configure them.
-## See the rosdoc2_settings below for some options on avoiding that.
-extensions = [
-    'sphinx.ext.viewcode',
-]
-
-# Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
-
-# List of patterns, relative to source directory, that match files and
-# directories to ignore when looking for source files.
-# This pattern also affects html_static_path and html_extra_path.
+## Set values for variables obtained by running conf.py.
+project = "user_conf_files"
+copyright = "2021, conf.py Author  (Apache License 2.0)"
+author = "conf.py Author"
+release = "0.1.3"
+version = "0.1"
+extensions = ['sphinx.ext.viewcode']
+templates_path = ['C:\\Users\\kent\\github\\rkent\\rosdoc2\\test\\data\\user_conf_files\\doc\\_templates']
 exclude_patterns = []
+master_doc = "index"
+source_suffix = {'.rst': 'restructuredtext', '.md': 'markdown', '.markdown': 'markdown'}
+html_theme = "sphinx_rtd_theme"
+html_theme_options = {'collapse_navigation': False, 'sticky_navigation': True, 'navigation_depth': -1, 'includehidden': True, 'titles_only': False}
+rosdoc2_settings = {}
 
-master_doc = 'index'
+## Based on the rosdoc2 settings, do various things to the settings before
+## letting Sphinx continue.
 
-source_suffix = {
-    '.rst': 'restructuredtext',
-    '.md': 'markdown',
-    '.markdown': 'markdown',
-}
+def ensure_global(name, default):
+    if name not in globals():
+        globals()[name] = default
 
-# -- Options for HTML output -------------------------------------------------
+ensure_global('rosdoc2_settings', {})
+ensure_global('extensions', [])
 
-# The theme to use for HTML and HTML Help pages.  See the documentation for
-# a list of builtin themes.
-#
-## rosdoc2 will override the theme, but you may set one here for running Sphinx
-## without the rosdoc2 tool.
-html_theme = 'sphinx_rtd_theme'
+if rosdoc2_settings.get('enable_autodoc', True):
+    print('[rosdoc2] enabling autodoc', file=sys.stderr)
+    extensions.append('sphinx.ext.autodoc')
+    # Provide all runtime dependencies to be mocked up
+    autodoc_mock_imports = ['rclcpp', 'rclpy']
+    import importlib
+    for item in autodoc_mock_imports:
+        try:
+            importlib.import_module(item)
+        except:
+            pass
 
-html_theme_options = {
-    # Toc options
-    'collapse_navigation': False,
-    'sticky_navigation': True,
-    'navigation_depth': -1,
-    'includehidden': True,
-    'titles_only': False,
-}
+    # Add the package directory to PATH, so that `sphinx-autodoc` can import it
+    sys.path.insert(0, os.path.dirname('C:\\Users\\kent\\github\\rkent\\rosdoc2\\test\\data\\user_conf_files\\None'))
 
-# Add any paths that contain custom static files (such as style sheets) here,
-# relative to this directory. They are copied after the builtin static files,
-# so a file named "default.css" will overwrite the builtin "default.css".
-## rosdoc2 comments this out by default because we're not creating it.
-# html_static_path = ['_static']
+if rosdoc2_settings.get('enable_intersphinx', True):
+    print('[rosdoc2] enabling intersphinx', file=sys.stderr)
+    extensions.append('sphinx.ext.intersphinx')
 
-# -- Options for rosdoc2 -----------------------------------------------------
+build_type = 'ament_cmake'
+always_run_doxygen = False
+is_doxygen_invoked = True
 
-## These settings are specific to rosdoc2, and if Sphinx is run without rosdoc2
-## they will be safely ignored.
-## None are required by default, so the lines below show the default values,
-## therefore you will need to uncomment the lines and change their value
-## if you want change the behavior of rosdoc2.
-rosdoc2_settings = {
-    ## This setting, if True, will ensure breathe is part of the 'extensions',
-    ## and will set all of the breathe configurations, if not set, and override
-    ## settings as needed if they are set by this configuration.
-    # 'enable_breathe': True,
+# TODO: We need better description of how 'enable_breathe' and 'enable_exhale' are managed.
+#       Default could be None, and if set then generate error if no doxygen.
 
-    ## This setting, if True, will ensure exhale is part of the 'extensions',
-    ## and will set all of the exhale configurations, if not set, and override
-    ## settings as needed if they are set by this configuration.
-    # 'enable_exhale': True,
+# By default, the `exhale`/`breathe` extensions should be added if `doxygen` was invoked
+if rosdoc2_settings.get('enable_breathe', is_doxygen_invoked):
+    # Configure Breathe.
+    # Breathe ingests the XML output from Doxygen and makes it accessible from Sphinx.
+    # First check that doxygen would have been run
+    if is_doxygen_invoked:
+        print('[rosdoc2] enabling breathe', file=sys.stderr)
+        ensure_global('breathe_projects', {})
+        breathe_projects.update({        "user_conf_files Doxygen Project": "C:\\Users\\kent\\AppData\\Local\\Temp\\pytest-of-kent\\pytest-1\\test_builder0\\build\\user_conf_files\\output_staging\\generated\\doxygen\\xml"
+    })
+        if breathe_projects:
+            # Enable Breathe and arbitrarily select the first project.
+            extensions.append('breathe')
+            breathe_default_project = next(iter(breathe_projects.keys()))
 
-    ## This setting, if provided, allows option specification for breathe
-    ## directives through exhale. If not set, exhale defaults will be used.
-    ## If an empty dictionary is provided, breathe defaults will be used.
-    # 'exhale_specs_mapping': {},
+    else:
+        log.info(
+            "Cannot enable the 'breathe' extension if 'doxygen' is not invoked."
+            "Please enable 'always_run_doxygen' if the package is not an"
+            "'ament_cmake' or 'cmake' package.")
 
-    ## This setting, if True, will ensure intersphinx is part of the 'extensions'.
-    # 'enable_intersphinx': True,
+if rosdoc2_settings.get('enable_exhale', is_doxygen_invoked):
+    # Configure Exhale.
+    # Exhale uses the output of Doxygen and Breathe to create easier to browse pages
+    # for classes and functions documented with Doxygen.
+    # This is similar to the class hierarchies and namespace listing provided by
+    # Doxygen out of the box.
+    print('[rosdoc2] enabling exhale', file=sys.stderr)
+    # First check that doxygen would have been run
+    if is_doxygen_invoked:
+        extensions.append('exhale')
+        ensure_global('exhale_args', {})
 
-    ## This setting, if True, will have the 'html_theme' overridden to provide
-    ## a consistent style across all of the ROS documentation.
-    # 'override_theme': True,
+        default_exhale_specs_mapping = {
+            'page': [':content-only:'],
+            **dict.fromkeys(
+                ['class', 'struct'],
+                [':members:', ':protected-members:', ':undoc-members:']),
+        }
 
-    ## This setting, if True, will automatically extend the intersphinx mapping
-    ## using inventory files found in the cross-reference directory.
-    ## If false, the `found_intersphinx_mappings` variable will be in the global
-    ## scope when run with rosdoc2, and could be conditionally used in your own
-    ## Sphinx conf.py file.
-    # 'automatically_extend_intersphinx_mapping': True,
+        exhale_specs_mapping = rosdoc2_settings.get(
+            'exhale_specs_mapping', default_exhale_specs_mapping)
 
-    ## Support markdown
-    # 'support_markdown': True,
-}
+        from exhale import utils
+        exhale_args.update({
+            # These arguments are required.
+            "containmentFolder": "test\\data\\user_conf_files\\doc\\generated\\cpp",
+            "rootFileName": "index.rst",
+            "rootFileTitle": "user_conf_files C/C++ API",
+            "doxygenStripFromPath": "..",
+            # Suggested optional arguments.
+            "createTreeView": True,
+            "fullToctreeMaxDepth": 1,
+            "unabridgedOrphanKinds": [],
+            "fullApiSubSectionTitle": "Reference",
+            # TIP: if using the sphinx-bootstrap-theme, you need
+            # "treeViewIsBootstrap": True,
+            "exhaleExecutesDoxygen": False,
+            # Maps markdown files to the "md" lexer, and not the "markdown" lexer
+            # Pygments registers "md" as a valid markdown lexer, and not "markdown"
+            "lexerMapping": {r".*\.(md|markdown)$": "md",},
+            "customSpecificationsMapping": utils.makeCustomSpecificationsMapping(
+                lambda kind: exhale_specs_mapping.get(kind, [])),
+        })
+    else:
+        log.info(
+            "Cannot enable the 'breathe' extension if 'doxygen' is not invoked."
+            "Please enable 'always_run_doxygen' if the package is not an"
+            "'ament_cmake' or 'cmake' package.")
+
+if rosdoc2_settings.get('override_theme', True):
+    extensions.append('sphinx_rtd_theme')
+    html_theme = 'sphinx_rtd_theme'
+    print(f"[rosdoc2] overriding theme to be '{html_theme}'", file=sys.stderr)
+
+if rosdoc2_settings.get('automatically_extend_intersphinx_mapping', True):
+    print(f"[rosdoc2] extending intersphinx mapping", file=sys.stderr)
+    if 'sphinx.ext.intersphinx' not in extensions:
+        raise RuntimeError(
+            "Cannot extend intersphinx mapping if 'sphinx.ext.intersphinx' "
+            "has not been added to the extensions")
+    ensure_global('intersphinx_mapping', {
+        'full_package': ('file:///C:/Users/kent/AppData/Local/Temp/pytest-of-kent/pytest-1/test_builder0/output/full_package/', 'C:\\Users\\kent\\AppData\\Local\\Temp\\pytest-of-kent\\pytest-1\\test_builder0\\cross_references\\full_package\\objects.inv'),
+        'meta_package': ('file:///C:/Users/kent/AppData/Local/Temp/pytest-of-kent/pytest-1/test_builder0/output/meta_package/', 'C:\\Users\\kent\\AppData\\Local\\Temp\\pytest-of-kent\\pytest-1\\test_builder0\\cross_references\\meta_package\\objects.inv'),
+        'minimum_package': ('file:///C:/Users/kent/AppData/Local/Temp/pytest-of-kent/pytest-1/test_builder0/output/minimum_package/', 'C:\\Users\\kent\\AppData\\Local\\Temp\\pytest-of-kent\\pytest-1\\test_builder0\\cross_references\\minimum_package\\objects.inv'),
+        'only_messages': ('file:///C:/Users/kent/AppData/Local/Temp/pytest-of-kent/pytest-1/test_builder0/output/only_messages/', 'C:\\Users\\kent\\AppData\\Local\\Temp\\pytest-of-kent\\pytest-1\\test_builder0\\cross_references\\only_messages\\objects.inv')
+    })
+
+if rosdoc2_settings.get('support_markdown', True):
+    print(f"[rosdoc2] adding markdown parser", file=sys.stderr)
+    # The `myst_parser` is used specifically if there are markdown files
+    # in the sphinx project
+    extensions.append('myst_parser')
+
+# Provide tags to conditionally include documentation
+for tag in ['package_name', 'package_version', 'package_description', 'package_directory', 'breathe_projects', 'containmentFolder', 'did_run_doxygen', 'build_type', 'exec_depends', 'intersphinx_mapping_extensions', 'package', 'package_authors', 'package_licenses', 'package_src_directory', 'package_underline', 'package_version_short', 'root_title', 'root_title_underline', 'sphinx_sourcedir', 'has_cpp', 'doclist']:
+    tags.add(tag)

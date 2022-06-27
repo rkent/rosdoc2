@@ -13,7 +13,7 @@
 # limitations under the License.
 
 
-"""Generate rst files for messages and services"""
+"""Generate rst files for messages and services."""
 
 import fnmatch
 import os
@@ -56,7 +56,7 @@ def _find_files_with_extension(path, ext):
 
 def generate_interface_docs(path: str, package: str, output_dir: str):
     """
-    Generate rst files from messages and services
+    Generate rst files from messages and services.
 
     :param str path: Directory path to start search for files
     :param str package: Name of containing package
@@ -64,14 +64,13 @@ def generate_interface_docs(path: str, package: str, output_dir: str):
     :return: {'msg':msg_count, 'srv':srv_count} count of files written
     :rtype: dict(str, int)
     """
-
     counts = {}
     for type_info in (('msg', 'message'), ('srv', 'service')):
         count = 0
         (type_ext, type_name) = type_info
         interfaces = _find_files_with_extension(path, type_ext)
         output_dir_ex = os.path.join(output_dir, type_ext)
-        title = type_name.capitalize() + " Definitions"
+        title = type_name.capitalize() + ' Definitions'
         for interface in interfaces:
             (iface_name, iface_path) = interface
             relative_path = os.path.relpath(iface_path, start=output_dir_ex)

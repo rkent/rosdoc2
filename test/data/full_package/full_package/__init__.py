@@ -12,4 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""This is the documentation for the whole ROS package as a python module"""
+"""This is the documentation for the whole ROS package as a python module."""

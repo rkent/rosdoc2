@@ -12,29 +12,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""testing of builder.py using pytest"""
+"""Test builder.py using pytest."""
 
 import argparse
 from html.parser import HTMLParser
 import logging
 import pathlib
-import pytest
 from urllib.parse import urlparse
 
-from rosdoc2.verbs.build.impl import prepare_arguments, main_impl
+import pytest
+from rosdoc2.verbs.build.impl import main_impl, prepare_arguments
 
 DATAPATH = pathlib.Path('test/data')
 
 
 @pytest.fixture(scope='module')
 def tmp_path(tmpdir_factory):
-    """Create a temporary path for use over the entire test"""
+    """Create a temporary path for use over the entire test."""
     return pathlib.Path(tmpdir_factory.mktemp('test_builder'))
 
 
 @pytest.fixture(scope='module')
 def many_path(tmp_path):
-    """Generates once documentation over all packages under DATAPATH """
+    """Generate 'once' documentation over all packages under DATAPATH."""
     do_build_package(DATAPATH, tmp_path)
     return tmp_path
 
@@ -48,7 +48,8 @@ logger.setLevel(logging.INFO)
 
 
 class htmlParser(HTMLParser):
-    """Minimal html parsing collecting tags"""
+    """Minimal html parsing collecting tags."""
+
     def __init__(self):
         super().__init__()
         self.tags = []
@@ -100,8 +101,7 @@ def do_test_package(
     file_excludes=[],
     links_exist=[],
 ) -> None:
-
-    """test that package documentation exists and includes/excludes certain text
+    """Test that package documentation exists and includes/excludes certain text.
 
     :param str work_path: path where generated files will be placed
     :param list[str] includes: lower case text found in index.html data
@@ -113,7 +113,6 @@ def do_test_package(
     :param list[str] links_exist: Confirm that 1) a link exists containing this text, and
         2) the link is a valid file
     """
-
     output_dir = work_path / 'output'
 
     logger.info(f'*** Testing package {name}')
@@ -128,7 +127,7 @@ def do_test_package(
     # read and parse the index file
     index_content = index_path.read_text()
     assert len(index_content) > 0, \
-        "index.html is not empty"
+        'index.html is not empty'
 
     parser = htmlParser()
     parser.feed(index_content)
@@ -172,7 +171,7 @@ def do_test_package(
 
 
 def test_meta_dependencies(tmp_path):
-    """Builds dependencies to the meta package"""
+    """Build dependencies to the meta package."""
     do_build_package(DATAPATH / 'full_package', tmp_path)
     do_build_package(DATAPATH / 'only_messages', tmp_path)
     do_build_package(DATAPATH / 'meta_package', tmp_path)

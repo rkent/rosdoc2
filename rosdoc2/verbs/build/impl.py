@@ -117,7 +117,6 @@ def main(options):
 
 def main_impl(options):
     """Execute the program."""
-
     if not options.package_path:
         options.package_path = os.getcwd()
 

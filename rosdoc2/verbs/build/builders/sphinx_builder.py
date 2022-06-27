@@ -15,12 +15,13 @@
 import json
 import logging
 import os
-import pkg_resources
-import setuptools
 import shutil
 import subprocess
 
 from jinja2 import Template
+import pkg_resources
+import setuptools
+
 from ..builder import Builder
 from ..collect_inventory_files import collect_inventory_files
 from ..create_format_map_from_package import create_format_map_from_package
@@ -29,8 +30,11 @@ from ....slugify import slugify
 
 logger = logging.getLogger('rosdoc2')
 
+
 def esc_backslash(path):
+    """Escape backslashes to support Windows paths in strings."""
     return path.replace('\\', '\\\\') if path else ''
+
 
 def generate_template_variables(
     intersphinx_mapping_extensions,
@@ -43,9 +47,9 @@ def generate_template_variables(
     interface_counts,
     meta_dependencies,
     extra_doc_files,
+    doclist,
 ):
-    """Generate the variables used by templates for conf.py and index.rst"""
-
+    """Generate the variables used by templates for conf.py and index.rst."""
     package = build_context.package
     template_variables = create_format_map_from_package(package)
     root_title = f'Package {package.name}'
@@ -105,6 +109,7 @@ def generate_template_variables(
         'has_readme': 'readme' in standard_docs,
         'meta_dependencies': meta_dependencies,
         'extra_doc_files': extra_doc_files,
+        'doclist': doclist,
     })
 
     # Each True template key will be converted into a sphinx tag in conf.py
@@ -149,7 +154,7 @@ if rosdoc2_settings.get('enable_autodoc', True):
     for item in autodoc_mock_imports:
         try:
             importlib.import_module(item)
-        except:
+        except ModuleNotFoundError:
             pass
 
     # Add the package directory to PATH, so that `sphinx-autodoc` can import it
@@ -374,6 +379,8 @@ class SphinxBuilder(Builder):
             # We do not need to check if this directory exists, as that was done in __init__.
             logger.info(
                 f"Note: the user provided sourcedir for Sphinx '{user_doc_dir}' will be used.")
+            # Run the sphinx project in the user_doc_dir
+            sphinx_sourcedir = user_doc_dir
         else:
             # If the user does not supply a Sphinx sourcedir, check the standard locations.
             standard_sphinx_sourcedir = self.locate_sphinx_sourcedir_from_standard_locations()
@@ -381,7 +388,7 @@ class SphinxBuilder(Builder):
                 logger.info(
                     'Note: no sourcedir provided, but a Sphinx sourcedir located in the '
                     f"location '{standard_sphinx_sourcedir}' will be used.")
-                user_doc_dir = standard_sphinx_sourcedir
+                sphinx_sourcedir = standard_sphinx_sourcedir
             else:
                 # If the user does not supply a Sphinx sourcedir, and there is no Sphinx project
                 # in the conventional location, i.e. '<package dir>/doc', create a temporary
@@ -390,19 +397,20 @@ class SphinxBuilder(Builder):
                 logger.info(
                     'Note: no sourcedir provided by the user and no Sphinx sourcedir was found '
                     'in the standard locations, therefore using a default Sphinx configuration.')
+                sphinx_sourcedir = None
 
         doclist = {}
-        extra_doc_files = []
-        # Run the sphinx project in the user_doc_dir
-        sphinx_sourcedir = user_doc_dir
-        if user_doc_dir is not None:
-            generated_path = os.path.join(user_doc_dir, 'generated')
+        extra_doc_files = []  # files outside of the documentation directory
+        if sphinx_sourcedir is not None:
+            generated_path = os.path.join(sphinx_sourcedir, 'generated')
             shutil.rmtree(generated_path, ignore_errors=True)
             os.makedirs(generated_path, exist_ok=True)
 
             # locate all documentation in package
-            for root, directories, files in os.walk(user_doc_dir):
-                relpath = os.path.relpath(root, user_doc_dir) or '.'
+            for root, directories, files in os.walk(sphinx_sourcedir):
+                relpath = os.path.relpath(root, sphinx_sourcedir) or '.'
+                # Use forward slash path separators in sphinx documents
+                relpath = relpath.replace('\\', '/')
                 # ensure a valid documentation file exists
                 if 'generated' in relpath:
                     continue
@@ -413,9 +421,11 @@ class SphinxBuilder(Builder):
                             doclist[relpath] = []
                         doclist[relpath].append(filename)
 
+            logger.debug(f'doclist: {doclist}clear')
             # generate a glob rst document for each directory with documents
             for relpath in doclist:
-                # ignore directories that will be explicitly listed in index.rst
+                logger.debug(f'relpath: {relpath}')
+                # directories that will be explicitly listed in index.rst
                 if relpath in ['.', 'doc']:
                     continue
                 docname = '_' + slugify(relpath)  # This is the name that sphinx uses for the file
@@ -424,12 +434,13 @@ class SphinxBuilder(Builder):
                 # directory, do not include the 'doc/' prefix
                 doctitle = relpath[len('doc/'):] if relpath.startswith('doc/') else relpath
                 extra_doc_files.append([doctitle, 'generated/' + docname])
-                name_underline = "=" * len(doctitle)
+                name_underline = '=' * len(doctitle)
                 content = subdirectory_rst_template.format_map(
                     {'name': doctitle, 'name_underline': name_underline, 'relpath': relpath})
-                sub_path = os.path.join(user_doc_dir, 'generated', filename)
+                sub_path = os.path.join(sphinx_sourcedir, 'generated', filename)
                 with open(sub_path, 'w+') as f:
                     f.write(content)
+            logger.debug(f'extra_doc_files: {extra_doc_files}')
 
         # Collect intersphinx mapping extensions from discovered inventory files.
         inventory_files = \
@@ -503,6 +514,7 @@ class SphinxBuilder(Builder):
             interface_counts,
             meta_dependencies,
             extra_doc_files,
+            doclist
         )
 
         logger.debug(f'template_variables: {self.template_variables}')
@@ -522,9 +534,9 @@ class SphinxBuilder(Builder):
         if should_run_sphinx_apidoc:
             if not package_src_directory or not os.path.isdir(package_src_directory):
                 logger.warning(
-                    "Could not locate source directory to invoke sphinx-apidoc in. "
-                    "If this is package does not have a standard Python package layout, "
-                    "please specify the Python source in 'rosdoc2.yaml'.")
+                    'Could not locate source directory to invoke sphinx-apidoc in. '
+                    'If this is package does not have a standard Python package layout, '
+                    'please specify the Python source in "rosdoc2.yaml".')
             else:
                 output_directory = os.path.join(sphinx_sourcedir, 'generated/python')
                 cmd = [
@@ -657,13 +669,14 @@ class SphinxBuilder(Builder):
                     __name__, 'templates/index.j2.rst').decode('utf-8')
 
             index_rst = Template(index_j2_template).render(self.template_variables)
-            index_rst_path = os.path.join(directory, "index.rst")
+            index_rst_path = os.path.join(directory, 'index.rst')
             with open(os.path.join(index_rst_path), 'w+') as f:
                 f.write(index_rst)
 
     def locate_sphinx_sourcedir_from_standard_locations(self):
         """
         Return the location of a Sphinx project for the package.
+
         If the sphinx configuration exists in a standard location, return it,
         otherwise return None.  The standard locations are
         '<package.xml directory>/doc/source/conf.py' and
@@ -681,8 +694,13 @@ class SphinxBuilder(Builder):
             os.path.join(package_xml_directory, 'docs'),
         ]
         for option in options:
-            if os.path.isfile(os.path.join(option, 'conf.py')):
-                return option
+            conf_py = os.path.join(option, 'conf.py')
+            if os.path.isfile(conf_py):
+                # Check if it is generated.
+                with open(conf_py, 'r') as f:
+                    firstline = f.readline()
+                if 'GENERATED_CONTENT' not in firstline:
+                    return option
             if os.path.isfile(os.path.join(option, 'conf.j2.py')):
                 return option
 
@@ -693,8 +711,8 @@ class SphinxBuilder(Builder):
         self,
         directory,
     ):
-        logger.info(f'Generating sphinx project into directory {directory}')
         """Generate the rosdoc2 sphinx project configuration files."""
+        logger.info(f'Generating sphinx project into directory {directory}')
         os.makedirs(directory, exist_ok=True)
 
         user_conf_py_path = os.path.abspath(os.path.join(directory, 'conf.py'))
@@ -731,8 +749,8 @@ class SphinxBuilder(Builder):
             f.write(wrapped_conf_py)
 
     def locate_standard_documents(self):
-        """Locate standard documents"""
-        names = ["readme", "license", "contributing", "changelog"]
+        """Locate standard documents."""
+        names = ['readme', 'license', 'contributing', 'changelog']
         found_paths = {}
         package_xml_directory = os.path.dirname(self.build_context.package.filename)
         package_directory_items = os.listdir(package_xml_directory)
@@ -760,7 +778,7 @@ class SphinxBuilder(Builder):
         return found_paths
 
     def generate_standard_document_files(self, standard_docs, sphinx_sourcedir):
-        """Generate rst documents to link to standard documents"""
+        """Generate rst documents to link to standard documents."""
         sphinx_sourcedir = os.path.abspath(sphinx_sourcedir)
         if len(standard_docs):
             # Create the standards.rst document that will link to the actual documents
@@ -778,10 +796,10 @@ class SphinxBuilder(Builder):
             file_contents = f'{key.upper()}\n'
             # using ')' as a header marker to assure the name is the title
             file_contents += ')' * len(key) + '\n\n'
-            type = standard_doc['type']
-            if type == 'rst':
+            file_type = standard_doc['type']
+            if file_type == 'rst':
                 file_contents += f'.. include:: {relative_path}\n'
-            elif type == 'md':
+            elif file_type == 'md':
                 file_contents += f'.. include:: {relative_path}\n'
                 file_contents += '   :parser: myst_parser.sphinx_\n'
             else:
