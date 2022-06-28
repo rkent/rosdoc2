@@ -722,7 +722,9 @@ class SphinxBuilder(Builder):
         # Execute conf.py and get values of variables
         conf_globals = {'logger': logger}
         conf_locals = {}
+        print('**** before ****')
         exec(user_conf_py, conf_globals, conf_locals)
+        print('**** after ****')
 
         # Convert any paths to absolute paths.
         conf_relpath = os.path.relpath(directory)

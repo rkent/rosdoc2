@@ -24,6 +24,7 @@ import pytest
 from rosdoc2.verbs.build.impl import main_impl, prepare_arguments
 
 DATAPATH = pathlib.Path('test/data')
+METAPATH = DATAPATH / 'meta'
 
 
 @pytest.fixture(scope='module')
@@ -35,7 +36,7 @@ def tmp_path(tmpdir_factory):
 @pytest.fixture(scope='module')
 def many_path(tmp_path):
     """Generate 'once' documentation over all packages under DATAPATH."""
-    do_build_package(DATAPATH, tmp_path)
+    do_build_package(METAPATH, tmp_path)
     return tmp_path
 
 
@@ -73,10 +74,10 @@ class htmlParser(HTMLParser):
             self.content.add(data_black.lower())
 
 
-def do_build_package(package_path, tmp_path) -> None:
-    build_dir = tmp_path / 'build'
-    output_dir = tmp_path / 'output'
-    cr_dir = tmp_path / 'cross_references'
+def do_build_package(package_path, path) -> None:
+    build_dir = path / 'build'
+    output_dir = path / 'output'
+    cr_dir = path / 'cross_references'
 
     # Create a top level parser
     parser = prepare_arguments(argparse.ArgumentParser())
@@ -113,9 +114,8 @@ def do_test_package(
     :param list[str] links_exist: Confirm that 1) a link exists containing this text, and
         2) the link is a valid file
     """
+    logger.info(f'*** Testing package {name} work_path {work_path}')
     output_dir = work_path / 'output'
-
-    logger.info(f'*** Testing package {name}')
 
     # tests on the main index.html
     index_path = output_dir / name / 'index.html'
@@ -125,7 +125,13 @@ def do_test_package(
         'html index file exists'
 
     # read and parse the index file
-    index_content = index_path.read_text()
+    #
+    # The package title html has a permalink icon at the end which is
+    # a unicode character. For some reason, on Windows this character generates
+    # a unicode error in Windows, though it seems to work fine
+    # in the browser. So ignore unicode errors.
+    with index_path.open(mode='r', errors='replace') as f:
+        index_content = f.read()
     assert len(index_content) > 0, \
         'index.html is not empty'
 
@@ -170,22 +176,24 @@ def do_test_package(
             f'file represented by {found_item} should exist'
 
 
-def test_meta_dependencies(tmp_path):
+def test_meta_dependencies(many_path):
     """Build dependencies to the meta package."""
-    do_build_package(DATAPATH / 'full_package', tmp_path)
-    do_build_package(DATAPATH / 'only_messages', tmp_path)
-    do_build_package(DATAPATH / 'meta_package', tmp_path)
+    path = many_path
+    # This packages are rebuilt, as the first time they do not have
+    # links from pervious builds to these packages.
+    do_build_package(METAPATH / 'meta_package', path)
 
     includes = ['Dependencies of this Meta Package']
     links_exist = ['full_package/index.html']
-    do_test_package('meta_package', tmp_path, includes, links_exist=links_exist)
+    do_test_package('meta_package', path, includes, links_exist=links_exist)
 
 
 # At this point, the full set of packages are built
-def test_minimal_package(many_path):
-    work_path = many_path
+def test_minimal_package(tmp_path):
+    path = tmp_path
     # Testing of an empty as possible package
     PKG_NAME = 'minimum_package'
+    do_build_package(DATAPATH / PKG_NAME, path)
 
     includes = [
         PKG_NAME,
@@ -206,7 +214,7 @@ def test_minimal_package(many_path):
         'Package API',
     ]
 
-    do_test_package(PKG_NAME, work_path, includes, excludes)
+    do_test_package(PKG_NAME, path, includes, excludes)
 
 
 def test_full_package(many_path):
@@ -254,10 +262,11 @@ def test_full_package(many_path):
     do_test_package(PKG_NAME, many_path, includes, excludes, file_includes, file_excludes)
 
 
-def test_user_conf_files(many_path):
+def test_user_conf_files(tmp_path):
     # User provides configuration files
     PKG_NAME = 'user_conf_files'
-
+    path = tmp_path
+    do_build_package(DATAPATH / PKG_NAME, path)
     includes = [
         PKG_NAME,
         'c/c++ api',
@@ -275,12 +284,14 @@ def test_user_conf_files(many_path):
         'generated/cpp/file_nonstandard_include_user_conf_files_iamcpp.hpp.html',
     ]
     file_excludes = []
-    do_test_package(PKG_NAME, many_path, includes, excludes, file_includes, file_excludes)
+    do_test_package(PKG_NAME, path, includes, excludes, file_includes, file_excludes)
 
 
-def test_user_conf_templates(many_path):
+def test_user_conf_templates(tmp_path):
     # User provides configuration templates
     PKG_NAME = 'user_conf_templates'
+    path = tmp_path
+    do_build_package(DATAPATH / PKG_NAME, path)
 
     includes = [
         PKG_NAME,
@@ -297,7 +308,7 @@ def test_user_conf_templates(many_path):
         'generated/cpp/file_nonstandard_include_user_conf_templates_iamcpp.hpp.html',
     ]
     file_excludes = []
-    do_test_package(PKG_NAME, many_path, includes, excludes, file_includes, file_excludes)
+    do_test_package(PKG_NAME, path, includes, excludes, file_includes, file_excludes)
 
 
 def test_only_messages(many_path):
