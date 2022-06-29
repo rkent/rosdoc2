@@ -232,6 +232,9 @@ default_conf_py_template = """\
 import os
 import sys
 sys.path.insert(0, os.path.abspath(os.path.join('{package_src_directory}', '..')))
+import os
+import sys
+sys.path.insert(0, os.path.abspath(os.path.join('{package_src_directory}', '..')))
 
 
 # -- Project information -----------------------------------------------------
@@ -487,26 +490,6 @@ class SphinxBuilder(Builder):
             # Exclude ourselves.
             if package_name != self.build_context.package.name
         ]
-
-        package_xml_directory = os.path.dirname(self.build_context.package.filename)
-        # If 'python_source' is specified, construct 'package_src_directory' from it
-        if self.build_context.python_source is not None:
-            package_src_directory = \
-                os.path.abspath(
-                    os.path.join(
-                        package_xml_directory,
-                        self.build_context.python_source))
-        # If not provided, try to find the package source direcotry
-        else:
-            package_list = setuptools.find_packages(where=package_xml_directory)
-            if self.build_context.package.name in package_list:
-                package_src_directory = \
-                    os.path.abspath(
-                        os.path.join(
-                            package_xml_directory,
-                            self.build_context.package.name))
-            else:
-                package_src_directory = None
 
         # Setup rosdoc2 Sphinx file which will include and extend the one in `sourcedir`.
         self.generate_wrapping_rosdoc2_sphinx_project_into_directory(
