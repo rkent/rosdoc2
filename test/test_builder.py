@@ -23,7 +23,7 @@ from urllib.parse import urlparse
 import pytest
 from rosdoc2.verbs.build.impl import main_impl, prepare_arguments
 
-DATAPATH = pathlib.Path('test/data')
+PKGPATH = pathlib.Path('test_pkgs')
 
 
 @pytest.fixture(scope='module')
@@ -37,7 +37,7 @@ formatter = logging.Formatter('%(levelname)s - %(name)s - %(message)s')
 handler = logging.StreamHandler()
 handler.setFormatter(formatter)
 logger.addHandler(handler)
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 
 
 class htmlParser(HTMLParser):
@@ -63,7 +63,7 @@ class htmlParser(HTMLParser):
         data_unwhite = data.strip(' \n')
         if self.tags and data_unwhite:
             self.tags[-1]['data'] = data_unwhite
-            # logger.debug(f'tag: {self.tags[-1]}')
+            logger.debug(f'tag: {self.tags[-1]}')
             self.content.add(data_unwhite)
 
 
@@ -94,6 +94,7 @@ def do_test_package(
     file_includes=[],
     file_excludes=[],
     links_exist=[],
+    html_path='index.html'
 ) -> None:
     """Test that package documentation exists and includes/excludes certain text.
 
@@ -107,11 +108,15 @@ def do_test_package(
     :param list[str] links_exist: Confirm that 1) a link exists containing this text, and
         2) the link is a valid file
     """
-    logger.info(f'*** Testing package {name} work_path {work_path}')
+    logger.info(
+        f'*** Testing package {name} '
+        f'work_path {work_path} '
+        f'file {html_path}'
+    )
     output_dir = work_path / 'output'
 
     # tests on the main index.html
-    index_path = output_dir / name / 'index.html'
+    index_path = output_dir / name / html_path
 
     # smoke test
     assert index_path.is_file(),\
@@ -177,7 +182,7 @@ def test_minimum_package(tmp_path):
     pkg_name = 'minimum_package'
     path = tmp_path
 
-    do_build_package(DATAPATH / pkg_name, path)
+    do_build_package(PKGPATH / pkg_name, path)
 
     includes = [
         pkg_name,
@@ -195,7 +200,7 @@ def test_cpp_package(tmp_path):
     pkg_name = 'cpp_package'
     path = tmp_path
 
-    do_build_package(DATAPATH / pkg_name, path)
+    do_build_package(PKGPATH / pkg_name, path)
 
     includes = [
         pkg_name,
@@ -215,4 +220,28 @@ def test_cpp_package(tmp_path):
         pkg_name, path, includes,
         file_includes=file_includes,
         links_exist=links_exist,
+    )
+
+
+def test_minimal_publisher_py(tmp_path):
+    pkg_name = 'minimal_publisher_py'
+    path = tmp_path
+
+    do_build_package(PKGPATH / pkg_name, path)
+
+    includes = [
+        'Index',
+        'Search Page',
+        pkg_name + ' package',
+    ]
+
+    do_test_package(pkg_name, path, includes)
+
+    # Test one of the python functions
+    includes = [
+        'MinimalPublisher'
+    ]
+    do_test_package(
+        pkg_name, path, includes,
+        html_path='minimal_publisher_py.publisher_member_function.html'
     )
