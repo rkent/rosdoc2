@@ -12,19 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""testing of builder.py using pytest"""
+"""testing of builder.py using pytest."""
 
 import argparse
 import pathlib
 
-from rosdoc2.verbs.build.impl import prepare_arguments, main_impl
+from rosdoc2.verbs.build.impl import main_impl, prepare_arguments
 
 DATAPATH = pathlib.Path('test/data')
+
 
 def test_basic_package(tmp_path):
     build_dir = tmp_path / 'build'
     output_dir = tmp_path / 'output'
-    cr_dir = tmp_path / "cross_references"
+    cr_dir = tmp_path / 'cross_references'
     package_path = DATAPATH / 'minimum_package'
 
     # Create a top level parser
