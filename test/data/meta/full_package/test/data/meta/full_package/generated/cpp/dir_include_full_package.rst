@@ -9,7 +9,8 @@ Directory full_package
 
 .. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
 
-*Directory path:* ``include\full_package``
+
+*Directory path:* ``include/full_package``
 
 
 Files

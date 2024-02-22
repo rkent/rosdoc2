@@ -4,9 +4,10 @@
 File iamcpp.hpp
 ===============
 
-|exhale_lsh| :ref:`Parent directory <dir_include_full_package>` (``include\full_package``)
+|exhale_lsh| :ref:`Parent directory <dir_include_full_package>` (``include/full_package``)
 
 .. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
 
 
 This is the header file for the DoSomeCpp class implementing a node do_some_cpp. 
@@ -17,7 +18,7 @@ This is the header file for the DoSomeCpp class implementing a node do_some_cpp.
    :local:
    :backlinks: none
 
-Definition (``include\full_package\iamcpp.hpp``)
+Definition (``include/full_package/iamcpp.hpp``)
 ------------------------------------------------
 
 
@@ -54,5 +55,5 @@ Classes
 -------
 
 
-- :ref:`exhale_class_classfull__package_1_1_do_some_cpp`
+- :ref:`exhale_class_classfull__package_1_1DoSomeCpp`
 

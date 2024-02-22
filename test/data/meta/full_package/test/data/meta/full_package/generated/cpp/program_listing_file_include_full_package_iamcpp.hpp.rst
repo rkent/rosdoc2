@@ -4,7 +4,7 @@
 Program Listing for File iamcpp.hpp
 ===================================
 
-|exhale_lsh| :ref:`Return to documentation for file <file_include_full_package_iamcpp.hpp>` (``include\full_package\iamcpp.hpp``)
+|exhale_lsh| :ref:`Return to documentation for file <file_include_full_package_iamcpp.hpp>` (``include/full_package/iamcpp.hpp``)
 
 .. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
 
