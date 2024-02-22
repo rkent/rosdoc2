@@ -4,9 +4,10 @@
 File iamcpp.hpp
 ===============
 
-|exhale_lsh| :ref:`Parent directory <dir_nonstandard_include_user_conf_templates>` (``nonstandard\include\user_conf_templates``)
+|exhale_lsh| :ref:`Parent directory <dir_nonstandard_include_user_conf_templates>` (``nonstandard/include/user_conf_templates``)
 
 .. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
 
 
 This is the header file for the DoSomeCpp class implementing a node do_some_cpp. 
@@ -17,7 +18,7 @@ This is the header file for the DoSomeCpp class implementing a node do_some_cpp.
    :local:
    :backlinks: none
 
-Definition (``nonstandard\include\user_conf_templates\iamcpp.hpp``)
+Definition (``nonstandard/include/user_conf_templates/iamcpp.hpp``)
 -------------------------------------------------------------------
 
 
@@ -54,5 +55,5 @@ Classes
 -------
 
 
-- :ref:`exhale_class_classuser__conf__templates_1_1_do_some_cpp`
+- :ref:`exhale_class_classuser__conf__templates_1_1DoSomeCpp`
 

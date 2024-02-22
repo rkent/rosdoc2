@@ -9,7 +9,8 @@ Directory include
 
 .. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
 
-*Directory path:* ``nonstandard\include``
+
+*Directory path:* ``nonstandard/include``
 
 Subdirectories
 --------------

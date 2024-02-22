@@ -22,4 +22,4 @@ Classes
 -------
 
 
-- :ref:`exhale_class_classuser__conf__templates_1_1_do_some_cpp`
+- :ref:`exhale_class_classuser__conf__templates_1_1DoSomeCpp`
