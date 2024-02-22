@@ -127,6 +127,8 @@ rosdoc2_wrapping_conf_py_preamble = """\
 ## This conf.py imports the variables from the user defined (or default if none
 ## was provided) conf.py, extends the settings to support Breathe and Exhale and
 ## to set up intersphinx mappings correctly, among other things.
+# flake8: noqa
+
 
 import os
 import sys
@@ -722,9 +724,7 @@ class SphinxBuilder(Builder):
         # Execute conf.py and get values of variables
         conf_globals = {'logger': logger}
         conf_locals = {}
-        print('**** before ****')
         exec(user_conf_py, conf_globals, conf_locals)
-        print('**** after ****')
 
         # Convert any paths to absolute paths.
         conf_relpath = os.path.relpath(directory)
