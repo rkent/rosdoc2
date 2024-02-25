@@ -165,7 +165,8 @@ def main_impl(options):
         if os.path.exists(output_staging_directory):
             # Delete this directory because it is temporary and will cause "file collision"
             # false positives if the tool fails to run to completion.
-            shutil.rmtree(output_staging_directory)
+            #shutil.rmtree(output_staging_directory)
+            pass
         os.makedirs(output_staging_directory)
 
         # Use a file uri reference to the output directory as default base_url
@@ -181,6 +182,7 @@ def main_impl(options):
             doc_build_folder = os.path.join(package_doc_build_directory, slugify(builder.name))
             if os.path.exists(doc_build_folder):
                 # Delete this directory because it may cause problems with staging.
+                logger.warn(f'Removing {doc_build_folder}')
                 shutil.rmtree(doc_build_folder)
             os.makedirs(doc_build_folder)
             # This is the directory into which the results of the builder will be moved into.
@@ -214,6 +216,7 @@ def main_impl(options):
         # Move staged files to user provided output directory.
         package_output_directory = os.path.join(options.output_directory, package.name)
         logger.info(f"Moving files to final destination in '{package_output_directory}'.")
+        logger.info(f'Walking {output_staging_directory}')
 
         for root, dirs, files in os.walk(output_staging_directory):
             for item in dirs + files:
@@ -225,7 +228,9 @@ def main_impl(options):
                     # and is a directory, it would copy the source directory into it,
                     # rather than replacing its contents or appending to it.
                     # So deleting it first will prevent that.
+                    logger.warn(f'We had to remove {destination}')
                     shutil.rmtree(destination)
+                logger.info(f'moving {source} to {destination}')
                 shutil.move(source, destination)
             break
 

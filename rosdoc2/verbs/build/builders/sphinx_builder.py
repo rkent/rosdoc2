@@ -235,6 +235,7 @@ if rosdoc2_settings.get('enable_exhale', is_doxygen_invoked):
             "lexerMapping": {{r".*\\.(md|markdown)$": "md",}},
             "customSpecificationsMapping": utils.makeCustomSpecificationsMapping(
                 lambda kind: exhale_specs_mapping.get(kind, [])),
+            "verboseBuild": True,
         }})
     else:
         log.info(
@@ -405,7 +406,8 @@ class SphinxBuilder(Builder):
         extra_doc_files = []  # files outside of the documentation directory
         if sphinx_sourcedir is not None:
             generated_path = os.path.join(sphinx_sourcedir, 'generated')
-            shutil.rmtree(generated_path, ignore_errors=True)
+            logger.warn(f'Removing {generated_path}')
+            #shutil.rmtree(generated_path, ignore_errors=True)
             os.makedirs(generated_path, exist_ok=True)
 
             # locate all documentation in package

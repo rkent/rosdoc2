@@ -185,6 +185,7 @@ def test_meta_dependencies(many_path):
 
     includes = ['Dependencies of this Meta Package']
     links_exist = ['full_package/index.html']
+    print('Hello')
     do_test_package('meta_package', path, includes, links_exist=links_exist)
 
 
