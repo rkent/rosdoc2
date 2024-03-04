@@ -217,6 +217,37 @@ def test_minimal_package(tmp_path):
 
     do_test_package(PKG_NAME, path, includes, excludes)
 
+def test_minimum_cpp(tmp_path):
+    # Test of a full-featured cmake package
+    PKG_NAME = 'minimum_cpp'
+    path = tmp_path
+    do_build_package(DATAPATH / PKG_NAME, path)
+
+    includes = [
+        PKG_NAME,
+        'Index and Search',
+        'repository',
+        'website',
+        'bugtracker',
+        'Standard Documents',
+        'c/c++ api',
+    ]
+
+    excludes = []
+    file_includes = [
+        'generated/standard/CHANGELOG.html',
+        'generated/standard/CONTRIBUTING.html',
+        'generated/standard/LICENSE.html',
+        'generated/standard/README.html',
+        'generated/cpp/index.html',
+        'generated/cpp/file_include_full_package_iamcpp.hpp.html',
+    ]
+    file_excludes = [
+        'idonotexist.html',  # just a smoke test of the excludes function
+    ]
+    do_test_package(PKG_NAME, tmp_path, includes, excludes, file_includes, file_excludes)
+
+
 
 def test_full_package(many_path):
     # Test of a full-featured cmake package
