@@ -240,7 +240,7 @@ def test_minimum_cpp(tmp_path):
         'generated/standard/LICENSE.html',
         'generated/standard/README.html',
         'generated/cpp/index.html',
-        'generated/cpp/file_include_full_package_iamcpp.hpp.html',
+        'generated/cpp/file_include_minimum_cpp_iamcpp.hpp.html',
     ]
     file_excludes = [
         'idonotexist.html',  # just a smoke test of the excludes function

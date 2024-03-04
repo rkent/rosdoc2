@@ -76,7 +76,9 @@ def generate_template_variables(
 
     # Fix containment folder string for possible Windows paths
     containmentFolder = esc_backslash(
-        os.path.normpath(os.path.join(sphinx_sourcedir, 'generated', 'cpp')))
+        os.path.normpath(os.path.join(
+            os.path.abspath(sphinx_sourcedir), 'generated', 'cpp'))
+    )
 
     template_variables.update({
         'always_run_doxygen': build_context.always_run_doxygen,
@@ -119,6 +121,8 @@ def generate_template_variables(
             tags.append(key)
     template_variables.update({'tags': tags})
 
+    import pprint
+    pprint.pp(template_variables)
     return template_variables
 
 
