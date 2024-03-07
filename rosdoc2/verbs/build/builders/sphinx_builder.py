@@ -20,8 +20,6 @@ import subprocess
 
 import setuptools
 
-import setuptools
-
 from ..builder import Builder
 from ..collect_inventory_files import collect_inventory_files
 from ..create_format_map_from_package import create_format_map_from_package
