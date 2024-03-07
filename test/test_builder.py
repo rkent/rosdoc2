@@ -119,7 +119,7 @@ def do_test_package(
     index_path = output_dir / name / html_path
 
     # smoke test
-    assert index_path.is_file(),\
+    assert index_path.is_file(), \
         'html index file exists'
 
     # read and parse the index file
