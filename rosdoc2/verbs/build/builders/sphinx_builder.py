@@ -20,6 +20,8 @@ import subprocess
 
 import setuptools
 
+import setuptools
+
 from ..builder import Builder
 from ..collect_inventory_files import collect_inventory_files
 from ..create_format_map_from_package import create_format_map_from_package
@@ -81,28 +83,6 @@ if rosdoc2_settings.get('enable_autodoc', True):
     print('[rosdoc2] enabling autodoc', file=sys.stderr)
     extensions.append('sphinx.ext.autodoc')
 
-    pkgs_to_mock = []
-    import importlib
-    for exec_depend in {exec_depends}:
-        try:
-            importlib.import_module(exec_depend)
-        except ImportError:
-            pkgs_to_mock.append(exec_depend)
-    autodoc_mock_imports = pkgs_to_mock
-
-    pkgs_to_mock = []
-    import importlib
-    for exec_depend in {exec_depends}:
-        try:
-            # Some python dependencies may be dist packages.
-            exec_depend = exec_depend.split("python3-")[-1]
-            importlib.import_module(exec_depend)
-        except ImportError:
-            pkgs_to_mock.append(exec_depend)
-    # todo(YV): If users provide autodoc_mock_imports in their conf.py
-    # it will be overwritten by those in exec_depends.
-    # Consider appending to autodoc_mock_imports instead.
-    autodoc_mock_imports = pkgs_to_mock
 
     pkgs_to_mock = []
     import importlib
@@ -229,9 +209,6 @@ default_conf_py_template = """\
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-import os
-import sys
-sys.path.insert(0, os.path.abspath(os.path.join('{package_src_directory}', '..')))
 import os
 import sys
 sys.path.insert(0, os.path.abspath(os.path.join('{package_src_directory}', '..')))
