@@ -121,8 +121,6 @@ def generate_template_variables(
             tags.append(key)
     template_variables.update({'tags': tags})
 
-    import pprint
-    pprint.pp(template_variables)
     return template_variables
 
 
@@ -411,7 +409,7 @@ class SphinxBuilder(Builder):
         if sphinx_sourcedir is not None:
             generated_path = os.path.join(sphinx_sourcedir, 'generated')
             logger.warn(f'Removing {generated_path}')
-            #shutil.rmtree(generated_path, ignore_errors=True)
+            shutil.rmtree(generated_path, ignore_errors=True)
             os.makedirs(generated_path, exist_ok=True)
 
             # locate all documentation in package

@@ -165,7 +165,7 @@ def main_impl(options):
         if os.path.exists(output_staging_directory):
             # Delete this directory because it is temporary and will cause "file collision"
             # false positives if the tool fails to run to completion.
-            #shutil.rmtree(output_staging_directory)
+            shutil.rmtree(output_staging_directory)
             pass
         os.makedirs(output_staging_directory)
 

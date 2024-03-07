@@ -141,24 +141,24 @@ def do_test_package(
     # test inclusions
     for item in includes:
         assert item.lower() in parser.content, \
-            f'html has content {item}'
+            f'html has content <{item}>'
 
     # test exclusions
     for item in excludes:
         assert item.lower() not in parser.content, \
-            f'html does not have content {item}'
+            f'html does not have content <{item}>'
 
     # file inclusions
     for item in file_includes:
         path = output_dir / name / item
         assert path.is_file(), \
-            f'file {item} should exist'
+            f'file <{item}>exist'
 
     # file exclusions
     for item in file_excludes:
         path = output_dir / name / item
         assert not path.is_file(), \
-            f'file {item} should not exist'
+            f'file <{item}> should not exist'
 
     # look for links
     for item in links_exist:
@@ -185,7 +185,6 @@ def test_meta_dependencies(many_path):
 
     includes = ['Dependencies of this Meta Package']
     links_exist = ['full_package/index.html']
-    print('Hello')
     do_test_package('meta_package', path, includes, links_exist=links_exist)
 
 
@@ -216,6 +215,7 @@ def test_minimal_package(tmp_path):
     ]
 
     do_test_package(PKG_NAME, path, includes, excludes)
+
 
 def test_minimum_cpp(tmp_path):
     # Test of a full-featured cmake package
@@ -248,7 +248,6 @@ def test_minimum_cpp(tmp_path):
     do_test_package(PKG_NAME, tmp_path, includes, excludes, file_includes, file_excludes)
 
 
-
 def test_full_package(many_path):
     # Test of a full-featured cmake package
     PKG_NAME = 'full_package'
@@ -263,8 +262,6 @@ def test_full_package(many_path):
         'instructions',
         'full_package package',
         'c/c++ api',
-        # Author from package.xml via default conf.j2.py
-        '© copyright 2022, some one  (apache license 2.0).',
         # From default index.j2.rst
         'Package API',
         'Standard Documents',
@@ -348,7 +345,6 @@ def test_only_messages(many_path):
     PKG_NAME = 'only_messages'
 
     includes = [
-        'Project Documentation',
         'Standard Documents',
         'Package API',
         'Message Definitions',

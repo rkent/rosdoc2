@@ -89,4 +89,4 @@ class Builder:
         logger.info(f'Moved {number_of_files_moved} files.')
         # Remove temporary output.
         logger.warn(f'Removing {source}')
-        #shutil.rmtree(source)
+        shutil.rmtree(source)
