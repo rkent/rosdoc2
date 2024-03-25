@@ -12,7 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        containers: ['ros-iron', 'ros-rolling']
+        image: ['ros-iron', 'ros-rolling']
+    container:${{ matrix.image }}
 
     steps:
     - name: Checkout
