@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        image: ['ros-iron', 'ros-rolling']
+        image: ['ros:iron', 'ros:rolling']
     container: ${{ matrix.image }}
 
     steps:
