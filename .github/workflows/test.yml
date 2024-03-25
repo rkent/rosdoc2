@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         image: ['ros-iron', 'ros-rolling']
-    container:${{ matrix.image }}
+    container: ${{ matrix.image }}
 
     steps:
     - name: Checkout
