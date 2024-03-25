@@ -12,23 +12,28 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        image: ['ros:iron', 'ros:rolling']
-    container: ${{ matrix.image }}
+        container: ['ros:iron', 'ros:rolling']
+    container: ${{ matrix.container }}
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
-    - name: Setup python
-      uses: actions/setup-python@v5
+    - name: Install pip
+      run: apt update && apt install -y python3-pip
+
+    - name: pip cache
+      uses: actions/cache@v4
       with:
-        cache: 'pip'
-        python-version: '3.10'
+        path: ~/.cache/pip
+        key: ${{ matrix.container }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ matrix.container }}-pip-
 
     - name: Install pip dependencies
       run: |
-       python -m pip install --upgrade --upgrade-strategy eager .[test]
-       python -m pip freeze
+       python3 -m pip install --upgrade --upgrade-strategy eager .[test]
+       python3 -m pip freeze >> requirements.txt
 
     - name: Run tests
       run: py.test --verbose test
