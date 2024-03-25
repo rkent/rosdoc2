@@ -22,18 +22,10 @@ jobs:
     - name: Install pip
       run: apt update && apt install -y python3-pip
 
-    - name: pip cache
-      uses: actions/cache@v4
-      with:
-        path: ~/.cache/pip
-        key: ${{ matrix.container }}-pip-${{ hashFiles('**/requirements.txt') }}
-        restore-keys: |
-          ${{ matrix.container }}-pip-
-
     - name: Install pip dependencies
       run: |
        python3 -m pip install --upgrade --upgrade-strategy eager .[test]
-       python3 -m pip freeze >> requirements.txt
+       python3 -m pip freeze
 
     - name: Run tests
       run: py.test --verbose test
