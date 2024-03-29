@@ -143,6 +143,18 @@ def main_impl(options):
     logger.debug(f'Processing package(s) at {package_paths}')
     for package_path in package_paths:
         # Locate and parse the package's package.xml.
+        # TEST: only include repos with a valid /doc directory
+        doc_dir = os.path.join(package_path, 'doc')
+        found_one = False
+        for root, directories, files in os.walk(doc_dir):
+            for file in files:
+                (filename, ext) = os.path.splitext(file)
+                if ext in ['.rst', '.md', '.markdown']:
+                    found_one = True
+                    break
+        if not found_one:
+            continue
+
         try:
             package = get_package(package_path)
             logger.info(f'Documenting package {package.name} at {package_path}')
