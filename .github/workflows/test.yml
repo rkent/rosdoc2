@@ -9,6 +9,9 @@ on:
 jobs:
   unit_tests:
     name: Unit Tests
+    defaults:
+      run:
+        shell: bash
     runs-on: ubuntu-latest
     strategy:
       matrix:
