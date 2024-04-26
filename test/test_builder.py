@@ -102,38 +102,6 @@ def do_test_package(
     logger.info(f'*** Testing package {name} work_path {work_path}')
     output_dir = work_path / 'output'
 
-    # tests on the main index.html
-    index_path = output_dir / name / 'index.html'
-
-    # smoke test
-    assert index_path.is_file(), \
-        'html index file exists'
-
-    # read and parse the index file
-    #
-    # The package title html has a permalink icon at the end which is
-    # a unicode character. For some reason, on Windows this character generates
-    # a unicode error in Windows, though it seems to work fine
-    # in the browser. So ignore unicode errors.
-    with index_path.open(mode='r', errors='replace') as f:
-        index_content = f.read()
-    assert len(index_content) > 0, \
-        'index.html is not empty'
-
-    parser = htmlParser()
-    parser.feed(index_content)
-    logger.debug('HTML text content: ' + str(parser.content))
-    logger.debug('HTML <a> tag links: ' + str(parser.links))
-    # test inclusions
-    for item in includes:
-        assert item.lower() in parser.content, \
-            f'html should have content <{item}>'
-
-    # test exclusions
-    for item in excludes:
-        assert item.lower() not in parser.content, \
-            f'html should not have content <{item}>'
-
     # file inclusions
     for item in file_includes:
         path = output_dir / name / item
@@ -145,6 +113,52 @@ def do_test_package(
         path = output_dir / name / item
         assert not path.is_file(), \
             f'file <{item}> should not exist'
+
+    # tests on the main index.html
+    index_path = output_dir / name / 'index.html'
+
+    return do_test_file(index_path, name, work_path,
+                        includes, excludes, links_exist, fragments)
+
+
+def do_test_file(file_path, name, work_path,
+                 includes=[],
+                 excludes=[],
+                 links_exist=[],
+                 fragments=[],
+                 ) -> htmlParser:
+    """Read, parse, and test a file."""
+    output_dir = work_path / 'output'
+    logger.debug(f'Testing file at <{file_path}>')
+
+    # smoke test
+    assert file_path.is_file(), \
+        f'{file_path} exists'
+
+    #
+    # The package title html has a permalink icon at the end which is
+    # a unicode character. For some reason, on Windows this character generates
+    # a unicode error in Windows, though it seems to work fine
+    # in the browser. So ignore unicode errors.
+    with file_path.open(mode='r', errors='replace') as f:
+        index_content = f.read()
+    assert len(index_content) > 0, \
+        f'{file_path} is not empty'
+
+    parser = htmlParser()
+    parser.feed(index_content)
+    logger.debug('HTML text content: ' + str(parser.content))
+    logger.debug('HTML <a> tag links: ' + str(parser.links))
+
+    # test inclusions
+    for item in includes:
+        assert item.lower() in parser.content, \
+            f'html should have content <{item}>'
+
+    # test exclusions
+    for item in excludes:
+        assert item.lower() not in parser.content, \
+            f'html should not have content <{item}>'
 
     # look for links
     for item in links_exist:
@@ -225,7 +239,7 @@ def test_full_package(session_dir):
     links_exist = [
         'full_package.dummy.html',
         'modules.html',
-        'user_docs/morestuff/more_of_more/subsub.html',  # a deep documentation file
+        'doc/morestuff/more_of_more/subsub.html',  # a deep documentation file
         'standards.html',
         'https://example.com/repo',
         'standard_docs/PACKAGE.html',  # package.xml
@@ -346,3 +360,49 @@ def test_basic_cpp(session_dir):
     generated = pathlib.Path(DATAPATH / PKG_NAME / 'doc' / 'generated')
     assert not generated.exists(), \
         'Building should not create a "generated" directory in package/doc'
+
+
+def test_three_level_doc(session_dir):
+    """Tests of a package with three level deep specified sphinx_dir."""
+    PKG_NAME = 'three_level_doc'
+    do_build_package(DATAPATH / PKG_NAME, session_dir)
+
+    includes = [
+        PKG_NAME,
+    ]
+    links_exist = [
+        'l1/l2/thedocs/index.html',  # found documentation three levels deep
+    ]
+    do_test_package(PKG_NAME, session_dir,
+                    includes=includes,
+                    links_exist=links_exist,
+                    )
+
+    # We need to parse the Documentation file to ensure that the included file was included.
+    index_path = session_dir / 'output' / PKG_NAME / 'l1/l2/thedocs/index.html'
+    # test inclusions
+    includes = ['this is more documentation in a different file.']
+    do_test_file(index_path, PKG_NAME, session_dir, includes)
+
+
+def test_no_index_doc(session_dir):
+    """Tests of a package with generated index."""
+    PKG_NAME = 'no_index_doc'
+    do_build_package(DATAPATH / PKG_NAME, session_dir)
+
+    includes = [
+        PKG_NAME,
+    ]
+    links_exist = [
+        'l1/l2/thedocs/index.html',  # found documentation three levels deep
+        'l1/l2/thedocs/_index_l4.html',  # subdirectory index exists
+        'l1/l2/thedocs/notanindex.html',  # file at doc root
+    ]
+    do_test_package(PKG_NAME, session_dir,
+                    includes=includes,
+                    links_exist=links_exist,
+                    )
+
+    subindex_path = session_dir / 'output' / PKG_NAME / 'l1/l2/thedocs/_index_l4.html'
+    links_exist = ['l4/moredoc.html']  # generated index shows the subdirectory
+    do_test_file(subindex_path, PKG_NAME, session_dir)

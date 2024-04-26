@@ -71,11 +71,9 @@ def generate_standard_document_files(standard_docs, wrapped_sphinx_directory):
     """Generate rst documents to link to standard documents."""
     wrapped_sphinx_directory = os.path.abspath(wrapped_sphinx_directory)
     standards_sphinx_directory = os.path.join(wrapped_sphinx_directory, 'standard_docs')
-    standards_original_directory = os.path.join(standards_sphinx_directory, 'original')
     if len(standard_docs):
         # Create the standards.rst document that will link to the actual documents
         os.makedirs(standards_sphinx_directory, exist_ok=True)
-        os.makedirs(standards_original_directory, exist_ok=True)
         standard_documents_rst_path = os.path.join(
             wrapped_sphinx_directory, 'standards.rst')
         with open(standard_documents_rst_path, 'w+') as f:
@@ -83,13 +81,13 @@ def generate_standard_document_files(standard_docs, wrapped_sphinx_directory):
 
     for key, standard_doc in standard_docs.items():
         # Copy the original document to the sphinx project
-        shutil.copy(standard_doc['path'], standards_original_directory)
+        shutil.copy(standard_doc['path'], wrapped_sphinx_directory)
         # generate the file according to type
         file_contents = f'{key.upper()}\n'
         # using ')' as a header marker to assure the name is the title
         file_contents += ')' * len(key) + '\n\n'
         file_type = standard_doc['type']
-        file_path = f"original/{standard_doc['filename']}"
+        file_path = f"../{standard_doc['filename']}"
         if file_type == 'rst':
             file_contents += f'.. include:: {file_path}\n'
         elif file_type == 'md':
@@ -106,7 +104,7 @@ def generate_standard_document_files(standard_docs, wrapped_sphinx_directory):
         if key == 'readme':
             # We create a second README to use with include
             file_contents = readme_include_rst
-            file_path = f"standard_docs/original/{standard_doc['filename']}"
+            file_path = f"{standard_doc['filename']}"
             if file_type == 'rst':
                 file_contents += f'.. include:: {file_path}\n'
             elif file_type == 'md':
