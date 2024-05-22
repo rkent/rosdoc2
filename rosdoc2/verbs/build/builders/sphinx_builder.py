@@ -517,7 +517,11 @@ class SphinxBuilder(Builder):
         logger.info(
             f"Running sphinx_build with: [{wrapped_sphinx_directory}, '{sphinx_output_dir}]'"
         )
-        returncode = sphinx_main([wrapped_sphinx_directory, sphinx_output_dir])
+        try:
+            returncode = sphinx_main([wrapped_sphinx_directory, sphinx_output_dir])
+        except Exception as e:
+            logger.error(e)
+            returncode = -1
         msg = f"sphinx_build exited with return code '{returncode}'"
         if returncode == 0:
             logger.info(msg)

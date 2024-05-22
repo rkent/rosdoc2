@@ -145,12 +145,17 @@ def main_impl(options):
         # Locate and parse the package's package.xml.
         try:
             package = get_package(package_path)
-            logger.info(f'Documenting package {package.name} at {package_path}')
             # Inspect package for additional settings, using defaults if none found.
             tool_settings, builders = inspect_package_for_settings(
                 package,
                 options,
             )
+
+            ### Don't process existing files
+            if os.path.isfile(os.path.join(options.output_directory, package.name, 'index.html')):
+                logger.info(f'package {package.name} already documented, skipping')
+                continue
+            logger.info(f'Documenting package {package.name} at {package_path}')
 
             # Create the cross reference directory if it doesn't exist.
             os.makedirs(os.path.join(options.cross_reference_directory, package.name),
