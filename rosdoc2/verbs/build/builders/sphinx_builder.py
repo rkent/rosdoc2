@@ -519,7 +519,7 @@ class SphinxBuilder(Builder):
         )
         try:
             returncode = sphinx_main([wrapped_sphinx_directory, sphinx_output_dir])
-        except Exception as e:
+        except Exception as e:  # noqa: B902
             logger.error(e)
             returncode = -1
         msg = f"sphinx_build exited with return code '{returncode}'"
