@@ -29,6 +29,7 @@ from .inspect_package_for_settings import inspect_package_for_settings
 
 logging.basicConfig(format='[%(name)s] [%(levelname)s] %(message)s', level=logging.INFO)
 logger = logging.getLogger('rosdoc2')
+goptions = None
 
 DEFAULT_BUILD_DIR = 'docs_build'
 DEFAULT_OUTPUT_DIR = 'docs_output'
@@ -117,6 +118,8 @@ def main(options):
 
 def main_impl(options):
     """Execute the program."""
+    global goptions
+    goptions = options
     if options.build_directory is not None:
         # Check that the build directory exists.
         if not os.path.exists(options.build_directory):
@@ -141,15 +144,14 @@ def main_impl(options):
         for path in found_package_paths:
             package_paths.append(os.path.join(options.package_path, path))
     logger.info(f'Processing {len(package_paths)} packages')
-    for package_path in package_paths:
-        p = mp.Process(target=package_impl, args=(options, package_path))
-        p.start()
-        p.join()
-        print(f'Package at {package_path} Exit code: {p.exitcode}')
+    pool = mp.Pool()
+    pool.map(package_impl, package_paths)
 
 
-def package_impl(options, package_path):
+def package_impl(package_path):
     """Execute for a single function."""
+    global goptions
+    options = goptions
     logger.debug(f'Processing package(s) at {package_path}')
     # Locate and parse the package's package.xml.
     try:
