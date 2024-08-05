@@ -225,7 +225,7 @@ def test_full_package(session_dir):
     links_exist = [
         'full_package.dummy.html',
         'modules.html',
-        'user_docs/morestuff/more_of_more/subsub.html',  # a deep documentation file
+        'doc/morestuff/more_of_more/subsub.html',  # a deep documentation file
         'standards.html',
         'https://example.com/repo',
         'standard_docs/PACKAGE.html',  # package.xml
@@ -272,7 +272,7 @@ def test_default_yaml(session_dir):
     links_exist = [
         'default_yaml.dummy.html',
         'modules.html',
-        'user_docs/morestuff/more_of_more/subsub.html',  # a deep documentation file
+        'doc/morestuff/more_of_more/subsub.html',  # a deep documentation file
         'standards.html',
         'https://example.com/repo',
         'standard_docs/PACKAGE.html',  # package.xml
@@ -314,7 +314,10 @@ def test_src_python(session_dir):
     PKG_NAME = 'src_python'
     do_build_package(DATAPATH / PKG_NAME, session_dir)
 
-    includes = ['src_python package']
+    includes = [
+        'src_python package',
+        'documentation in source',  # We found the documentation in doc/source
+    ]
     links_exist = ['src_python.html']
 
     do_build_package(DATAPATH / PKG_NAME, session_dir)
