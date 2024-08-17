@@ -100,7 +100,7 @@ def generate_interface_docs(path: str, package: str, output_dir: str):
         if count > 0:
             # generate a toc entry rst file for this type
             toc_rst = toc_fm_rst.format_map(template_vars)
-            toc_name = type_name + '_definitions.rst'
+            toc_name = '__' + type_name + '_definitions.rst'
             toc_path = os.path.join(output_dir, toc_name)
             with open(toc_path, 'w') as f:
                 f.write(toc_rst)

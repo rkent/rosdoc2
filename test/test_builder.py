@@ -223,7 +223,10 @@ def test_only_messages(module_dir):
         PKG_NAME,
         'message definitions',
     ]
-    links_exist = ['interfaces/msg/NumPwrResult.html']
+    links_exist = [
+        'msg/NumPwrResult.html',  # a link to a defined message appears
+        'https://docs.ros.org',
+    ]
 
     do_test_package(PKG_NAME, module_dir, includes=includes, links_exist=links_exist)
 
