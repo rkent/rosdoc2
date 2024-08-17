@@ -22,9 +22,8 @@ Standard Documents
 
 .. toctree::
    :maxdepth: 1
-   :glob:
 
-   {standards_toc}
+{standards_toc}
 """
 
 readme_include_rst = """\
