@@ -47,12 +47,15 @@ rosdoc2_wrapping_conf_py_template = """\
 ## intersphinx mappings correctly, among other things.
 
 import os
+import shutil
 import sys
 if '{python_src_directory}' != 'None':
     sys.path.insert(0, os.path.abspath(os.path.join('{python_src_directory}', '..')))
 
 ## exec the user's conf.py to bring all of their settings into this file.
 confpy_succeeded = False
+templates_path = []
+
 if os.path.isfile('{user_conf_py_filename}'):
     try:
         exec(open("{user_conf_py_filename}").read())
@@ -61,6 +64,18 @@ if os.path.isfile('{user_conf_py_filename}'):
         print('[rosdoc2] *** Warning *** conf.py generated error: ' + str(e))
 if not confpy_succeeded:
     exec(open("{default_conf_py_filename}").read())
+
+## Copy any templates to the wrapped location.
+for t_dir in templates_path:
+    source_t_dir = os.path.join('{package_directory}', '{user_doc_dir}', t_dir)
+    target_t_dir = os.path.join('{wrapped_sphinx_directory}', t_dir)
+    if os.path.isdir(target_t_dir):
+        # Template already copied
+        pass
+    elif not os.path.isdir(source_t_dir):
+        print(f'[rosdoc2] *** Warning *** could not find template at {{source_t_dir}}')
+    else:
+        shutil.copytree(source_t_dir, target_t_dir)
 
 def ensure_global(name, default):
     if name not in globals():
@@ -581,6 +596,8 @@ class SphinxBuilder(Builder):
             'has_readme': 'readme' in standard_docs,
             'interface_counts': interface_counts,
             'package': self.build_context.package,
+            'user_doc_dir': user_doc_dir,
+            'wrapped_sphinx_directory': wrapped_sphinx_directory,
         })
 
         # If the user did no include a conf.py, generate a default conf.py
