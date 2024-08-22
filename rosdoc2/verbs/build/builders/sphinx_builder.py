@@ -74,9 +74,7 @@ for t_dir in templates_path:
     if os.path.isdir(target_t_dir):
         # Template already copied
         pass
-    elif not os.path.isdir(source_t_dir):
-        print(f'[rosdoc2] *** Warning *** could not find template at {{source_t_dir}}')
-    else:
+    elif os.path.isdir(source_t_dir):
         shutil.copytree(source_t_dir, target_t_dir)
 
 def ensure_global(name, default):
