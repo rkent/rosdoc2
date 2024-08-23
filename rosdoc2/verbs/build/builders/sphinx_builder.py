@@ -618,6 +618,8 @@ class SphinxBuilder(Builder):
             'show_doxygen_html': self.build_context.show_doxygen_html,
         })
 
+        import pprint
+        pprint.pp(self.template_variables)
         # If the user did no include a conf.py, generate a default conf.py
         conf_py_directory = wrapped_sphinx_directory
         if user_doc_dir:
