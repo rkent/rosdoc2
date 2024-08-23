@@ -575,6 +575,8 @@ class SphinxBuilder(Builder):
             'package': self.build_context.package,
         })
 
+        import pprint
+        pprint.pp(self.template_variables)
         # If the user did no include a conf.py, generate a default conf.py
         if self.sphinx_sourcedir:
             conf_py_directory = wrapped_sphinx_directory
