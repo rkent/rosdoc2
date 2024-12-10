@@ -58,6 +58,19 @@ def do_build_package(package_path, work_path, with_extension=False) -> None:
     main_impl(options)
 
 
+def test_user_jinja_full(module_dir):
+    PKG_NAME = 'user_jinja_full'
+    do_build_package(DATAPATH / PKG_NAME, module_dir)
+
+    includes = [
+        PKG_NAME,
+        'extra user link',  # a non-standard link from a user-supplied index.rst.jinja
+    ]
+
+    do_test_package(PKG_NAME, module_dir,
+                    includes=includes)
+
+
 def test_never_sphinx_apidoc(module_dir):
     """Tests of never_run_sphinx_apidoc."""
     PKG_NAME = 'never_sphinx_apidoc'

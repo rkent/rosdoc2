@@ -1,0 +1,372 @@
+* [34mcaf3216 [31m2024-08-21 [32mInterpret enable_breathe and enable_exhale as never_run_doxygen option. [34mR. Kent James [31m (HEAD -> reinterpret-invalid-enable)
+[31m|[m * [34m2fa1413 [31m2024-12-09 [32mOnly set never_run_doxygen [34mR. Kent James [31m (origin/reinterpret-invalid-enable)
+[31m|[m * [34m805994f [31m2024-08-21 [32mInterpret enable_breathe and enable_exhale as never_ options [34mR. Kent James [31m
+[31m|[m[31m/[m  
+* [34m3341f21 [31m2024-12-06 [32mAdd repository url if missing (#161) [34mR Kent James [31m (upstream/main, origin/main, origin/HEAD, main)
+* [34m79f3982 [31m2024-12-06 [32mFix link whitespace to remove warning (#160) [34mR Kent James [31m
+[32m|[m *   [34meb5b1b4 [31m2024-12-02 [32mMerge branch 'abs-path-to-doxygen' into pr-main [34mR. Kent James [31m (origin/pr-main, pr-main)
+[32m|[m [33m|[m[34m\[m  
+[32m|[m [33m|[m * [34mdf99cfb [31m2024-12-01 [32mUse abspath for doxyfile to stop failure [34mR. Kent James [31m (abs-path-to-doxygen)
+[32m|[m [33m|[m[32m/[m  
+[32m|[m[32m/[m[33m|[m   
+[32m|[m [33m|[m * [34mddea75f [31m2024-12-01 [32mUse abspath for doxyfile to stop failure [34mR. Kent James [31m (origin/rkj-main, rkj-main)
+[32m|[m [33m|[m * [34m5f36dfa [31m2024-08-23 [32mMajor documentation rewrite [34mR. Kent James [31m
+[32m|[m [33m|[m * [34m5c84810 [31m2024-08-22 [32mDon't warn of missing template directory [34mR. Kent James [31m (template-support)
+[32m|[m [33m|[m * [34m00ef62e [31m2024-08-22 [32mShow Doxygen html link in sidebar if requested [34mR. Kent James [31m
+[32m|[m [33m|[m * [34mdb60dc6 [31m2024-08-22 [32mAdd option to disable breathe for failing packages [34mR. Kent James [31m
+[32m|[m [33m|[m * [34m30f23b8 [31m2024-08-21 [32mCreate a links.rst file so links can appear in toc [34mR. Kent James [31m (links-in-toc)
+[32m|[m [33m|[m * [34m3c1e783 [31m2024-08-20 [32mCopy templates to actual sphinx project location [34mR. Kent James [31m
+[32m|[m [33m|[m * [34m6b6143b [31m2024-08-18 [32mPrint error if conf.py fails [34mR. Kent James [31m (override-bad-conf)
+[32m|[m [33m|[m * [34m0c042e2 [31m2024-08-18 [32mOverride a failing user conf.py [34mR. Kent James [31m
+[32m|[m [33m|[m * [34m6421d71 [31m2024-08-17 [32mRestore grave accents in links [34mR. Kent James [31m
+[32m|[m [33m|[m * [34m62654c6 [31m2024-11-30 [32mRemove stray test from earlier rejected chnage [34mR. Kent James [31m (interface-real-docs)
+[32m|[m [33m|[m * [34m87d69da [31m2024-08-17 [32mUse real locations for standard documents [34mR. Kent James [31m
+[32m|[m [33m|[m * [34mbdbd26b [31m2024-08-17 [32mUse real dirnames for standard documents [34mR. Kent James [31m
+[32m|[m [33m|[m * [34md309fa9 [31m2024-08-17 [32mUse real dirnames for messages [34mR. Kent James [31m
+[32m|[m [33m|[m * [34mc1ea60e [31m2024-08-16 [32mDon't duplicate doc links if index.rst exists [34mR. Kent James [31m (index_rst_in_doc)
+[32m|[m [33m|[m * [34m1175a4f [31m2024-08-16 [32mAllow user.rst.jinja with sphinx_sourcedir option [34mR. Kent James [31m
+[32m|[m [33m|[m * [34m0ca6b84 [31m2024-08-21 [32mInterpret enable_breathe and enable_exhale as never_ options [34mR. Kent James [31m
+[32m|[m [33m|[m[33m/[m  
+[32m|[m *   [34me42028d [31m2024-11-30 [32mMerge branch 'show-repo-url' into pr-main [34mR. Kent James [31m
+[32m|[m [36m|[m[1;31m\[m  
+[32m|[m [36m|[m * [34m9494589 [31m2024-08-13 [32mAdd repository url if missing [34mR. Kent James [31m
+[32m|[m [36m|[m[32m/[m  
+[32m|[m[32m/[m[36m|[m   
+[32m|[m * [34mfdbd4d4 [31m2024-11-30 [32mMerge branch 'blank-line-after-links' into pr-main [34mR. Kent James [31m
+[32m|[m[32m/[m[1;33m|[m 
+[32m|[m * [34m39c1f39 [31m2024-11-07 [32mFix link whitespace to remove warning [34mR. Kent James [31m
+[32m|[m[32m/[m  
+* [34md5da638 [31m2024-11-20 [32mAllow null user_doc_dir to ignore documentation. (#153) [34mR Kent James [31m
+* [34m99adc39 [31m2024-11-20 [32mAdd never_run_doxygen and never_run_sphinx_apidoc options (#159) [34mR Kent James [31m
+[1;33m|[m * [34m08330a9 [31m2024-11-29 [32mUse scan impl.py from current main [34mR. Kent James [31m (1-rkj-main)
+[1;33m|[m * [34mb05db4e [31m2024-11-04 [32mSet sys.path in wrapping conf.py so custom conf.py does not need to [34mR. Kent James [31m
+[1;33m|[m * [34m4a26770 [31m2024-10-28 [32mRemove unneeded .doctrees from sphinx output [34mR. Kent James [31m
+[1;33m|[m * [34mff50749 [31m2024-08-23 [32mMajor documentation rewrite [34mR. Kent James [31m (update-documentation)
+[1;33m|[m * [34ma734571 [31m2024-08-22 [32mDon't warn of missing template directory [34mR. Kent James [31m
+[1;33m|[m * [34m30c1359 [31m2024-08-22 [32mShow Doxygen html link in sidebar if requested [34mR. Kent James [31m (disable-breathe-option)
+[1;33m|[m * [34mdeea0c9 [31m2024-08-22 [32mAdd option to disable breathe for failing packages [34mR. Kent James [31m
+[1;33m|[m * [34m8d341dd [31m2024-08-21 [32mCreate a links.rst file so links can appear in toc [34mR. Kent James [31m
+[1;33m|[m * [34m78e85ee [31m2024-08-20 [32mRemoving any unsupported extensions [34mR. Kent James [31m (check-extensions)
+[1;33m|[m * [34m01a9672 [31m2024-08-20 [32mCopy templates to actual sphinx project location [34mR. Kent James [31m
+[1;33m|[m * [34m88aa903 [31m2024-08-18 [32mPrint error if conf.py fails [34mR. Kent James [31m
+[1;33m|[m * [34me436370 [31m2024-08-18 [32mOverride a failing user conf.py [34mR. Kent James [31m
+[1;33m|[m * [34m5bdb426 [31m2024-08-17 [32mRestore grave accents in links [34mR. Kent James [31m
+[1;33m|[m * [34m0be33f6 [31m2024-08-17 [32mUse real locations for standard documents [34mR. Kent James [31m (interface-real-dirs)
+[1;33m|[m * [34mb90422b [31m2024-08-17 [32mUse real dirnames for standard documents [34mR. Kent James [31m
+[1;33m|[m * [34m39cc3f6 [31m2024-08-17 [32mUse real dirnames for messages [34mR. Kent James [31m
+[1;33m|[m * [34m25a832d [31m2024-08-16 [32mDon't duplicate doc links if index.rst exists [34mR. Kent James [31m
+[1;33m|[m * [34m2c6a474 [31m2024-08-16 [32mAllow user.rst.jinja with sphinx_sourcedir option [34mR. Kent James [31m (allow-user-index-jinja)
+[1;33m|[m * [34m55a5df8 [31m2024-08-15 [32mUse repo url from rosdistro if missing [34mR. Kent James [31m (repo-from-rosdistro)
+[1;33m|[m * [34m4f1fcd3 [31m2024-08-21 [32mRevert default behavior for enable_breathe=false [34mR. Kent James [31m (support-never-run-options)
+[1;33m|[m * [34mc40f3a0 [31m2024-08-21 [32mInterpret enable_breathe and enable_exhale as never_ options [34mR. Kent James [31m
+[1;33m|[m * [34m7547838 [31m2024-08-15 [32mAdd never_run_doxygen and never_run_sphinx_apidc options [34mR. Kent James [31m
+[1;33m|[m * [34m8652369 [31m2024-08-14 [32mShow package index in links [34mR. Kent James [31m (show-package-index)
+[1;33m|[m * [34mff74d7e [31m2024-08-14 [32mOnly process repo url if ROS_DISTRO is set [34mR. Kent James [31m
+[1;33m|[m * [34mb71fc5a [31m2024-08-13 [32mLookup missing repo url from rosdistro [34mR. Kent James [31m
+[1;33m|[m * [34m573e1e0 [31m2024-08-13 [32mSupport external_doc_url option [34mR. Kent James [31m (allow-external-docs)
+[1;33m|[m * [34m52535ba [31m2024-08-12 [32mMinor tweak in logger message [34mR. Kent James [31m
+[1;33m|[m * [34mf6deac6 [31m2024-08-12 [32mAdd options to yaml extension [34mR. Kent James [31m (override-rosdoc2-yaml)
+[1;33m|[m * [34mcdea2d8 [31m2024-08-09 [32mChange extension format, add tests [34mR. Kent James [31m
+[1;33m|[m * [34mc2824a9 [31m2024-08-09 [32mExtend user rosdoc2.yaml if package matches [34mR. Kent James [31m
+[1;33m|[m * [34mab1eac1 [31m2024-08-08 [32mParse rosdoc2.yaml in inspect_package_for_settings [34mR. Kent James [31m
+[1;33m|[m * [34m0c997d3 [31m2024-08-08 [32mLimit parse_rosdoc2_yaml to checking [34mR. Kent James [31m
+[1;33m|[m * [34mff75c77 [31m2024-08-08 [32mSupport user_doc_dir [34mR. Kent James [31m (support-user-doc-dir)
+[1;33m|[m * [34m57b8943 [31m2024-08-05 [32mUse real directory names in wrapped directory [34mR. Kent James [31m
+[1;33m|[m * [34m7b378e0 [31m2024-08-08 [32mDon't require conf.py if sphinx_sourcedir is specified [34mR. Kent James [31m
+[1;33m|[m * [34m4e6a718 [31m2024-08-21 [32mRemove now unused get_packages (for colcon) [34mR. Kent James [31m
+[1;33m|[m * [34md782a87 [31m2024-08-19 [32mSwitch from colcon to catkin for package find [34mR. Kent James [31m
+[1;33m|[m * [34m605745d [31m2024-08-14 [32mPut scan output in docs_build directly, otherwise it gets deleted [34mR. Kent James [31m
+[1;33m|[m * [34m3904c24 [31m2024-08-06 [32mAdd scan option to build packages in subdirectories [34mR. Kent James [31m
+[1;33m|[m [1;34m|[m * [34m9ee86a5 [31m2024-11-20 [32mImprove warning messages for never_run sphinx and doxygen [34mR. Kent James [31m (origin/pr-support-never-run-options, pr-support-never-run-options)
+[1;33m|[m [1;34m|[m * [34mf20dbe2 [31m2024-08-15 [32mAdd never_run_doxygen and never_run_sphinx_apidoc options [34mR. Kent James [31m
+[1;33m|[m [1;34m|[m[1;33m/[m  
+[1;33m|[m[1;33m/[m[1;34m|[m   
+[1;33m|[m [1;34m|[m * [34me9c8a77 [31m2024-11-18 [32mAllow null user_doc_dir to ignore documentation. [34mR. Kent James [31m (origin/pr-allow-external-docs, origin/allow-null-user_doc_dir, pr-allow-external-docs, allow-null-user_doc_dir)
+[1;33m|[m [1;34m|[m[1;33m/[m  
+[1;33m|[m[1;33m/[m[1;34m|[m   
+* [1;34m|[m [34m8c0e785 [31m2024-11-14 [32mAdd --yaml-extend option to allow modifying rosdoc2.yaml (#151) [34mR Kent James [31m
+[1;36m|[m [1;34m|[m * [34m3f875fa [31m2024-11-13 [32mSimplify and document extended rosdoc2.yaml format [34mR. Kent James [31m (origin/pr-override-rosdoc2-yaml, pr-override-rosdoc2-yaml)
+[1;36m|[m [1;34m|[m [31m|[m * [34me5b874f [31m2024-11-13 [32mWIP on pr-override-rosdoc2-yaml: 2a7b69b Add --yaml-extend option to allow modifying rosdoc2.yaml [34mR. Kent James [31m (refs/stash)
+[1;36m|[m [1;34m|[m [31m|[m[31m/[m[33m|[m 
+[1;36m|[m [1;34m|[m [31m|[m * [34m8188297 [31m2024-11-13 [32mindex on pr-override-rosdoc2-yaml: 2a7b69b Add --yaml-extend option to allow modifying rosdoc2.yaml [34mR. Kent James [31m
+[1;36m|[m [1;34m|[m [31m|[m[31m/[m  
+[1;36m|[m [1;34m|[m [31m|[m * [34m50abed5 [31m2024-11-08 [32mUse sphinx 7 to simulate current buildfarm [34mR. Kent James [31m (1-pr-main)
+[1;36m|[m [1;34m|[m [31m|[m *   [34md48b5ff [31m2024-11-04 [32mMerge branch 'always-append-python-src-directory' into pr-main [34mR. Kent James [31m
+[1;36m|[m [1;34m|[m [31m|[m [35m|[m[36m\[m  
+[1;36m|[m [1;34m|[m [31m|[m * [36m\[m   [34m4e5860a [31m2024-10-29 [32mMerge branch 'pr-allow-external-docs' into pr-main [34mR. Kent James [31m
+[1;36m|[m [1;34m|[m [31m|[m [1;31m|[m[1;32m\[m [36m\[m  
+[1;36m|[m [1;34m|[m [31m|[m [1;31m|[m * [36m|[m [34m548ade0 [31m2024-08-13 [32mSupport external_doc_url option [34mR. Kent James [31m
+[1;36m|[m [1;34m|[m [31m|[m * [1;32m|[m [36m|[m   [34m88e9d56 [31m2024-10-29 [32mMerge branch 'fix-log-message' into pr-main [34mR. Kent James [31m
+[1;36m|[m [1;34m|[m [31m|[m [1;33m|[m[1;34m\[m [1;32m\[m [36m\[m  
+[1;36m|[m [1;34m|[m [31m|[m [1;33m|[m * [1;32m|[m [36m|[m [34m0541079 [31m2024-08-12 [32mMinor tweak in logger message [34mR. Kent James [31m (origin/fix-log-message, fix-log-message)
+[1;36m|[m [1;34m|[m [31m|[m [1;33m|[m [1;32m|[m[1;32m/[m [36m/[m  
+[1;36m|[m [1;34m|[m [31m|[m * [1;32m|[m [36m|[m   [34md226335 [31m2024-10-29 [32mMerge branch 'pr-override-rosdoc2-yaml' into pr-main [34mR. Kent James [31m
+[1;36m|[m [1;34m|[m [31m|[m [1;32m|[m[31m\[m [1;32m\[m [36m\[m  
+[1;36m|[m [1;34m|[m [31m|[m [1;32m|[m[31m/[m [1;32m/[m [36m/[m  
+[1;36m|[m [1;34m|[m [31m|[m[31m/[m[1;32m|[m [1;32m/[m [36m/[m   
+[1;36m|[m [1;34m|[m [31m|[m [1;32m|[m[1;32m/[m [36m/[m    
+[1;36m|[m [1;34m|[m * [1;32m/[m [36m/[m [34m2a7b69b [31m2024-08-08 [32mAdd --yaml-extend option to allow modifying rosdoc2.yaml [34mR. Kent James [31m
+[1;36m|[m [1;34m|[m [1;32m|[m[1;32m/[m [36m/[m  
+[1;36m|[m [1;34m|[m [1;32m|[m [36m|[m * [34m0cd6105 [31m2024-11-08 [32mUse sphinx 7 to simulate current buildfarm [34mR. Kent James [31m (sphinx-7)
+[1;36m|[m [1;34m|[m[1;36m_[m[1;32m|[m[1;36m_[m[36m|[m[1;36m/[m  
+[1;36m|[m[1;36m/[m[1;34m|[m [1;32m|[m [36m|[m   
+* [1;34m|[m [1;32m|[m [36m|[m [34mb138da2 [31m2024-11-08 [32mMinor tweak in logger message (#152) [34mR Kent James [31m
+* [1;34m|[m [1;32m|[m [36m|[m [34m5b4acb6 [31m2024-11-08 [32mSet sys.path in wrapping conf.py so custom conf.py does not need to (#155) [34mR Kent James [31m
+[1;32m|[m [1;34m|[m[1;32m/[m [36m/[m  
+[1;32m|[m[1;32m/[m[1;34m|[m [36m|[m   
+[1;32m|[m [1;34m|[m [36m|[m * [34m5e0bdae [31m2024-11-08 [32mDiscourage setting sys.path in comments [34mR. Kent James [31m (origin/always-append-python-src-directory, always-append-python-src-directory)
+[1;32m|[m [1;34m|[m [36m|[m[36m/[m  
+[1;32m|[m [1;34m|[m * [34mb5de98c [31m2024-11-04 [32mSet sys.path in wrapping conf.py so custom conf.py does not need to [34mR. Kent James [31m
+[1;32m|[m [1;34m|[m[1;32m/[m  
+[1;32m|[m[1;32m/[m[1;34m|[m   
+* [1;34m|[m [34m1f933d5 [31m2024-10-29 [32mSupport user doc dir (#148) [34mR Kent James [31m
+* [1;34m|[m [34mc5bd3b9 [31m2024-10-29 [32mRemove unneeded .doctrees from sphinx output (#150) [34mR Kent James [31m
+* [1;34m|[m [34m4c32369 [31m2024-10-16 [32mShow package index in links (#149) [34mR Kent James [31m
+* [1;34m|[m [34m94fd168 [31m2024-10-04 [32mAdd scan option to build packages in subdirectories (#139) [34mR Kent James [31m
+* [1;34m|[m [34m54dbcc5 [31m2024-09-24 [32mRemoving any unsupported extensions (#146) [34mR Kent James [31m
+[1;34m|[m[1;34m/[m  
+[1;34m|[m * [34mf6cb340 [31m2024-09-06 [32mDisplay console outputs for all tests [34mTully Foote [31m (upstream/tfoote-show-success)
+[1;34m|[m[1;34m/[m  
+[1;34m|[m * [34m9376051 [31m2024-08-09 [32mExtend user rosdoc2.yaml if package matches [34mR. Kent James [31m (rkj/override-rosdoc2-yaml)
+[1;34m|[m * [34m91096bc [31m2024-08-08 [32mParse rosdoc2.yaml in inspect_package_for_settings [34mR. Kent James [31m
+[1;34m|[m * [34ma36e782 [31m2024-08-08 [32mLimit parse_rosdoc2_yaml to checking [34mR. Kent James [31m
+[1;34m|[m[1;34m/[m  
+* [34m24c51d5 [31m2024-08-28 [32mUse null as default for sphinx_sourcedir (#140) [34mR Kent James [31m
+* [34m927e22b [31m2024-08-28 [32mRemove any existing package doc_build_directory (#141) [34mR Kent James [31m
+* [34m93ef267 [31m2024-08-28 [32mFix and expand "open" command (#143) [34mR Kent James [31m
+* [34m9dbce82 [31m2024-08-01 [32mPrevent package finders from processing the wrapped directory (#136) [34mR Kent James [31m
+* [34m9b7b77a [31m2024-07-31 [32mClean up default rosdoc2.yaml to show all available options, but commented out. (#138) [34mR Kent James [31m
+* [34me5a7c69 [31m2024-07-23 [32mUse jazzy, iron, and rolling in tests (#135) [34mR Kent James [31m
+[34m|[m * [34m3de5441 [31m2024-07-24 [32mDon't faily doc copy if directories exist [34mR. Kent James [31m (use-real-doc-names)
+[34m|[m * [34mf5adb6b [31m2024-07-24 [32mAlso stage conf.py if it exists [34mR. Kent James [31m
+[34m|[m * [34m625a8f1 [31m2024-04-26 [32muse real docs names for user documentation [34mR. Kent James [31m
+[34m|[m * [34ma2783a8 [31m2024-07-22 [32mPrevent package finders from processing the wrapped directory [34mR. Kent James [31m
+[34m|[m[34m/[m  
+* [34mb3803c5 [31m2024-07-22 [32mFix flow-map syntax (#93) [34mChristoph Fröhlich [31m
+* [34m70baa42 [31m2024-07-22 [32ma few cosmetic fixes for README.md. (#134) [34mTomoya Fujita [31m
+* [34m3e598e2 [31m2024-07-17 [32mUpdate install instructions. (#130) [34mSteven! Ragnarök [31m
+* [34m42949b5 [31m2024-07-14 [32mSet to next development version: 0.2.2.dev0. [34mSteven! Ragnarök [31m (upstream/prepare-0.2.1)
+* [34m978d4a8 [31m2024-07-14 [32m0.2.1 [34mSteven! Ragnarök [31m (tag: 0.2.1)
+* [34m6b76d7b [31m2024-07-14 [32mAdd long_description_content_type to support publishing on PyPI. (#131) [34mSteven! Ragnarök [31m
+* [34m482860c [31m2024-07-12 [32mFix graphviz typo in stdeb.cfg. (#132) [34mSteven! Ragnarök [31m
+* [34m18d87a1 [31m2024-07-11 [32mSet to next development version. [34mSteven! Ragnarök [31m
+* [34md256dae [31m2024-07-11 [32m0.2.0 [34mSteven! Ragnarök [31m (tag: 0.2.0)
+* [34mb571e69 [31m2024-07-12 [32mPrepare to release rosdoc2 into the ROS apt repositories. (#128) [34mSteven! Ragnarök [31m
+* [34mc37f417 [31m2024-07-11 [32mAllow source python layout (#123) [34mR Kent James [31m
+* [34m560a8d8 [31m2024-06-27 [32mUse existence of doxygen directory to set C++ API line (#124) [34mR Kent James [31m
+[35m|[m * [34me137b22 [31m2024-04-26 [32muse real docs names for user documentation [34mR. Kent James [31m (origin/use-real-doc-names)
+[35m|[m[35m/[m  
+[35m|[m * [34m8634784 [31m2024-05-22 [32mShow sphinx error; don't rerun if index.html exists [34mR. Kent James [31m (document-subdirectories)
+[35m|[m * [34m9a055b4 [31m2024-05-16 [32mDocument subdirectories [34mR. Kent James [31m
+[35m|[m * [34m16c9bc0 [31m2024-04-26 [32muse real docs names for user documentation [34mR. Kent James [31m
+[35m|[m[35m/[m  
+[35m|[m * [34mb8bddea [31m2024-04-30 [32mAlways create default conf.py, use it if user's provided fails [34mR. Kent James [31m (config-errors)
+[35m|[m * [34ma298521 [31m2024-05-16 [32mReverse unneeded move of 'look for fragments' [34mR. Kent James [31m
+[35m|[m * [34m237cfd5 [31m2024-05-16 [32mRestore unneeded change [34mR. Kent James [31m
+[35m|[m * [34m1abff35 [31m2024-05-16 [32mTest and fix three-level sphinx source directory [34mR. Kent James [31m
+[35m|[m * [34ma25ad16 [31m2024-05-06 [32mdon't overwrite user conf.py [34mR. Kent James [31m
+[35m|[m * [34mfde8129 [31m2024-05-06 [32mWIP revert conf.py.jinja [34mR. Kent James [31m
+[35m|[m * [34m5d92b67 [31m2024-04-30 [32mExecute user's conf.py with their working diretory [34mR. Kent James [31m
+[35m|[m * [34m6d8f9f6 [31m2024-04-29 [32mminor test tweak [34mR. Kent James [31m
+[35m|[m * [34m588cf34 [31m2024-04-27 [32mUse conf.py.jinja [34mR. Kent James [31m
+[35m|[m * [34meaba31e [31m2024-04-26 [32mSupport use of specified sphinx_sourcedir [34mR. Kent James [31m
+[35m|[m * [34m9f5e549 [31m2024-04-26 [32mWIP use real docs in package.xml directory [34mR. Kent James [31m
+[35m|[m[35m/[m  
+[35m|[m * [34m2f5485f [31m2024-04-26 [32mAdd show_exec_dep to rosdoc2.yaml, avoid 'meta' name [34mR. Kent James [31m (origin/meta-dependencies, meta-dependencies)
+[35m|[m * [34m51d2faf [31m2024-04-19 [32mMeta packages have no subdirectories except doc [34mR. Kent James [31m
+[35m|[m * [34mc3d5a7f [31m2024-04-18 [32mUpdate default base-url to <rolling> from obsolete <latest> [34mR. Kent James [31m
+[35m|[m * [34mf51eba7 [31m2024-04-18 [32mShow dependencies in meta packages [34mR. Kent James [31m
+[35m|[m[35m/[m  
+* [34m446b31b [31m2024-04-19 [32mRemove date from license (#119) [34mR Kent James [31m
+* [34mbc9e56a [31m2024-04-19 [32madd package.xml to standard documents (#115) [34mR Kent James [31m
+* [34m3e03a08 [31m2024-04-19 [32mMove Index to toc, remove Search link (#118) [34mR Kent James [31m
+* [34md3595e9 [31m2024-04-19 [32mTitle change to ROS2 Package <thepackage> (#116) [34mR Kent James [31m
+* [34m864b07f [31m2024-04-18 [32mAdd url links in home page (#113) [34mR Kent James [31m
+* [34mbd2b7d7 [31m2024-04-18 [32mAdd package description to home page (#112) [34mR Kent James [31m
+* [34m6ffc9c4 [31m2024-04-18 [32mSet STRIP_FROM_PATH in Doxyfile (#111) [34mR Kent James [31m
+* [34mb88a0a0 [31m2024-04-18 [32mRename readme_include.rst to stop name collisions (#109) [34mR Kent James [31m
+* [34mfb0740e [31m2024-04-18 [32mTry out using new apt-based installation (#107) [34mTully Foote [31m
+* [34mc20cc54 [31m2024-04-18 [32mProtect author names from apostrophes with triple quotes (#108) [34mR Kent James [31m
+* [34me3fd867 [31m2024-04-17 [32mUse Jinja to generate index.rst (#100) [34mR Kent James [31m
+* [34m1de6556 [31m2024-04-17 [32mRun sphinx-build as a module, ensures pipx compatibility (#99) [34mR Kent James [31m
+* [34mcf95ff3 [31m2024-04-13 [32mShow standard docs (#98) [34mR Kent James [31m
+* [34m2b8a379 [31m2024-04-12 [32mTrying to resolve noble based CI fixes (#96) [34mTully Foote [31m
+* [34m8d2ceb0 [31m2024-04-10 [32mInclude user documents (#90) [34mR Kent James [31m
+* [34m0403657 [31m2024-04-04 [32mRefactor sphinx directories (#88) [34mR Kent James [31m
+* [34med18fa2 [31m2024-04-02 [32mLimit navigation_depth to 4 (#89) [34mR Kent James [31m
+* [34mcd49433 [31m2024-03-29 [32mDeprecate --build-directory option (resolves #79) (#84) [34mR Kent James [31m
+* [34m281a48b [31m2024-03-29 [32mSpecify interface directories (#87) [34mR Kent James [31m
+* [34m1e41caf [31m2024-03-29 [32mDon't tell users to build first (#80) (#86) [34mR Kent James [31m
+[1;33m|[m * [34ma570b5f [31m2024-03-28 [32mRemove unneeded options corrections [34mR. Kent James [31m (origin/document-full-repos, document-full-repos)
+[1;33m|[m * [34m847af5f [31m2024-03-27 [32mLocate and document subdirectory packages [34mR. Kent James [31m
+[1;33m|[m * [34m64810fc [31m2024-03-27 [32mDocument using with multiple packages [34mR. Kent James [31m
+[1;33m|[m * [34m0a31d6f [31m2024-03-27 [32mUse parser defaults [34mR. Kent James [31m
+[1;33m|[m * [34m6bfb05a [31m2024-03-27 [32mLocate and document subdirectory packages [34mR. Kent James [31m
+[1;33m|[m * [34mef99f3c [31m2024-03-27 [32mtweak test case only_messages, use doxygen file existence to configure breathe [34mR. Kent James [31m
+[1;33m|[m * [34mb83fd01 [31m2024-03-26 [32mSupport running on multiple packages (rebased to main) [34mR. Kent James [31m
+[1;33m|[m[1;33m/[m  
+* [34m5b85766 [31m2024-03-28 [32mSupport only messages (#78) [34mR Kent James [31m
+* [34mbccae77 [31m2024-03-27 [32mSupport msgs, services, and actions (#76) [34mR Kent James [31m
+*   [34m7b364ef [31m2024-03-27 [32mMerge pull request #75 from rkent/allow-ament-cmake-python [34mTully Foote [31m
+[1;35m|[m[1;36m\[m  
+[1;35m|[m * [34mc833d93 [31m2024-03-26 [32mGive 'Python API' and 'C++ API' as titles [34mR. Kent James [31m
+[1;35m|[m * [34mfed516a [31m2024-03-22 [32mCheck for ament_cmake_python when running sphinx-apidoc [34mR. Kent James [31m
+[1;35m|[m * [34mf551d63 [31m2024-03-22 [32mSupport ament_cmake_python packages [34mR. Kent James [31m
+[1;35m|[m[1;35m/[m  
+*   [34mce98706 [31m2024-03-25 [32mMerge pull request #73 from rkent/allow-running-as-module [34mTully Foote [31m
+[31m|[m[32m\[m  
+[31m|[m * [34m07057f6 [31m2024-03-22 [32mAdd blank like to keep flake happy [34mR. Kent James [31m
+[31m|[m * [34m1a25631 [31m2024-03-22 [32mDocument how to run directly as a module [34mR. Kent James [31m
+[31m|[m * [34m9f9667e [31m2024-03-22 [32mAllow running rosdoc2 as a module with installing [34mR. Kent James [31m
+* [32m|[m   [34me112a5f [31m2024-03-25 [32mMerge pull request #70 from rkent/add-build-tests [34mTully Foote [31m
+[33m|[m[34m\[m [32m\[m  
+[33m|[m * [32m|[m [34mff4c6c8 [31m2024-03-22 [32mResolve review comments [34mR. Kent James [31m
+[33m|[m * [32m|[m [34m580897e [31m2024-03-21 [32mUse a common session directory in test [34mR. Kent James [31m
+[33m|[m * [32m|[m [34m12d3738 [31m2024-03-21 [32mAdd build tests [34mR. Kent James [31m
+[33m|[m [32m|[m[32m/[m  
+* [32m|[m   [34mc572a53 [31m2024-03-25 [32mMerge pull request #72 from rkent/use-ubuntu-22 [34mTully Foote [31m
+[32m|[m[36m\[m [32m\[m  
+[32m|[m [36m|[m[32m/[m  
+[32m|[m[32m/[m[36m|[m   
+[32m|[m * [34m7554c21 [31m2024-03-25 [32mRemove github runner caching of pip [34mR. Kent James [31m
+[32m|[m * [34m76abbd4 [31m2024-03-25 [32mUse ros:iron and ros:rolling containers [34mR. Kent James [31m
+[32m|[m * [34m739300a [31m2024-03-22 [32mUse ubuntu-22.04 in github runner [34mR. Kent James [31m
+[32m|[m[32m/[m  
+* [34me3c3215 [31m2024-03-17 [32mupdate install procedure and prerequisite. (#67) [34mTomoya Fujita [31m
+* [34md66a06a [31m2024-02-27 [32mDeclare test dependencies in [test] extra (#62) [34mScott K Logan [31m
+* [34mf855c37 [31m2024-02-27 [32mMake minimum Python version requirement consistent (#63) [34mScott K Logan [31m
+* [34m4e587a5 [31m2024-02-27 [32mAdd pytest markers, junit suite name (#64) [34mScott K Logan [31m
+*   [34m97b3be2 [31m2024-02-27 [32mMerge pull request #60 from ottojo/sphinx_conf_from_package_xml [34mTully Foote [31m
+[1;31m|[m[1;32m\[m  
+[1;31m|[m * [34m3d7b2ea [31m2024-02-25 [32msort package authors [34mJonas Otto [31m
+[1;31m|[m * [34m9585320 [31m2024-02-17 [32madd information about wrapping sphinx conf.py to README.md [34mJonas Otto [31m
+[1;31m|[m * [34meca80c6 [31m2024-02-16 [32madd more default configuration to sphinx conf.py [34mJonas Otto [31m
+[1;31m|[m[1;31m/[m  
+* [34m5c52cf3 [31m2024-02-16 [32mfix broken link to ROS 2 docs in readme (#59) [34mJonas Otto [31m
+* [34m2566910 [31m2024-02-07 [32madd default_config verb to create a default configuration file (#45) [34mJonas Otto [31m
+* [34m47c4683 [31m2023-04-11 [32mFix document generation on the buildfarm for some ament_python pkgs (#52) [34mYadu [31m
+* [34m0a79553 [31m2023-04-04 [32mFeature: Override build_type via rosdoc2 yaml (#51) [34mYadu [31m
+* [34m0f40c87 [31m2023-03-28 [32mAdditional changes to support ament_python pkgs (#49) [34mYadu [31m
+* [34med6e755 [31m2023-03-21 [32mAdd support for python-only projects (#28) [34mAbrar Rahman Protyasha [31m
+* [34m489e3a3 [31m2022-11-17 [32m[main] Update maintainers - 2022-11-07 (#46) [34mAudrow Nash [31m
+* [34m04622ae [31m2022-01-15 [32m[Test] Ignore W503 warnings in Flake8 (#43) [34mAbrar Rahman Protyasha [31m
+[1;32m|[m * [34m50f53ee [31m2024-03-21 [32mallow running as python3 -m rosdoc2.main [34mR. Kent James [31m (origin/new-jinja, new-jinja)
+[1;32m|[m * [34m6ed8768 [31m2024-03-07 [32mPasses tests except for user_conf_files [34mR. Kent James [31m
+[1;32m|[m * [34m2de0b3e [31m2024-03-04 [32muse absolute path with containmentFolder to fix test_minimal_cpp [34mR. Kent James [31m
+[1;32m|[m * [34m5b57aa4 [31m2024-03-04 [32mWIP add (failing) test_minimum_cpp [34mR. Kent James [31m
+[1;32m|[m *   [34m4a4208c [31m2024-02-24 [32mWIP on jinja-templates: d16b8ee Minor tweaks, still having problems [34mR. Kent James [31m
+[1;32m|[m [1;34m|[m[1;35m\[m  
+[1;32m|[m [1;34m|[m * [34m0aef170 [31m2024-02-24 [32mindex on jinja-templates: d16b8ee Minor tweaks, still having problems [34mR. Kent James [31m
+[1;32m|[m [1;34m|[m[1;34m/[m  
+[1;32m|[m * [34md16b8ee [31m2024-02-22 [32mMinor tweaks, still having problems [34mR. Kent James [31m
+[1;32m|[m * [34m972d67d [31m2024-02-22 [32mTry again to remove generated [34mR. Kent James [31m
+[1;32m|[m * [34mdaf848b [31m2024-02-22 [32mTry again to remove generated [34mR. Kent James [31m
+[1;32m|[m * [34m41f5217 [31m2024-02-22 [32mAdd templates directory to installs [34mR. Kent James [31m
+[1;32m|[m * [34m95060fa [31m2024-02-22 [32mRemove generated files from repo [34mR. Kent James [31m
+[1;32m|[m * [34mbfcfa2f [31m2022-06-28 [32mWIP fix flake errors, move meta tests to separate directory (non-flake tests are still failing) [34mR. Kent James [31m
+[1;32m|[m * [34m8a521f8 [31m2022-06-27 [32mWIP fix flake8 tests [34mR. Kent James [31m
+[1;32m|[m * [34mfaa51d7 [31m2022-06-23 [32mSupport Windows paths (WIP run sphinx project in userspace) [34mR. Kent James [31m
+[1;32m|[m * [34md289398 [31m2022-06-20 [32mWIP (continued) run sphinx project in userspace [34mR. Kent James [31m
+[1;32m|[m * [34m300302f [31m2022-06-13 [32mWIP run sphinx project in user space rather than doc_build [34mR. Kent James [31m
+[1;32m|[m * [34m492d753 [31m2022-06-09 [32mFix warning about invalid escape backslash dot [34mR. Kent James [31m
+[1;32m|[m * [34m27e8eac [31m2022-06-09 [32mShow documents in subdirectories of doc/ [34mR. Kent James [31m
+[1;32m|[m * [34mda43f79 [31m2022-06-09 [32mBetter defaults for cli -p and -u options [34mR. Kent James [31m
+[1;32m|[m * [34m3e76223 [31m2022-06-08 [32mGenerate links to dependencies in meta projects [34mR. Kent James [31m
+[1;32m|[m * [34m05fae0c [31m2022-06-08 [32mRun rosdoc2 over multiple packages [34mR. Kent James [31m
+[1;32m|[m * [34me539d7b [31m2022-06-07 [32mSeparate and expand standard docs from other documentation [34mR. Kent James [31m
+[1;32m|[m * [34mbaf83b6 [31m2022-06-07 [32mUse did_run_doxygen to control showing of Package API [34mR. Kent James [31m
+[1;32m|[m * [34m44d67eb [31m2022-06-07 [32mDon't glob user docs if none exist [34mR. Kent James [31m
+[1;32m|[m * [34m2aa8351 [31m2022-06-07 [32mProtect templates with triple quotes in case names contain apostrophes [34mR. Kent James [31m
+[1;32m|[m * [34m223b9a3 [31m2022-06-07 [32mUse jinja templates to control API lines in index [34mR. Kent James [31m
+[1;32m|[m * [34m987a287 [31m2022-06-07 [32mUse jinja conditional instead of url_any for Links; other cleanups [34mR. Kent James [31m
+[1;32m|[m * [34mf7df4e0 [31m2022-06-07 [32mMove index and search to sidebar only [34mR. Kent James [31m
+[1;32m|[m * [34md63274e [31m2022-06-06 [32mShow messages and services as Package API [34mR. Kent James [31m
+[1;32m|[m * [34m69e7ad6 [31m2022-06-06 [32mmove standard documents under generated/ and test [34mR. Kent James [31m
+[1;32m|[m * [34m00a418f [31m2022-06-06 [32mMove c++ generated files under generated/cpp [34mR. Kent James [31m
+[1;32m|[m * [34mfccf09d [31m2022-06-06 [32mAdd tests for conf and index as files and templates [34mR. Kent James [31m
+[1;32m|[m * [34mea89b73 [31m2022-06-06 [32mSupport user-provided template for Doxyfile [34mR. Kent James [31m
+[1;32m|[m * [34m1f33283 [31m2022-06-06 [32mTest user-provided Doxyfile [34mR. Kent James [31m
+[1;32m|[m * [34m9def2eb [31m2022-06-06 [32mMove jinja templates to a templates directory [34mR. Kent James [31m
+[1;32m|[m * [34m9503210 [31m2022-06-06 [32mSupport testing of existence or not of specific output files [34mR. Kent James [31m
+[1;32m|[m * [34m9d41f9f [31m2022-06-06 [32mRun Doxygen in package directory if no Doxyfile, otherwise too many parent directories are generated [34mR. Kent James [31m
+[1;32m|[m * [34m1450618 [31m2022-06-06 [32mTesting WIP: 1) add rosdoc2 cli logger 2) basic C++ code [34mR. Kent James [31m
+[1;32m|[m * [34m6b5268a [31m2022-06-05 [32mAdded full_package test; cleanup of old test failures and issues [34mR. Kent James [31m
+[1;32m|[m * [34m500b6e3 [31m2022-06-03 [32muse data-driven test generation [34mR. Kent James [31m
+[1;32m|[m * [34m7f514fc [31m2022-06-03 [32mDon't have blank lines for missing package urls; test presence of urls [34mR. Kent James [31m
+[1;32m|[m * [34m865289e [31m2022-06-03 [32mDon't add a Package Documents line if there are nont [34mR. Kent James [31m
+[1;32m|[m * [34m646e0ea [31m2022-06-03 [32mBasic demo of a test of actually documenting a package [34mR. Kent James [31m
+[1;32m|[m * [34md4b8231 [31m2022-05-28 [32mGenerate summary rst file for interfaces [34mR. Kent James [31m
+[1;32m|[m * [34m60fe50c [31m2022-05-28 [32mCreate rst files for interfaces [34mR. Kent James [31m
+[1;32m|[m * [34md30e6fa [31m2022-05-27 [32mPut module documentation before submodules [34mR. Kent James [31m
+[1;32m|[m * [34mad40b8f [31m2022-05-26 [32mTry to import mocks in conf.py [34mR. Kent James [31m
+[1;32m|[m * [34m5640797 [31m2022-05-25 [32mAdd author to default copyright string [34mR. Kent James [31m
+[1;32m|[m * [34mcfeabf8 [31m2022-05-25 [32mInclude viewcode in default sphinx project [34mR. Kent James [31m
+[1;32m|[m *   [34mf56587a [31m2022-05-25 [32mMore fixups [34mR. Kent James [31m
+[1;32m|[m [1;36m|[m[31m\[m  
+[1;32m|[m [1;36m|[m * [34m4b2872b [31m2022-05-25 [32mAdd standard documents automatically [34mR. Kent James [31m
+[1;32m|[m [1;36m|[m * [34m733f3f5 [31m2022-05-24 [32mUse modified j2 naming in setup [34mR. Kent James [31m
+[1;32m|[m * [31m|[m [34m033e555 [31m2022-05-25 [32mFix missed changes from last commit [34mR. Kent James [31m
+[1;32m|[m [31m|[m[31m/[m  
+[1;32m|[m * [34md827594 [31m2022-05-24 [32mDelete by default doc_build_folder to eliminate possible extraneous files [34mR. Kent James [31m
+[1;32m|[m * [34m2f6ab83 [31m2022-05-24 [32mActually use stripped package description in default index [34mR. Kent James [31m
+[1;32m|[m * [34me2521b8 [31m2022-05-24 [32mAdd package description in default main page [34mR. Kent James [31m
+[1;32m|[m * [34m98556c9 [31m2022-05-24 [32mSupport ament_cmake_python typical python source locations [34mR. Kent James [31m
+[1;32m|[m * [34m9cebebd [31m2022-05-24 [32mDisable Doxygen WARN_IF_UNDOCUMENTED if using auto-generated Doxyfile [34mR. Kent James [31m
+[1;32m|[m * [34m4685f2c [31m2022-05-24 [32mRun sphinx-apidoc by default for ament-cmake-python projects [34mR. Kent James [31m
+[1;32m|[m * [34m7b71596 [31m2022-05-23 [32mStrip description to protect from new lines; Call index now that exhale no longer uses generated/unabridged [34mR. Kent James [31m
+[1;32m|[m * [34me59e9c2 [31m2022-05-20 [32mWIP copy docs to staging, don't mess with user directory [34mR. Kent James [31m
+[1;32m|[m * [34m395b1c3 [31m2022-05-20 [32mStage conf.j2 (now conf.j2.py) directly to the sphinx_builder directory [34mR. Kent James [31m
+[1;32m|[m * [34m841f421 [31m2022-05-20 [32mAllow logging in conf.py [34mR. Kent James [31m
+[1;32m|[m * [34m5208f2e [31m2022-05-20 [32mIf --debug is set, also set logger level to DEBUG [34mR. Kent James [31m
+[1;32m|[m * [34m990031b [31m2022-01-04 [32mInclude url Links in default index.j2 [34mKent James [31m
+[1;32m|[m * [34m0fc4515 [31m2022-01-04 [32mGenerally add all template_variable keys as sphinx tags [34mKent James [31m
+[1;32m|[m * [34ma5bd69f [31m2022-01-03 [32mSupport standard urls from package.xml [34mKent James [31m
+[1;32m|[m * [34m596207a [31m2022-01-03 [32mRemove debug print statements [34mKent James [31m
+[1;32m|[m * [34m0bca450 [31m2022-01-03 [32mMove default conf and index to .j2 data files [34mKent James [31m
+[1;32m|[m * [34m9a5b9ed [31m2022-01-02 [32mIf conf.j2 or index.j2 exists, use it. Stop using *_generated names [34mKent James [31m
+[1;32m|[m * [34mc0d6582 [31m2022-01-02 [32mUse an existing conf.py or index.rst if it exists [34mKent James [31m
+[1;32m|[m * [34m9fb8b5e [31m2022-01-02 [32mProcess conf.j2 and index.j2 with jinja [34mKent James [31m
+[1;32m|[m * [34mdbc62a9 [31m2022-01-01 [32mWIP use a single definition of template variables [34mKent James [31m
+[1;32m|[m * [34m63c9009 [31m2022-01-01 [32mFix missed api -> generated naming of C++ documentation [34mKent James [31m
+[1;32m|[m * [34mb7088b6 [31m2021-12-31 [32mUse jinja with user's conf.py [34mKent James [31m
+[1;32m|[m * [34mf07e298 [31m2021-12-04 [32mExtract variables from conf.py run in original location [34mKent James [31m
+[1;32m|[m * [34m4f343c4 [31m2021-12-31 [32mput python files in generated/python [34mKent James [31m
+[1;32m|[m * [34mfd9c656 [31m2021-12-28 [32mAlso use abs path if python_source exists [34mKent James [31m
+[1;32m|[m * [34mcb75515 [31m2021-12-16 [32mOnly use abspath of package_src_directory if it exists [34mKent James [31m
+[1;32m|[m * [34me762bd6 [31m2021-12-02 [32mRKJ fixes to build-python-pkg [34mKent James [31m
+[1;32m|[m * [34mde48427 [31m2022-01-01 [32msquashed PR #29 - Add support for python-only projects (commit eeaed0d) [34mKent James [31m
+[1;32m|[m[1;32m/[m  
+* [34m433e9b4 [31m2021-12-22 [32mAdd in a GitHub workflow. (#40) [34mChris Lalancette [31m
+* [34m40a07e0 [31m2021-12-21 [32mUse :content-only: as the doxygenpage directive. (#39) [34mChris Lalancette [31m
+[31m|[m * [34m76342fe [31m2021-12-21 [32mUse :content-only: as the doxygenpage directive. [34mChris Lalancette [31m (upstream/clalancette/fix-content-only)
+[31m|[m[31m/[m  
+* [34mf8d6ea2 [31m2021-12-17 [32mFix flake8 errors throughout the tree. (#38) [34mChris Lalancette [31m
+* [34mb8f6237 [31m2021-12-15 [32mRemove part of README that says rosdoc2 is on pip. (#37) [34mChris Lalancette [31m
+* [34ma3d6885 [31m2021-12-09 [32mRevamp default Sphinx project (#33) [34mMichel Hidalgo [31m
+* [34m1a600df [31m2021-10-26 [32mAdd `enable_intersphinx` option in settings dict (#30) [34mAbrar Rahman Protyasha [31m
+* [34me114a06 [31m2021-08-06 [32mFix builder name when throwing RuntimeError (#27) [34mAbrar Rahman Protyasha [31m
+* [34mfa887cb [31m2021-08-02 [32mPackage name fixes (#26) [34mAbrar Rahman Protyasha [31m
+* [34m77854b6 [31m2021-07-29 [32mAdd markdown parsing support to `rosdoc2` (#21) [34mAbrar Rahman Protyasha [31m
+* [34m25d00f0 [31m2021-07-29 [32mFix toctree warnings and render toctree in the HTML sidebar (#20) [34mAbrar Rahman Protyasha [31m
+* [34m98cfe30 [31m2021-05-07 [32mFix intersphinx generation. (#18) [34mChris Lalancette [31m
+* [34mef28c03 [31m2021-05-07 [32menable_autdooc -> enable_autodoc (#17) [34mChris Lalancette [31m
+* [34mfbc750c [31m2021-03-11 [32mSwitch main.html -> index.html (#16) [34mChris Lalancette [31m
+* [34m55895da [31m2021-03-10 [32mSwitch to Read-the-docs theme. (#12) [34mChris Lalancette [31m
+* [34m3aab86f [31m2021-03-10 [32mMake most of the command-line arguments optional. (#13) [34mChris Lalancette [31m
+* [34ma58d890 [31m2021-03-10 [32menable automatic intersphinx mapping extension between packages (#11) [34mWilliam Woodall [31m
+* [34me30cf44 [31m2021-03-09 [32mRemove unused 'default_conf_py_template_old'. (#9) [34mChris Lalancette [31m
+* [34m25ad464 [31m2021-03-08 [32mChange the YAML builder configuration arguments. (#8) [34mChris Lalancette [31m
+* [34m71bfd70 [31m2021-03-08 [32mRemove unused setup_doc_build_prefix.py (#7) [34mChris Lalancette [31m
+* [34m192d699 [31m2021-03-08 [32mRemove debugging line. (#6) [34mChris Lalancette [31m
+* [34m08dea73 [31m2021-03-08 [32mMake sure both 'settings' and 'builders' are in the YAML. (#5) [34mChris Lalancette [31m
+* [34m1bdf7cd [31m2021-03-05 [32mRemove bogus Changelog URL. (#4) [34mChris Lalancette [31m
+* [34m994f5d0 [31m2021-03-05 [32mUpdate some documentation strings. (#3) [34mChris Lalancette [31m
+* [34me4a3952 [31m2021-03-05 [32mCleanup some whitespace. (#2) [34mChris Lalancette [31m
+* [34m176750e [31m2021-03-05 [32mRename stagging -> staging. (#1) [34mChris Lalancette [31m
+* [34m6d2d748 [31m2021-01-22 [32mchange to how sphinx overrides settings, reenable exhale [34mWilliam Woodall [31m
+* [34mcc92d74 [31m2021-01-22 [32mmore progress refactoring into SphinxBuilder [34mWilliam Woodall [31m
+* [34mc138845 [31m2021-01-21 [32mcommit more of my staged changes for refactor, fix issue with tag files [34mWilliam Woodall [31m
+* [34m488b1dc [31m2021-01-20 [32mfixup [34mWilliam Woodall [31m
+* [34m8f7d8b5 [31m2021-01-20 [32mmore migrating implementation into new architecture, more docs, still wip [34mWilliam Woodall [31m
+* [34m9b1f6c6 [31m2020-12-16 [32mwip initial refactor [34mWilliam Woodall [31m
+* [34m3d5f487 [31m2020-11-30 [32mInitial commit [34mWilliam Woodall [31m
