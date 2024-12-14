@@ -15,6 +15,7 @@ import logging
 import os
 import shutil
 import sys
+import traceback
 
 from catkin_pkg.package import has_ros_schema_reference
 from catkin_pkg.package import InvalidPackage
@@ -111,10 +112,9 @@ def main(options):
     try:
         return main_impl(options)
     except Exception as e:  # noqa: B902
-        if options.debug:
-            raise
-        else:
-            sys.exit(str(e))
+        logger.error('rosdoc2 failed. Traceback:')
+        logger.error(traceback.format_exc())
+        raise
 
 
 def main_impl(options):
