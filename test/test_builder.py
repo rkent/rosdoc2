@@ -328,3 +328,16 @@ def test_rclcpp(module_dir):
     links_exist = ['https://github.com/ros2/rclcpp.git']  # Found repo url from rosdistro.
     do_test_package(PKG_NAME, module_dir,
                     includes=includes, links_exist=links_exist)
+
+
+def test_user_jinja_full(module_dir):
+    PKG_NAME = 'user_jinja_full'
+    do_build_package(DATAPATH / PKG_NAME, module_dir)
+
+    includes = [
+        PKG_NAME,
+        'extra user link',  # a non-standard link from a user-supplied index.rst.jinja
+    ]
+
+    do_test_package(PKG_NAME, module_dir,
+                    includes=includes)
