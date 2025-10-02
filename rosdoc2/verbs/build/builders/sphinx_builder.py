@@ -22,6 +22,7 @@ import subprocess
 import sys
 
 from jinja2 import Template
+import rosdistro
 import setuptools
 
 from ..builder import Builder
@@ -29,6 +30,7 @@ from ..collect_inventory_files import collect_inventory_files
 from ..create_format_map_from_package import create_format_map_from_package
 from ..doxygen_toc_template import doxygen_toc_template
 from ..generate_interface_docs import generate_interface_docs
+from ..generate_ros_package_dependencies import generate_ros_package_dependencies
 from ..include_links import include_links
 from ..include_user_docs import include_user_docs
 from ..package_repo_url import package_repo_url
@@ -639,6 +641,26 @@ class SphinxBuilder(Builder):
             if package_name != self.build_context.package.name
         ]
 
+        # Collect package-only exec_depends
+        exec_depends = self.build_context.package.exec_depends
+        ros_distro = os.environ.get('ROS_DISTRO')
+        package_depends = []
+        if exec_depends and ros_distro:
+            index = rosdistro.get_index(rosdistro.get_index_url())
+            dist_file = rosdistro.get_distribution_file(index, ros_distro)
+            rosdistro_packages = dist_file.release_packages
+            for exec_depend in exec_depends:
+                if exec_depend.name in rosdistro_packages:
+                    package_depends.append(exec_depend.name)
+
+        # Generate ros package dependencies rst file
+        if package_depends and ros_distro:
+            logger.info(f'generating ros package dependencies with depends: {package_depends}')
+            generate_ros_package_dependencies(
+                wrapped_sphinx_directory,
+                package_depends,
+                ros_distro)
+
         build_context = self.build_context
         if build_context.never_run_sphinx_apidoc:
             logger.info(
@@ -681,6 +703,7 @@ class SphinxBuilder(Builder):
             'package': self.build_context.package,
             'disable_breathe': self.build_context.disable_breathe,
             'show_doxygen_html': self.build_context.show_doxygen_html,
+            'package_depends': package_depends,
         })
 
         # We always generate a default in case the user's conf.py fails.
