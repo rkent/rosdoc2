@@ -422,6 +422,7 @@ def test_index_excludes_content(module_dir):
 
 def test_disable_breathe(module_dir):
     PKG_NAME = 'disable_breathe'
+    os.environ['ROS_DISTRO'] = 'rolling'  # rosdistro entry needed for tag files
     do_build_package(DATAPATH / PKG_NAME, module_dir)
 
     links_exist = ['generated/doxygen/html/']

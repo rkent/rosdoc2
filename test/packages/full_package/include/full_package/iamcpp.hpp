@@ -36,7 +36,7 @@ namespace full_package
 
   */
 
-class DoSomeCpp: public rclcpp::node
+class DoSomeCpp: public rclcpp::Node
 {
 public:
   DoSomeCpp();

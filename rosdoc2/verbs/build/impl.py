@@ -22,6 +22,7 @@ from catkin_pkg.package import package_exists_at
 from catkin_pkg.package import parse_package
 from rosdoc2.slugify import slugify
 
+from .download_cross_references import download_cross_references
 from .inspect_package_for_settings import inspect_package_for_settings
 
 logging.basicConfig(format='[%(name)s] [%(levelname)s] %(message)s', level=logging.INFO)
@@ -77,10 +78,11 @@ def prepare_arguments(parser):
             ' (default: %(default)s)'
         ),
     )
+    ros_distro = os.environ.get('ROS_DISTRO') or 'rolling'
     parser.add_argument(
         '--base-url',
         '-u',
-        default='http://docs.ros.org/en/latest/p',
+        default=f'https://docs.ros.org/en/{ros_distro}/p',
         help=(
             'base url where the package docs will be hosted, used to configure tag files'
             ' (default: %(default)s)'
@@ -164,6 +166,13 @@ def main_impl(options):
     # Generate the package header content.
     pass
 
+    # Download cross-reference files for dependencies.
+    download_cross_references(
+        options.cross_reference_directory,
+        package=package,
+        base_url=options.base_url,
+        include_tags=tool_settings.get('show_doxygen_html', False),
+    )
     # Run each builder.
     for builder in builders:
         # This is the working directory for the builder.

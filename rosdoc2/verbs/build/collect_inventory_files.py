@@ -19,34 +19,30 @@ import os
 logger = logging.getLogger('rosdoc2')
 
 
-def collect_inventory_files(cross_reference_directory):
+def collect_inventory_files(cross_reference_directory, package):
     """
     Collect all inventory files of a given cross reference directory.
 
     :return: dictionary of inventory files, where the package name is the key
     """
+    dependencies = set()
+    for deptype in ['build_depends', 'exec_depends', 'doc_depends']:
+        for dep in package[deptype]:
+            dependencies.add(dep.name)
+    logger.info(f'Collecting intersphinx files for dependencies: {dependencies}')
+
     inventory_files = {}
-    for root, directories, filenames in os.walk(cross_reference_directory):
-        for filename in filenames:
-            if filename == 'objects.inv':
-                # The parent folder should be a package name.
-                package_name = os.path.basename(root)
-                if package_name in inventory_files:
-                    raise RuntimeError(
-                        f"unexpectedly got duplicate tag file for package '{package_name}'"
-                    )
-                inventory_file_path = os.path.join(root, filename)
-                location_json_path = inventory_file_path + '.location.json'
-                if not os.path.exists(location_json_path):
-                    logger.warn(
-                        f"Ignoring tag file '{inventory_file_path}' because it lacks "
-                        f"a '.location.json' file.")
-                    continue
-                location_data = None
-                with open(location_json_path, 'r+') as f:
-                    location_data = json.loads(f.read())
-                inventory_files[package_name] = {
-                    'inventory_file': inventory_file_path,
-                    'location_data': location_data,
-                }
+    for dep in dependencies:
+        obj_file_path = os.path.join(cross_reference_directory, dep, 'objects.inv')
+        location_json_path = obj_file_path + '.location.json'
+        if not os.path.exists(obj_file_path) or not os.path.exists(location_json_path):
+            continue
+        location_data = None
+        with open(location_json_path, 'r+') as f:
+            location_data = json.loads(f.read())
+        inventory_files[dep] = {
+            'inventory_file': obj_file_path,
+            'location_data': location_data,
+        }
+
     return inventory_files

@@ -603,8 +603,8 @@ class SphinxBuilder(Builder):
                 logger.info(f'doc_directories: {doc_directories}')
 
         # Collect intersphinx mapping extensions from discovered inventory files.
-        inventory_files = \
-            collect_inventory_files(self.build_context.tool_options.cross_reference_directory)
+        inventory_files = collect_inventory_files(
+            self.build_context.tool_options.cross_reference_directory, self.build_context.package)
         base_url = self.build_context.tool_options.base_url
         intersphinx_mapping_extensions = [
             f"'{package_name}': "

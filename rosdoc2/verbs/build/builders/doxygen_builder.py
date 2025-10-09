@@ -246,7 +246,8 @@ class DoxygenBuilder(Builder):
         # Add entries for tag files found in the cross-reference directory.
         if self.build_context.show_doxygen_html:
             tag_files = collect_tag_files(
-                self.build_context.tool_options.cross_reference_directory)
+                self.build_context.tool_options.cross_reference_directory,
+                self.build_context.package)
             base_url = self.build_context.tool_options.base_url
             tag_file_entries = [
                 f'TAGFILES += "{os.path.abspath(tagfile_dict["tag_file"])}'

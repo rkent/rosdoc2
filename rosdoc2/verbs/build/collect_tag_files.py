@@ -19,30 +19,26 @@ import os
 logger = logging.getLogger('rosdoc2')
 
 
-def collect_tag_files(cross_reference_directory):
-    """Collect all tag files if a given cross reference directory."""
+def collect_tag_files(cross_reference_directory, package):
+    """Collect all Doxygen tag files for a package."""
+    # Generate dependencies.
+    dependencies = set()
+    for deptype in ['build_depends', 'exec_depends', 'doc_depends']:
+        for dep in package[deptype]:
+            dependencies.add(dep.name)
+    logger.info(f'Collecting tag files for dependencies: {dependencies}')
+
     tag_files = {}
-    for root, directories, filenames in os.walk(cross_reference_directory):
-        for filename in filenames:
-            filename_base, filename_ext = os.path.splitext(filename)
-            if filename_ext == '.tag':
-                # The filename_base should be a package name.
-                if filename_base in tag_files:
-                    raise RuntimeError(
-                        f"unexpectedly got duplicate tag file for package '{filename_base}'"
-                    )
-                tag_file_path = os.path.join(root, filename)
-                location_json_path = tag_file_path + '.location.json'
-                if not os.path.exists(location_json_path):
-                    logger.warn(
-                        f"Ignoring tag file '{tag_file_path}' because it lacks "
-                        f"a '.location.json' file.")
-                    continue
-                location_data = None
-                with open(location_json_path, 'r+') as f:
-                    location_data = json.loads(f.read())
-                tag_files[filename_base] = {
-                    'tag_file': tag_file_path,
-                    'location_data': location_data,
-                }
+    for dep in dependencies:
+        tag_file_path = os.path.join(cross_reference_directory, dep, f'{dep}.tag')
+        location_json_path = tag_file_path + '.location.json'
+        if not os.path.exists(tag_file_path) or not os.path.exists(location_json_path):
+            continue
+        location_data = None
+        with open(location_json_path, 'r+') as f:
+            location_data = json.loads(f.read())
+        tag_files[dep] = {
+            'tag_file': tag_file_path,
+            'location_data': location_data,
+        }
     return tag_files

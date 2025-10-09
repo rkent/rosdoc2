@@ -14,18 +14,51 @@
 
 """This file is used to test documentation generation."""
 
+# Adapted from:
+# https://docs.ros.org/en/rolling/Tutorials/Beginner-Client-Libraries/
+# Writing-A-Simple-Py-Publisher-And-Subscriber.html
 
-class Example():
-    """This is the overview of the Example class."""
+import rclpy
+from rclpy.executors import ExternalShutdownException
+from rclpy.node import Node
+from std_msgs.msg import String
+
+# Simple talker demo that published std_msgs/Strings messages
+# to the 'chatter' topic
+
+
+class MinimalSubscriber(Node):
+    """Node that subscribes to a topic and prints the messages."""
 
     def __init__(self):
-        """Construct example."""
+        """Create a MinimalSubscriber node."""
+        super().__init__('minimal_subscriber')
+        self.subscription = self.create_subscription(
+            String,
+            'topic',
+            self.listener_callback,
+            10)
+        self.subscription  # prevent unused variable warning
+
+    def listener_callback(self, msg):
+        """Process received messages.
+
+        :param msg: The received message
+        :type msg: std_msgs.msg.String
+        """
+        self.get_logger().info('I heard: "%s"' % msg.data)
+
+
+def main(args=None):
+    """Entry point for the minimal_subscriber node."""
+    try:
+        with rclpy.init(args=args):
+            minimal_subscriber = MinimalSubscriber()
+
+            rclpy.spin(minimal_subscriber)
+    except (KeyboardInterrupt, ExternalShutdownException):
         pass
 
-    def do_something(p) -> str:
-        """Do something.
 
-        :param list[str] p: This is a parameter description
-        :return: just the input arm itself
-        """
-        return p
+if __name__ == '__main__':
+    main()
