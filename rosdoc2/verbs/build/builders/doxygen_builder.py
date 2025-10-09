@@ -244,16 +244,18 @@ class DoxygenBuilder(Builder):
         self.rosdoc2_doxyfile_statements.append(f'GENERATE_TAGFILE = {tag_file_name}')
 
         # Add entries for tag files found in the cross-reference directory.
-        tag_files = collect_tag_files(self.build_context.tool_options.cross_reference_directory)
-        base_url = self.build_context.tool_options.base_url
-        tag_file_entries = [
-            f'TAGFILES += "{os.path.abspath(tagfile_dict["tag_file"])}'
-            f'={base_url}/{package_name}/{tagfile_dict["location_data"]["relative_tag_root"]}"'
-            for package_name, tagfile_dict in tag_files.items()
-            # Exclude ourselves.
-            if package_name != self.build_context.package.name
-        ]
-        self.rosdoc2_doxyfile_statements.extend(tag_file_entries)
+        if self.build_context.show_doxygen_html:
+            tag_files = collect_tag_files(
+                self.build_context.tool_options.cross_reference_directory)
+            base_url = self.build_context.tool_options.base_url
+            tag_file_entries = [
+                f'TAGFILES += "{os.path.abspath(tagfile_dict["tag_file"])}'
+                f'={base_url}/{package_name}/{tagfile_dict["location_data"]["relative_tag_root"]}"'
+                for package_name, tagfile_dict in tag_files.items()
+                # Exclude ourselves.
+                if package_name != self.build_context.package.name
+            ]
+            self.rosdoc2_doxyfile_statements.extend(tag_file_entries)
 
         # If the doxyfile has not been specified, generate the default now.
         if self.doxyfile is None:
