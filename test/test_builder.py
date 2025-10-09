@@ -338,18 +338,19 @@ def test_ignore_doc(module_dir):
     do_test_package(PKG_NAME, module_dir, excludes=excludes)
 
 
-def test_rclcpp(module_dir):
+def test_image_transport(module_dir):
     """Tests of repo url lookup from a known standard package."""
-    PKG_NAME = 'rclcpp'
+    PKG_NAME = 'image_transport'
     os.environ['ROS_DISTRO'] = 'rolling'
     do_build_package(DATAPATH / PKG_NAME, module_dir)
 
     includes = [
         PKG_NAME,
-        'rclcpp: rolling'  # Confirm that rosdistro is appended to the title in the TOC.
+        'image_transport: rolling'  # Confirm that rosdistro is appended to the title in the TOC.
     ]
 
-    links_exist = ['https://github.com/ros2/rclcpp.git']  # Found repo url from rosdistro.
+    # Found repo url from rosdistro.
+    links_exist = ['https://github.com/ros-perception/image_common.git']
     do_test_package(PKG_NAME, module_dir,
                     includes=includes, links_exist=links_exist)
 

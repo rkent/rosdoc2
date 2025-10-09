@@ -28,13 +28,13 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'rclcpp'
+project = 'image_transport'
 ros_distro = os.environ.get('ROS_DISTRO')
 if ros_distro:
     project += ': ' + ros_distro.capitalize()
 
 # TODO(tfoote) The docs say year and author but we have this and it seems more relevant.
-copyright = 'The <rclcpp> Contributors. License: Apache License 2.0'
+copyright = 'The <image_transport> Contributors. License: Apache License 2.0'
 author = """Some One"""
 
 # The full version, including alpha/beta/rc tags
