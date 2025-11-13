@@ -18,6 +18,10 @@ import os
 def create_format_map_from_package(package):
     """Create a dictionary used in format strings using a package object."""
     return {
+        'exec_depends': (
+            [exec_depend.name for exec_depend in package.exec_depends]
+            + [doc_depend.name for doc_depend in package.doc_depends]
+        ),
         'package_name': package.name,
         'package_version': package.version,
         'package_description': package.description,

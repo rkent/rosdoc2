@@ -687,8 +687,6 @@ class SphinxBuilder(Builder):
             'default_conf_py_filename': esc_backslash(
                 os.path.abspath(os.path.join(conf_py_directory, '__conf_default.py'))),
             'disable_breathe': self.build_context.disable_breathe,
-            'exec_depends': [exec_depend.name for exec_depend in package.exec_depends]
-            + [doc_depend.name for doc_depend in package.doc_depends],
             'has_python': has_python,
             'has_cpp': has_cpp,
             'has_standard_docs': bool(standard_docs),

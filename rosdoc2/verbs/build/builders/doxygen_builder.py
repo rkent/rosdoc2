@@ -49,11 +49,11 @@ EXTENDED_DOXYFILE = """\
 ## Include the user defined, or default if none specified, Doxyfile.
 @INCLUDE = {doxyfile_file_name}
 
-## Add extra doxyfile statements given by the user.
-{extra_doxyfile_statements}
-
 ## Add rosdoc2 doxyfile statements for tag files, output directory, etc.
 {rosdoc2_doxyfile_statements}
+
+## Add extra doxyfile statements given by the user.
+{extra_doxyfile_statements}
 """
 
 
@@ -244,7 +244,10 @@ class DoxygenBuilder(Builder):
         self.rosdoc2_doxyfile_statements.append(f'GENERATE_TAGFILE = {tag_file_name}')
 
         # Add entries for tag files found in the cross-reference directory.
-        tag_files = collect_tag_files(self.build_context.tool_options.cross_reference_directory)
+        tag_files = collect_tag_files(
+            self.build_context.tool_options.cross_reference_directory,
+            self.template_variables['exec_depends']
+        )
         base_url = self.build_context.tool_options.base_url
         tag_file_entries = [
             f'TAGFILES += "{os.path.abspath(tagfile_dict["tag_file"])}'
