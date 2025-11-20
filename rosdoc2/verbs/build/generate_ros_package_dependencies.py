@@ -26,12 +26,16 @@ ROS Package Dependencies
 .. toctree::
     :maxdepth: 2
     {% for package_depend in package_depends %}
-    {{ package_depend }} <https://docs.ros.org/en/{{ rosdistro }}/p/{{ package_depend }}/>
+    {{ package_depend }} <{{ base_url }}/{{ package_depend }}/>
     {% endfor %}
 """
 
 
-def generate_ros_package_dependencies(output_dir: str, package_depends: list[str], rosdistro: str):
+def generate_ros_package_dependencies(
+        output_dir: str,
+        package_depends: list[str],
+        rosdistro: str,
+        base_url: str) -> None:
     """
     Generate rst file for ros package dependencies.
 
@@ -42,6 +46,7 @@ def generate_ros_package_dependencies(output_dir: str, package_depends: list[str
     depends_rst = Template(depends_fm_rst).render({
         'package_depends': package_depends,
         'rosdistro': rosdistro,
+        'base_url': base_url,
     })
     toc_path = os.path.join(output_dir, '__ros_package_dependencies.rst')
     with open(toc_path, 'w') as f:
