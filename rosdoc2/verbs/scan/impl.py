@@ -278,6 +278,16 @@ def main_impl(options):
                         logger_scan.info(f'Adding {package.name} for processing '
                                          f'({package_queue.qsize()} packages queued)')
 
+                    # Check for dependency cycles
+                    if len(active_packages) == 0 and not packages:
+                        logger_scan.warning('Dependency cycle detected in remaining packages:')
+                        for name in packages_by_name.keys():
+                            logger_scan.warning(f'Package {name} needs {needs[name]}')
+                        logger_scan.warning('Remaining dependencies will be ignored.')
+                        logger_scan.warning('This may cause missing crosslinks.')
+                        for package in packages_by_name.values():
+                            needs[package.name].clear()
+
                     (package, returns, message) = results_queue.get()
                     active_packages.remove(package.name)
                     packages_done += 1
@@ -301,15 +311,6 @@ def main_impl(options):
                     logger_scan.info(
                         f'Progress: done: {packages_done} total: {packages_total} '
                         f'queue size: {package_queue.qsize()} active: {len(active_packages)}')
-
-                    # Check for dependency cycles
-                    if len(packages_by_name) > 0 and len(active_packages) == 0:
-                        logger_scan.warning('Dependency cycle detected among remaining packages: '
-                                            f'{list(packages_by_name.keys())}')
-                        logger_scan.warning('Remaining dependencies will be ignored.')
-                        logger_scan.warning('This may cause missing crosslinks.')
-                        for package in packages_by_name.values():
-                            needs[package.name].clear()
 
                 except KeyboardInterrupt:
                     logger_scan.info('Scan interrupted, terminating workers')
