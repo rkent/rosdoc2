@@ -272,6 +272,9 @@ def main_impl(options):
                         if len(needs[package.name]) == 0 and package.name not in added_packages:
                             packages.append(package)
                             added_packages.add(package.name)
+                    # sort packages by dependency count (more dependents first)
+                    packages.sort(
+                        key=lambda p: len(needed_by[p.name]), reverse=True)
                     for package in packages:
                         package_queue.put(package)
                         active_packages.add(package.name)
