@@ -16,7 +16,11 @@
 
 import argparse
 import logging
+import os
 import pathlib
+import signal
+import threading
+import time
 
 import pytest
 from rosdoc2.verbs.scan.impl import main_impl, prepare_arguments
@@ -26,6 +30,7 @@ from .utils import do_test_full_package
 logger = logging.getLogger('rosdoc2.test.scan')
 DATAPATH = pathlib.Path('test/packages')
 OUTPUTPATH = 'scan_output'
+TIMEOUT = 120  # seconds
 
 
 @pytest.fixture(scope='module')
@@ -34,6 +39,15 @@ def module_dir(tmp_path_factory):
     tmp_path_factory.mktemp('scan_cross_references', False)
     tmp_path_factory.mktemp(OUTPUTPATH, False)
     return tmp_path_factory.getbasetemp()
+
+
+def watchdog():
+    """Kill the process after a timeout."""
+    # We want to catch the KeyboardInterrupt in the main thread, but eventually
+    # we kill the process to stop any remaining child processes.
+    print('*** watchdog timer expired, sending SIGINT', flush=True)
+    os.kill(os.getpid(), signal.SIGINT)
+    time.sleep(2)
 
 
 def do_scan_packages(package_path, work_path) -> None:
@@ -52,12 +66,17 @@ def do_scan_packages(package_path, work_path) -> None:
     logger.info(f'*** scanning package(s) at {package_path} with options {options}')
 
     # run rosdoc2 on the package
+    watchdog_timer = threading.Timer(15, watchdog)
+    watchdog_timer.start()
+
     main_impl(options)
+    watchdog_timer.cancel()
 
 
 def test_scan(module_dir):
     """Test a package with C++, python, and docs."""
     output_dir = module_dir / OUTPUTPATH
+    os.environ['ROS_DISTRO'] = 'rolling'  # Needed for package dependencies
 
     do_scan_packages(DATAPATH, module_dir)
 
