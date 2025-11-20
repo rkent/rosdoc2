@@ -637,7 +637,8 @@ class SphinxBuilder(Builder):
             generate_ros_package_dependencies(
                 wrapped_sphinx_directory,
                 package_depends,
-                ros_distro)
+                ros_distro,
+                base_url)
 
         build_context = self.build_context
         if build_context.never_run_sphinx_apidoc:

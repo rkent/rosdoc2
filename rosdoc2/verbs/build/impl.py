@@ -51,6 +51,7 @@ def get_package(path):
 
 
 def prepare_arguments(parser):
+    distro = os.environ.get('ROS_DISTRO', 'rolling')
     """Add command-line arguments to the argparse object."""
     parser.add_argument(
         '--package-path',
@@ -80,7 +81,7 @@ def prepare_arguments(parser):
     parser.add_argument(
         '--base-url',
         '-u',
-        default='http://docs.ros.org/en/latest/p',
+        default=f'https://docs.ros.org/en/{distro}/p',
         help=(
             'base url where the package docs will be hosted, used to configure tag files'
             ' (default: %(default)s)'
